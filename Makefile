@@ -37,3 +37,6 @@ fclean	:	clean
 			${MAKE} -C ./libft fclean
 
 re		: fclean all
+
+ch_leaks :
+			leaks -atExit -- ./${NAME}
