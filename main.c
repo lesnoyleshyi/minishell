@@ -6,16 +6,12 @@ int main(int argc, char *argv[], char *envp[])
 	char	*usr_inp;
 	char	*cwd;
 	char	*env_var_val;
+	int		i;
 
 	argc = 0;
 	argv = NULL;
-	envp = NULL;
-//	while (*envp)
-//	{
-//		printf("%s\n", *envp);
-//		envp += 1;
-//	}
-//	printf("\nthat's all\n");
+//	envp = NULL;
+
 	while (1)
 	{
 		usr_inp = readline("shalom goi$ ");
@@ -31,6 +27,17 @@ int main(int argc, char *argv[], char *envp[])
 			cwd = getcwd(NULL, 1);
 			printf("%s\n", cwd);
 			free(cwd);
+			free(usr_inp);
+			continue ;
+		}
+		if (ft_strncmp(usr_inp, "env", 3) == 0)
+		{
+			i = 0;
+			while ((envp + i) && *(envp + i))
+			{
+				printf("%s\n", *(envp + i));
+				i++;
+			}
 			free(usr_inp);
 			continue ;
 		}
