@@ -1,6 +1,8 @@
 
 #include "minishell.h"
 
+void	ft_execute_pipeline();
+
 int main(int argc, char *argv[], char *envp[])
 {
 	char	*usr_inp;
@@ -8,10 +10,15 @@ int main(int argc, char *argv[], char *envp[])
 	char	*env_var_val;
 	int		i;
 
-	argc = 0;
 	argv = NULL;
-//	envp = NULL;
-
+	envp = NULL;
+	if (argc == 2)
+	{
+		printf("hihi\n");
+		ft_execute_pipeline();
+		printf("hehe\n");
+		return (0);
+	}
 	while (1)
 	{
 		usr_inp = readline("shalom goi$ ");

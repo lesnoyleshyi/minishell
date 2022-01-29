@@ -1,16 +1,22 @@
 NAME	=	minishell
 
+HEADER	=	${SRCS}/{NAME}.h
+
 LIBFT	=	./libft/libft.a
 
 CFLAGS	=	-Wall -Werror -Wextra
 
-SRCS	=	main.c
+SRCS	=	main.c	execute_simple_funcs.c
 
-OBJS	=	${SRCS:.c=.o}
+SRC_DIR	=	./srcs
+
+D_SRCS	=	$(addprefix ${SRC_DIR}/,${SRCS})
+
+OBJS	=	${D_SRCS:.c=.o}
 
 CC		=	cc
 
-%.o	:	%.c
+%.o	:	%.c ${HEADER}
 		${CC} ${CFLAGS} $< -c -o $@
 
 ${NAME}	:	${OBJS} ${LIBFT}
