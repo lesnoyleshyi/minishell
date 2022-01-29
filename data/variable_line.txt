@@ -1,0 +1,13 @@
+We can get possible types of strings:
+
+cat -e ../file.txt : [[cat][-e]] -> [file.txt]
+
+c"at" -e ../file.txt : [[cat][-e]] -> [file.txt]
+
+< file.txt cat -e : [<] -> [file.txt] -> [[cat][-e]]
+
+<< "he"llo cat -e : [<<] -> [hello] -> [[cat][-e]]
+
+echo "'$PWD'" : [[echo]['VALUE PWD']]
+
+e"c"ho '"$PWD"' : [[echo]["$PWD"]]
