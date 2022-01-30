@@ -1,0 +1,15 @@
+about pipes:
+    http://citforum.ru/operating_systems/linux_pg/lpg_02.shtml
+    https://parallel.uran.ru/book/export/html/464
+    https://www.opennet.ru/docs/RUS/glibc/glibc-10.html
+    https://intuit.ru/studies/courses/2249/52/lecture/1554?page=4
+    https://csnotes.medium.com/pipex-tutorial-42-project-4469f5dd5901
+bash manual:
+    https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html
+readline library manual:
+    https://tiswww.cwru.edu/php/chet/readline/readline.html
+    https://man7.org/linux/man-pages/man3/readline.3.html
+    https://man7.org/linux/man-pages/man3/history.3.html
+sketchboard:
+    https://sketchboard.me/nC50salhtKzB
+

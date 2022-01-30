@@ -1,7 +1,9 @@
 
 #include "minishell.h"
 
-void	ft_execute_pipeline();
+void	ft_execute_pipe();
+void	ft_execute_pipeline(t_s_cmd *command_list);
+void	ft_get_command_list(t_s_cmd **command_list);
 
 int main(int argc, char *argv[], char *envp[])
 {
@@ -9,15 +11,35 @@ int main(int argc, char *argv[], char *envp[])
 	char	*cwd;
 	char	*env_var_val;
 	int		i;
+	t_s_cmd	*command_list;
+	t_s_cmd	*dummy;
 
 	argv = NULL;
 	envp = NULL;
 	if (argc == 2)
 	{
-		printf("hihi\n");
-		ft_execute_pipeline();
-		printf("hehe\n");
+		ft_execute_pipe();
 		return (0);
+	}
+	if (argc == 3)
+	{
+		ft_get_command_list(&command_list);
+		dummy = command_list;
+		int m = 1;
+		while (dummy != NULL)
+		{
+			int n = 0;
+			printf("%d cmd: ", m);
+			while ((*dummy).cmd_w_args[n])
+			{
+				printf("%s ", (*dummy).cmd_w_args[n]);
+				n++;
+			}
+			printf("\n");
+			dummy = dummy->next;
+			m++;
+		}
+		ft_execute_pipeline(command_list);
 	}
 	while (1)
 	{
