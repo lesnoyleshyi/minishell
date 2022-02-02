@@ -6,7 +6,8 @@ LIBFT	=	./libft/libft.a
 
 CFLAGS	=	-Wall -Werror -Wextra
 
-SRCS	=	main.c	execute_simple_funcs.c	get_command_list_funcs.c
+SRCS	=	main.c	execute_simple_funcs.c	get_command_list_funcs.c \
+			builtin_funcs1.c	builtin_funcs2.c
 
 SRC_DIR	=	./srcs
 

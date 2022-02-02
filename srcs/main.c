@@ -35,7 +35,7 @@ int main(int argc, char *argv[], char *envp[])
 				printf("%s ", (*dummy).cmd_w_args[n]);
 				n++;
 			}
-			printf("\n");
+			printf("\tinp: %s, outp: %s\n", (*dummy).input, (*dummy).output);
 			dummy = dummy->next;
 			m++;
 		}
