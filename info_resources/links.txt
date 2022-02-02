@@ -4,12 +4,18 @@ about pipes:
     https://www.opennet.ru/docs/RUS/glibc/glibc-10.html
     https://intuit.ru/studies/courses/2249/52/lecture/1554?page=4
     https://csnotes.medium.com/pipex-tutorial-42-project-4469f5dd5901
+    http://unixwiz.net/techtips/remap-pipe-fds.html
+    https://www.cs.uleth.ca/~holzmann/C/system/pipeforkexec.html
+    https://acm.bsu.by/wiki/Unix2017b/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D0%BA%D0%B0_fork_%E2%80%94_exec
 bash manual:
     https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html
 readline library manual:
     https://tiswww.cwru.edu/php/chet/readline/readline.html
     https://man7.org/linux/man-pages/man3/readline.3.html
     https://man7.org/linux/man-pages/man3/history.3.html
-sketchboard:
+sketchboard(visualize logic of implemented functions):
     https://sketchboard.me/nC50salhtKzB
+about waitpid() and how to get exit status of child process:
+    https://pubs.opengroup.org/onlinepubs/9699919799/functions/waitpid.html
+
 
