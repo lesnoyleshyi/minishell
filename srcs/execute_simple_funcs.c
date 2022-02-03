@@ -56,7 +56,11 @@ int	ft_execute_cmd(char *cmd_w_args[])
 		return (228);
 	}
 	else
+	{
 		fail_ex_status = execlp(cmd_w_args[0], "kek", cmd_w_args[1], NULL);
+//		fail_ex_status = execve(cmd_w_args[0], cmd_w_args, env);
+	}
+//	ft_clear_env(env);
 	return (fail_ex_status);
 }
 

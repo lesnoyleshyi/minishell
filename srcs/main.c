@@ -1,7 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stycho <stycho@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/03 20:03:04 by stycho            #+#    #+#             */
+/*   Updated: 2022/02/03 20:03:06 by stycho           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_execute_pipe();
 void	ft_execute_pipeline(t_s_cmd *command_list);
 void	ft_get_command_list(t_s_cmd **command_list);
 
