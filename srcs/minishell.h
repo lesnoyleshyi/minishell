@@ -12,7 +12,6 @@ typedef	struct	simple_command {
 	char					*output;
 	char					**cmd_w_args;
 	struct simple_command	*next;
-//	struct simple_command	*prev;
 }				t_s_cmd;
 
 void	ft_execute_cmd(char *cmd_w_args[]);
@@ -24,5 +23,8 @@ void	ft_export(char *cmd_w_args[]);
 void	ft_unset(char *cmd_w_args[]);
 void	ft_env(void);
 void	ft_exit(char *cmd_w_args[]);
+
+int		open_output_file(char *filename);
+int		open_input_file(char *filename);
 
 #endif

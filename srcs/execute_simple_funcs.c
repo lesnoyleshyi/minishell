@@ -13,6 +13,7 @@
 #include "minishell.h"
 
 void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile);
+void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t_s_cmd *cmd_data);
 
 void	ft_execute_pipe()
 {
@@ -77,8 +78,9 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 	pid_t	pid;
 	t_s_cmd	*cmd_data;
 	int		exit_status;
-	char	buf;
 	int		reserved_stdin;
+
+//	char	buf;
 
 	cmd_data = command_list;
 	reserved_stdin = dup(0);
@@ -88,7 +90,9 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 		pid = fork();
 		if (pid == 0)
 		{
+//			printf("CHILD, check this pid: %d\n", getpid());
 			ft_apply_redirections_in(pipe_fds[1], pipe_fds[0], cmd_data->input);
+//			sleep(20);
 			ft_execute_cmd(cmd_data->cmd_w_args);
 			printf("Exec failed\n");
 			exit(0);
@@ -96,17 +100,16 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 		else
 		{
 			waitpid(pid, &exit_status, 0);
-
-			close(pipe_fds[1]);
-			if (cmd_data->next != NULL)
-				dup2(pipe_fds[0], 0);
-			else
-				while (read(pipe_fds[0], &buf, 1) == 1)
-					write(1, &buf, 1);
-			close(pipe_fds[0]);
-
-//			ft_apply_redirections_out(pipe_fds[1], pipe_fds[0], cmd_data->output);
-
+//			printf("PARENT, check this pid: %d\n", getpid());
+//			close(pipe_fds[1]);
+//			if (cmd_data->next != NULL)
+//				dup2(pipe_fds[0], 0);
+//			else
+//				while (read(pipe_fds[0], &buf, 1) == 1)
+//					write(1, &buf, 1);
+//			close(pipe_fds[0]);
+			ft_apply_redirections_out(pipe_fds[1], pipe_fds[0], cmd_data->output, cmd_data);
+//			sleep(20);
 			cmd_data = cmd_data->next;
 		}
 	}
@@ -127,25 +130,11 @@ void	ft_execute_cmd(char *cmd_w_args[])
 void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile)
 {
 	int		inp_fd;
-	char	*cur_dir;
-	char	*path;
-	char	*full_path;
 
 	close(pipe_output);
-	if (ft_strncmp(infile, "|", 1) == 0 || ft_strncmp(infile, "0\0", 2) == 0)
-		inp_fd = 0;
-	else if (ft_strchr(infile, '/') != NULL)
-		inp_fd = open(infile, O_CREAT | O_TRUNC, 00644);
-	else
-	{
-		cur_dir = getcwd(NULL, 1);
-		path = ft_strjoin(cur_dir, "/");
-		full_path = ft_strjoin(path, infile);
-		inp_fd = open(full_path, O_CREAT | O_TRUNC, 00644);
-		free(full_path);
-		free(path);
-		free(cur_dir);
-	}
+	inp_fd = 0;
+	if (infile != NULL)
+		inp_fd = open_input_file(infile);
 	dup2(inp_fd, 0);
 	if (inp_fd != 0)
 		close(inp_fd);
@@ -153,12 +142,78 @@ void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile)
 	close(pipe_input);
 }
 
-void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t_s_cmd cmd_data)
+void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t_s_cmd *cmd_data)
 {
-	int	out_fd;
+	int		out_fd;
+	char	buf;
 
 	close(pipe_input);
-	if (ft_strchr(outfile, '/') != NULL)
-		out_fd = open(infile, O_CREAT | O_TRUNC, 00644);
-	if (ft_strncmp(outfile, "|", 1) == 0 || ft_s)
+	out_fd = 1;
+	if (outfile != NULL)
+	{
+		out_fd = open_output_file(outfile);
+//		debug
+		printf("out_fd = %d\n", out_fd);
+		printf("CHECK PID: %d\n", getpid());
+		sleep(20);
+//		debug
+	}
+	if (cmd_data->next == NULL || outfile != NULL)
+	{
+		while (read(pipe_output, &buf, 1) == 1)
+			write(out_fd, &buf, 1);
+		if (out_fd != 1)
+			close(out_fd);
+	}
+	else
+		dup2(pipe_output, 0);
+	close(pipe_output);
+}
+
+int	open_output_file(char *filename)
+{
+	int		output_file_fd;
+	char	*cur_dir;
+	char	*cur_dir_w_slash;
+	char	*full_path;
+
+	if (filename == NULL)
+		return (1);
+	if (ft_strchr(filename, '/') != NULL)
+		output_file_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 00644);
+	if (ft_strchr(filename, '/') == NULL)
+	{
+		cur_dir = getcwd(NULL, 1);
+		cur_dir_w_slash = ft_strjoin(cur_dir, "/");
+		full_path = ft_strjoin(cur_dir_w_slash, filename);
+		output_file_fd = open(full_path, O_WRONLY | O_CREAT | O_APPEND, 00644);
+		free(full_path);
+		free(cur_dir_w_slash);
+		free(cur_dir);
+	}
+	return (output_file_fd);
+}
+
+int	open_input_file(char *filename)
+{
+	int		input_file_fd;
+	char	*cur_dir;
+	char	*cur_dir_w_slash;
+	char	*full_path;
+
+	if (filename == NULL)
+		return (1);
+	if (ft_strchr(filename, '/') != NULL)
+		input_file_fd = open(filename, O_CREAT | O_TRUNC, 00644);
+	if (ft_strchr(filename, '/') == NULL)
+	{
+		cur_dir = getcwd(NULL, 1);
+		cur_dir_w_slash = ft_strjoin(cur_dir, "/");
+		full_path = ft_strjoin(cur_dir_w_slash, filename);
+		input_file_fd = open(full_path, O_CREAT | O_TRUNC, 00644);
+		free(full_path);
+		free(cur_dir_w_slash);
+		free(cur_dir);
+	}
+	return (input_file_fd);
 }
