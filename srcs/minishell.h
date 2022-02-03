@@ -14,7 +14,7 @@ typedef	struct	simple_command {
 	struct simple_command	*next;
 }				t_s_cmd;
 
-void	ft_execute_cmd(char *cmd_w_args[]);
+int		ft_execute_cmd(char *cmd_w_args[]);
 void	ft_execute_builtin(char *cmd_w_args[]);
 void	ft_echo(char *cmd_w_args[]);
 void	ft_cd(const char *path);

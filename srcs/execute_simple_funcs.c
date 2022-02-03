@@ -14,63 +14,7 @@
 
 void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile);
 void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t_s_cmd *cmd_data);
-
-void	ft_execute_pipe()
-{
-	int 	pipes_fds[2];
-	pid_t	pid;
-	int		child_ex_st;
-
-	child_ex_st = 1;
-	pipe(pipes_fds);
-	pid = fork();
-	if (pid == -1)
-		return ;
-	//дочерний процесс
-	if (pid == 0)
-	{
-		printf("Hello from 1 child process! Pipe read end is %d, write is %d\n", pipes_fds[0], pipes_fds[1]);
-		printf("Child1 PID=%d\n", getpid());
-		printf("Child1 PPID=%d\n", getppid());
-		close(pipes_fds[0]);
-		dup2(pipes_fds[1], 1);
-		execlp("ls", "name1", "-lA", NULL);
-	}
-	//родительский процесс
-	else
-	{
-		printf("first parent will wait %d\n", pid);
-		waitpid(pid, &child_ex_st, 0);
-		if (WIFEXITED(child_ex_st) == 0)
-			printf("child1 ex_status: %d\n", child_ex_st);
-		else
-			printf("child1 ex_status: %d\n", WEXITSTATUS(child_ex_st));
-		close(pipes_fds[1]);
-		dup2(pipes_fds[0], 0);
-		pipe(pipes_fds);
-		pid = fork();
-		if (pid == 0)
-		{
-			printf("Hello from second child process!\n");
-			printf("Child2 PID=%d\n", getpid());
-			printf("Child2 PPID=%d\n", getppid());
-			close(pipes_fds[1]);
-			dup2(pipes_fds[0], 0);
-			exit(228);
-//			execlp("cat", "name2", "-e", NULL);
-		}
-		else
-		{
-			printf("last parent will wait %d\n", pid);
-			waitpid(pid, &child_ex_st, 0);
-			if (WIFEXITED(child_ex_st) == 0)
-				printf("child1 ex_status: %d\n", child_ex_st);
-			else
-				printf("child1 ex_status: %d\n", WEXITSTATUS(child_ex_st));
-		}
-	}
-	printf("end of parent proc!\n");
-}
+int		ft_get_child_error(int child_exit_status);
 
 void	ft_execute_pipeline(t_s_cmd *command_list)
 {
@@ -80,8 +24,6 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 	int		exit_status;
 	int		reserved_stdin;
 
-//	char	buf;
-
 	cmd_data = command_list;
 	reserved_stdin = dup(0);
 	while (cmd_data != NULL)
@@ -90,41 +32,32 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 		pid = fork();
 		if (pid == 0)
 		{
-//			printf("CHILD, check this pid: %d\n", getpid());
 			ft_apply_redirections_in(pipe_fds[1], pipe_fds[0], cmd_data->input);
-//			sleep(20);
-			ft_execute_cmd(cmd_data->cmd_w_args);
-			printf("Exec failed\n");
-			exit(0);
+			ft_get_child_error(ft_execute_cmd(cmd_data->cmd_w_args));
 		}
 		else
 		{
 			waitpid(pid, &exit_status, 0);
-//			printf("PARENT, check this pid: %d\n", getpid());
-//			close(pipe_fds[1]);
-//			if (cmd_data->next != NULL)
-//				dup2(pipe_fds[0], 0);
-//			else
-//				while (read(pipe_fds[0], &buf, 1) == 1)
-//					write(1, &buf, 1);
-//			close(pipe_fds[0]);
 			ft_apply_redirections_out(pipe_fds[1], pipe_fds[0], cmd_data->output, cmd_data);
-//			sleep(20);
 			cmd_data = cmd_data->next;
 		}
 	}
 	dup2(reserved_stdin, 0);
 }
 
-void	ft_execute_cmd(char *cmd_w_args[])
+int	ft_execute_cmd(char *cmd_w_args[])
 {
+	int	fail_ex_status;
+
 	if (ft_strchr(cmd_w_args[0], '/') == NULL)
 	{
 		printf("it is builtin!\n");
 		ft_execute_builtin(cmd_w_args);
+		return (228);
 	}
 	else
-		execlp(cmd_w_args[0], "kek", cmd_w_args[1], NULL);
+		fail_ex_status = execlp(cmd_w_args[0], "kek", cmd_w_args[1], NULL);
+	return (fail_ex_status);
 }
 
 void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile)
@@ -150,14 +83,7 @@ void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t
 	close(pipe_input);
 	out_fd = 1;
 	if (outfile != NULL)
-	{
 		out_fd = open_output_file(outfile);
-//		debug
-		printf("out_fd = %d\n", out_fd);
-		printf("CHECK PID: %d\n", getpid());
-		sleep(20);
-//		debug
-	}
 	if (cmd_data->next == NULL || outfile != NULL)
 	{
 		while (read(pipe_output, &buf, 1) == 1)
@@ -216,4 +142,10 @@ int	open_input_file(char *filename)
 		free(cur_dir);
 	}
 	return (input_file_fd);
+}
+
+int	ft_get_child_error(int child_exit_status)
+{
+	printf("Exec failed with ex_st %d\n", child_exit_status);
+	exit(0);
 }
