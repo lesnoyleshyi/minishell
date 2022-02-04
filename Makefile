@@ -1,5 +1,7 @@
 NAME	=	minishell
 
+OS		=	$(shell uname)
+
 HEADER	=	${SRCS}/{NAME}.h
 
 LIBFT	=	./libft/libft.a
@@ -20,11 +22,22 @@ CC		=	cc
 %.o	:	%.c ${HEADER}
 		${CC} ${CFLAGS} $< -c -o $@
 
+ifeq (${OS},Linux)
+${NAME}	:	${OBJS} ${LIBFT}
+			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
+
+else ifeq (${OS},Darwin)
 ${NAME}	:	${OBJS} ${LIBFT}
 			${CC} ${CFLAGS} ${OBJS} -lreadline \
  			-L${HOME}/.brew/Cellar/readline/8.1.2/lib/ \
  			-I${HOME}/.brew/Cellar/readline/8.1.2/include/ \
  			-L./libft -lft -o ${NAME}
+
+else
+
+${NAME}	:
+			echo "Unknown operating system, compilation won't start"
+endif
 
 .PHONY	:	all re clean fclean libft
 
@@ -47,3 +60,6 @@ re		: fclean all
 
 ch_leaks :
 			leaks -atExit -- ./${NAME}
+
+test	:
+			echo ${OS}

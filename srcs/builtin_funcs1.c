@@ -59,7 +59,7 @@ void	ft_pwd(void)
 {
 	char	*cur_directory;
 
-	cur_directory = getcwd(NULL, 1);
+	cur_directory = getcwd(NULL, 0);
 	printf("%s\n", cur_directory);
 	free(cur_directory);
 	exit(0);

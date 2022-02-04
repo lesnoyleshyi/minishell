@@ -113,7 +113,7 @@ int	open_output_file(char *filename)
 		output_file_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 00644);
 	if (ft_strchr(filename, '/') == NULL)
 	{
-		cur_dir = getcwd(NULL, 1);
+		cur_dir = getcwd(NULL, 0);
 		cur_dir_w_slash = ft_strjoin(cur_dir, "/");
 		full_path = ft_strjoin(cur_dir_w_slash, filename);
 		output_file_fd = open(full_path, O_WRONLY | O_CREAT | O_APPEND, 00644);
@@ -137,7 +137,7 @@ int	open_input_file(char *filename)
 		input_file_fd = open(filename, O_CREAT | O_TRUNC, 00644);
 	if (ft_strchr(filename, '/') == NULL)
 	{
-		cur_dir = getcwd(NULL, 1);
+		cur_dir = getcwd(NULL, 0);
 		cur_dir_w_slash = ft_strjoin(cur_dir, "/");
 		full_path = ft_strjoin(cur_dir_w_slash, filename);
 		input_file_fd = open(full_path, O_CREAT | O_TRUNC, 00644);

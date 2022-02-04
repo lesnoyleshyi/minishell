@@ -21,7 +21,7 @@ int main(int argc, char *argv[], char *envp[])
 	t_s_cmd	*command_list;
 
 	if (argc || argv || envp)
-		;
+		argc += 0;
 	while (1)
 	{
 		usr_inp = readline("shalom goi$ ");
