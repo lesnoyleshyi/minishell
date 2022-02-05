@@ -12,8 +12,8 @@
 
 #include "minishell.h"
 
-void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile);
-void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t_s_cmd *cmd_data);
+void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infiles_arr[]);
+void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfiles_arr[], t_s_cmd *cmd_data);
 int		ft_get_child_error(int child_exit_status);
 
 void	ft_execute_pipeline(t_s_cmd *command_list)
@@ -48,6 +48,7 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 int	ft_execute_cmd(char *cmd_w_args[])
 {
 	int	fail_ex_status;
+//	int i;
 
 	if (ft_strchr(cmd_w_args[0], '/') == NULL)
 	{
@@ -57,21 +58,32 @@ int	ft_execute_cmd(char *cmd_w_args[])
 	}
 	else
 	{
-		fail_ex_status = execlp(cmd_w_args[0], "kek", cmd_w_args[1], NULL);
-//		fail_ex_status = execve(cmd_w_args[0], cmd_w_args, env);
+//		fail_ex_status = execlp(cmd_w_args[0], "kek", cmd_w_args[1], NULL);
+//		printf("command: %s\n", cmd_w_args[0]);
+//		i = -1;
+//		while (cmd_w_args[++i] != NULL)
+//			printf("ARG %d is %s\n", i, cmd_w_args[i]);
+		fail_ex_status = execve(cmd_w_args[0], cmd_w_args, cmd_w_args);
 	}
-//	ft_clear_env(env);
+	//	ft_clear_env(env);
 	return (fail_ex_status);
 }
 
-void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile)
+void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infiles_arr[])
 {
-	int		inp_fd;
+	int	inp_fd;
+    int i;
 
 	close(pipe_output);
 	inp_fd = 0;
-	if (infile != NULL)
-		inp_fd = open_input_file(infile);
+	i = -1;
+	if (infiles_arr != NULL)
+		while (infiles_arr[++i] != NULL)
+		{
+			inp_fd = open_input_file(infiles_arr[i]);
+			if (inp_fd == -1)
+				exit(1);
+		}
 	dup2(inp_fd, 0);
 	if (inp_fd != 0)
 		close(inp_fd);
@@ -79,16 +91,25 @@ void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile)
 	close(pipe_input);
 }
 
-void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t_s_cmd *cmd_data)
+void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfiles_arr[], t_s_cmd *cmd_data)
 {
 	int		out_fd;
 	char	buf;
+	int		i;
 
 	close(pipe_input);
 	out_fd = 1;
-	if (outfile != NULL)
-		out_fd = open_output_file(outfile);
-	if (cmd_data->next == NULL || outfile != NULL)
+	i = -1;
+	if (outfiles_arr != NULL)
+	{
+		while (outfiles_arr[++i] != NULL)
+		{
+			out_fd = open_output_file(outfiles_arr[i]);
+			if (outfiles_arr[i + 1] != NULL)
+				close(out_fd);
+		}
+	}
+	if (cmd_data->next == NULL || outfiles_arr != NULL)
 	{
 		while (read(pipe_output, &buf, 1) == 1)
 			write(out_fd, &buf, 1);
@@ -134,13 +155,18 @@ int	open_input_file(char *filename)
 	if (filename == NULL)
 		return (1);
 	if (ft_strchr(filename, '/') != NULL)
-		input_file_fd = open(filename, O_CREAT | O_TRUNC, 00644);
+		input_file_fd = open(filename, O_RDONLY);
 	if (ft_strchr(filename, '/') == NULL)
 	{
 		cur_dir = getcwd(NULL, 0);
 		cur_dir_w_slash = ft_strjoin(cur_dir, "/");
 		full_path = ft_strjoin(cur_dir_w_slash, filename);
-		input_file_fd = open(full_path, O_CREAT | O_TRUNC, 00644);
+		input_file_fd = open(full_path, O_RDONLY);
+		if (input_file_fd == -1)
+		{
+			write(2, "minishell: ", 11);
+			perror(filename);
+		}
 		free(full_path);
 		free(cur_dir_w_slash);
 		free(cur_dir);

@@ -9,8 +9,8 @@
 # include "readline/history.h"
 
 typedef	struct	simple_command {
-	char					*input;
-	char					*output;
+	char					**input;
+	char					**output;
 	char					**cmd_w_args;
 	struct simple_command	*next;
 }				t_s_cmd;
