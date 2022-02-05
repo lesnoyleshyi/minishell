@@ -12,16 +12,14 @@
 
 #include "minishell.h"
 
-void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infiles_arr[]);
-void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfiles_arr[], t_s_cmd *cmd_data);
-int		ft_get_child_error(int child_exit_status);
+void	ft_apply_redirections_in(int pipe_input, int pipe_output, t_file *input);
+void	ft_apply_redirections_out(int pipe_input, int pipe_output, t_file *output, t_s_cmd *cmd_data);
 
 void	ft_execute_pipeline(t_s_cmd *command_list)
 {
 	int		pipe_fds[2];
 	pid_t	pid;
 	t_s_cmd	*cmd_data;
-	int		exit_status;
 	int		reserved_stdin;
 
 	cmd_data = command_list;
@@ -33,12 +31,14 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 		if (pid == 0)
 		{
 			ft_apply_redirections_in(pipe_fds[1], pipe_fds[0], cmd_data->input);
-			ft_get_child_error(ft_execute_cmd(cmd_data->cmd_w_args));
+			ft_execute_cmd(cmd_data->cmd_w_args);
 		}
 		else
 		{
-			waitpid(pid, &exit_status, 0);
-			ft_apply_redirections_out(pipe_fds[1], pipe_fds[0], cmd_data->output, cmd_data);
+			if (ft_get_child_exit_status(pid) == 0)
+				ft_apply_redirections_out(pipe_fds[1], pipe_fds[0], cmd_data->output, cmd_data);
+			else
+				ft_skip_after_child_failure(pipe_fds[1], pipe_fds[0], cmd_data);
 			cmd_data = cmd_data->next;
 		}
 	}
@@ -48,42 +48,34 @@ void	ft_execute_pipeline(t_s_cmd *command_list)
 int	ft_execute_cmd(char *cmd_w_args[])
 {
 	int	fail_ex_status;
-//	int i;
 
 	if (ft_strchr(cmd_w_args[0], '/') == NULL)
 	{
 		printf("it is builtin!\n");
 		ft_execute_builtin(cmd_w_args);
-		return (228);
+		exit(2);
 	}
 	else
-	{
-//		fail_ex_status = execlp(cmd_w_args[0], "kek", cmd_w_args[1], NULL);
-//		printf("command: %s\n", cmd_w_args[0]);
-//		i = -1;
-//		while (cmd_w_args[++i] != NULL)
-//			printf("ARG %d is %s\n", i, cmd_w_args[i]);
 		fail_ex_status = execve(cmd_w_args[0], cmd_w_args, cmd_w_args);
-	}
 	//	ft_clear_env(env);
-	return (fail_ex_status);
+	exit(fail_ex_status);
 }
 
-void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infiles_arr[])
+void	ft_apply_redirections_in(int pipe_input, int pipe_output, t_file *input)
 {
-	int	inp_fd;
-    int i;
+	t_file	*inp_file;
+	int		inp_fd;
 
 	close(pipe_output);
 	inp_fd = 0;
-	i = -1;
-	if (infiles_arr != NULL)
-		while (infiles_arr[++i] != NULL)
-		{
-			inp_fd = open_input_file(infiles_arr[i]);
-			if (inp_fd == -1)
-				exit(1);
-		}
+	inp_file = input;
+	while (inp_file != NULL)
+	{
+		inp_fd = ft_open_input_file(inp_file->name);
+		if (inp_fd == -1)
+			exit(1);
+		inp_file = inp_file->next;
+	}
 	dup2(inp_fd, 0);
 	if (inp_fd != 0)
 		close(inp_fd);
@@ -91,25 +83,23 @@ void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infiles_arr
 	close(pipe_input);
 }
 
-void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfiles_arr[], t_s_cmd *cmd_data)
+void	ft_apply_redirections_out(int pipe_input, int pipe_output, t_file *output, t_s_cmd *cmd_data)
 {
+	t_file	*out_file;
 	int		out_fd;
 	char	buf;
-	int		i;
 
 	close(pipe_input);
 	out_fd = 1;
-	i = -1;
-	if (outfiles_arr != NULL)
+	out_file = output;
+	while (out_file != NULL)
 	{
-		while (outfiles_arr[++i] != NULL)
-		{
-			out_fd = open_output_file(outfiles_arr[i]);
-			if (outfiles_arr[i + 1] != NULL)
-				close(out_fd);
-		}
+		out_fd = ft_open_output_file(out_file->name);
+		if (out_file->next != NULL)
+			close(out_fd);
+		out_file = out_file->next;
 	}
-	if (cmd_data->next == NULL || outfiles_arr != NULL)
+	if (cmd_data->next == NULL || output != NULL)
 	{
 		while (read(pipe_output, &buf, 1) == 1)
 			write(out_fd, &buf, 1);
@@ -121,31 +111,7 @@ void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfiles_a
 	close(pipe_output);
 }
 
-int	open_output_file(char *filename)
-{
-	int		output_file_fd;
-	char	*cur_dir;
-	char	*cur_dir_w_slash;
-	char	*full_path;
-
-	if (filename == NULL)
-		return (1);
-	if (ft_strchr(filename, '/') != NULL)
-		output_file_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 00644);
-	if (ft_strchr(filename, '/') == NULL)
-	{
-		cur_dir = getcwd(NULL, 0);
-		cur_dir_w_slash = ft_strjoin(cur_dir, "/");
-		full_path = ft_strjoin(cur_dir_w_slash, filename);
-		output_file_fd = open(full_path, O_WRONLY | O_CREAT | O_APPEND, 00644);
-		free(full_path);
-		free(cur_dir_w_slash);
-		free(cur_dir);
-	}
-	return (output_file_fd);
-}
-
-int	open_input_file(char *filename)
+int	ft_open_input_file(char *filename)
 {
 	int		input_file_fd;
 	char	*cur_dir;
@@ -174,8 +140,46 @@ int	open_input_file(char *filename)
 	return (input_file_fd);
 }
 
-int	ft_get_child_error(int child_exit_status)
+int	ft_open_output_file(char *filename)
 {
-	printf("Exec failed with ex_st %d\n", child_exit_status);
-	exit(0);
+	int		output_file_fd;
+	char	*cur_dir;
+	char	*cur_dir_w_slash;
+	char	*full_path;
+
+	if (filename == NULL)
+		return (1);
+	if (ft_strchr(filename, '/') != NULL)
+		output_file_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 00644);
+	if (ft_strchr(filename, '/') == NULL)
+	{
+		cur_dir = getcwd(NULL, 0);
+		cur_dir_w_slash = ft_strjoin(cur_dir, "/");
+		full_path = ft_strjoin(cur_dir_w_slash, filename);
+		output_file_fd = open(full_path, O_WRONLY | O_CREAT | O_TRUNC, 00644);
+		free(full_path);
+		free(cur_dir_w_slash);
+		free(cur_dir);
+	}
+	return (output_file_fd);
+}
+
+int	ft_get_child_exit_status(pid_t pid)
+{
+	int exit_status;
+
+	waitpid(pid, &exit_status, 0);
+	if (WEXITSTATUS(exit_status) == 0)
+		return (0);
+	else
+		return (WEXITSTATUS(exit_status));
+//		here we (theoretically) can get different ex_st in case of signal termination
+}
+
+void	ft_skip_after_child_failure(int pipe_input, int pipe_output, t_s_cmd *cmd_data)
+{
+	close(pipe_input);
+	if (cmd_data->next != NULL)
+		dup2(pipe_output, 0);
+	close(pipe_output);
 }
