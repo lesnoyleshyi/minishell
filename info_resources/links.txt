@@ -21,5 +21,8 @@ how to check opened fd-s for specific process:
     https://rtfm.co.ua/ispolzovanie-utility-lsof-v-primerax/
     https://www.thegeekstuff.com/2012/08/lsof-command-examples/
     https://linux.die.net/man/8/lsof
+about unix-domain-sockets
+    https://www.cloudsavvyit.com/1263/what-are-unix-sockets-and-how-do-they-work/
+    https://www.brainboxes.com/faq/what-is-unix-domain-socket
 
 

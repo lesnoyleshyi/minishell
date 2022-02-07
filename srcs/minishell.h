@@ -8,18 +8,39 @@
 # include "readline/readline.h"
 # include "readline/history.h"
 
-typedef	struct	simple_command {
-	struct s_file			*input;
-	struct s_file			*output;
-	char					**cmd_w_args;
-	struct simple_command	*next;
-}				t_s_cmd;
+enum file_type {
+	E_IN,
+	E_OUT,
+	E_APPEND,
+	E_HEREDOC
+};
+
+typedef struct s_param {
+	char			*name;
+	char			*value;
+	struct s_param	*next;
+}				t_param;
+
+typedef	struct	s_common {
+	int				err_number;
+	t_param			*env;
+	t_param			*local_param;
+}				t_common;
 
 typedef	struct	s_file {
-	int				append;
+	int				mod;
 	char			*name;
 	struct s_file	*next;
 }				t_file;
+
+typedef	struct	s_data {
+	int				isMyFunction;
+	char			**command;
+	t_file			*file;
+	struct s_data	*next;
+}				t_data;
+
+
 
 int		ft_execute_cmd(char *cmd_w_args[]);
 void	ft_execute_builtin(char *cmd_w_args[]);
@@ -31,7 +52,7 @@ void	ft_unset(char *cmd_w_args[]);
 void	ft_env(void);
 void	ft_exit(char *cmd_w_args[]);
 
-int		ft_open_output_file(char *filename);
+int		ft_open_output_file(char *filename, int mode);
 int		ft_open_input_file(char *filename);
 
 int		ft_get_child_exit_status(pid_t pid);
