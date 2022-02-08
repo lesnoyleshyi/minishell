@@ -61,5 +61,7 @@ re		: fclean all
 ch_leaks :
 			leaks -atExit -- ./${NAME}
 
+sleeper	:	./info_resources/sleeper.o ${LIBFT}
+			${CC} ${CFLAGS} $< -lft -L./libft -o sleeper
 test	:
 			echo ${OS}

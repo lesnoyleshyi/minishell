@@ -15,6 +15,8 @@
 void	ft_apply_redirections_in(int pipe_input, int pipe_output, t_file *input);
 void	ft_apply_redirections_out(int pipe_input, int pipe_output, t_file *output, t_data *cmd_data);
 
+void	ft_apply_redirections(t_file *io_list, int reserved_io[2]);
+
 int	ft_apply_heredocs(t_file *io_list, int reserved_stdin);
 int	ft_get_heredoc(int reserved_stdin, char *stop_word);
 int	ft_get_inp_srcs_count(t_file *io_list);
@@ -28,6 +30,7 @@ void	ft_execute_pipeline(t_data *command_list)
 	pid_t	pid;
 	t_data	*cmd_data;
 	int		reserved_stdin_stdout[2];
+	char	buf;
 
 	reserved_stdin_stdout[0] = dup(0);
 	reserved_stdin_stdout[1] = dup(1);
@@ -39,13 +42,29 @@ void	ft_execute_pipeline(t_data *command_list)
 		pid = fork();
 		if (pid == 0)
 		{
-			ft_apply_redirections_in(pipe_fds[1], pipe_fds[0], cmd_data->input);
-			ft_execute_cmd(cmd_data->cmd_w_args);
+//			ft_apply_redirections_in(pipe_fds[1], pipe_fds[0], cmd_data->input);
+			close(pipe_fds[0]);
+			dup2(pipe_fds[1], 1);
+			close(pipe_fds[1]);
+			ft_execute_cmd(cmd_data->command);
 		}
 		else
 		{
 			if (ft_get_child_exit_status(pid) == 0)
-				ft_apply_redirections_out(pipe_fds[1], pipe_fds[0], cmd_data->output, cmd_data);
+			{
+				close(pipe_fds[1]);
+				if (cmd_data->next == NULL)
+				{
+					while (read(0, &buf, 1) == 1)
+						write(1, &buf, 1);
+					close(1);
+				}
+				else
+				{
+					close(pipe_fds[1]);
+				}
+//				ft_apply_redirections_out(pipe_fds[1], pipe_fds[0], cmd_data->output, cmd_data);
+			}
 			else
 				ft_skip_after_child_failure(pipe_fds[1], pipe_fds[0], cmd_data);
 			cmd_data = cmd_data->next;
@@ -54,7 +73,7 @@ void	ft_execute_pipeline(t_data *command_list)
 	dup2(reserved_stdin_stdout[0], 0);
 }
 
-void	apply_redirections(t_file *io_list, int reserved_io[2])
+void	ft_apply_redirections(t_file *io_list, int reserved_io[2])
 {
 	int	stdin_fd;
 	int stdout_fd;
@@ -332,7 +351,7 @@ int	ft_get_child_exit_status(pid_t pid)
 		return (0);
 	else
 		return (WEXITSTATUS(exit_status));
-//		here we (theoretically) can get different ex_st in case of signal termination
+//		here we (theoretically) can catch different ex_st in case of signal termination
 }
 
 void	ft_skip_after_child_failure(int pipe_input, int pipe_output, t_data *cmd_data)
