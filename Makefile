@@ -26,14 +26,15 @@ CC		=	cc
 
 ifeq (${OS},Linux)
 
- ifeq (${linuxDistr},Ubuntu)
+ifeq (${linuxDistr},Ubuntu)
 ${NAME}	:	${OBJS} ${LIBFT} bubunta
 			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
 
- else ifeq (${linuxDistr},Arch)
+else ifeq (${linuxDistr},Arch)
 ${NAME}	:	${OBJS} ${LIBFT}
 			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
- endif
+endif
+endif
 
 else ifeq (${OS},Darwin)
 ${NAME}	:	${OBJS} ${LIBFT}
