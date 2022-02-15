@@ -28,12 +28,12 @@ ifeq (${OS},Linux)
 
 ifeq (${linuxDistr},Ubuntu)
 ${NAME}	:	${OBJS} ${LIBFT} bubunta
+			echo "hello, bubunta user"
 			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
-
 else ifeq (${linuxDistr},Arch)
 ${NAME}	:	${OBJS} ${LIBFT}
+			echo "Hello, arch user"
 			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
-endif
 endif
 
 else ifeq (${OS},Darwin)
@@ -42,9 +42,7 @@ ${NAME}	:	${OBJS} ${LIBFT}
  			-L${HOME}/.brew/Cellar/readline/8.1.2/lib/ \
  			-I${HOME}/.brew/Cellar/readline/8.1.2/include/ \
  			-L./libft -lft -o ${NAME}
-
 else
-
 ${NAME}	:
 			echo "Unknown operating system, compilation won't start"
 endif
@@ -76,5 +74,27 @@ ch_leaks :
 
 sleeper	:	./info_resources/sleeper.o ${LIBFT}
 			${CC} ${CFLAGS} $< -lft -L./libft -o sleeper
-test	:
+
+testOS		:
+			echo ${OS}
+
+testDistr	:
 			echo ${linuxDistr}
+
+ifeq (${OS},Linux)
+
+ifeq (${linuxDistr},Ubuntu)
+testAll	:	bubunta
+			echo "hello, bubunta user"
+else ifeq (${linuxDistr},Arch)
+testAll	:
+			echo "Hello, arch user"
+endif
+
+else ifeq (${OS},Darwin)
+testAll	:
+			echo "hello, rich guy"
+else
+testAll	:
+			echo "Unknown operating system, compilation won't start"
+endif
