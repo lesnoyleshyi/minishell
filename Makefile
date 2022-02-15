@@ -2,7 +2,7 @@ NAME	=	minishell
 
 OS		=	$(shell uname)
 
-Linux_disto = $(shell cat /etc/*-release | grep "DISTRIB_ID" | cut -f2 -d"=")
+linuxDistr = $(shell cat /etc/*-release | grep "DISTRIB_ID" | cut -f2 -d"=")
 
 HEADER	=	${SRCS}/{NAME}.h
 
@@ -26,11 +26,11 @@ CC		=	cc
 
 ifeq (${OS},Linux)
 
- ifeq (${Linux_disto},Ubuntu)
+ ifeq (${linuxDistr},Ubuntu)
 ${NAME}	:	${OBJS} ${LIBFT} bubunta
 			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
 
- else ifeq (${Linux_disto},Arch)
+ else ifeq (${linuxDistr},Arch)
 ${NAME}	:	${OBJS} ${LIBFT}
 			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
  endif
@@ -76,4 +76,4 @@ ch_leaks :
 sleeper	:	./info_resources/sleeper.o ${LIBFT}
 			${CC} ${CFLAGS} $< -lft -L./libft -o sleeper
 test	:
-			echo ${OS}
+			echo ${linuxDistr}
