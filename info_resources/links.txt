@@ -24,5 +24,7 @@ how to check opened fd-s for specific process:
 about unix-domain-sockets
     https://www.cloudsavvyit.com/1263/what-are-unix-sockets-and-how-do-they-work/
     https://www.brainboxes.com/faq/what-is-unix-domain-socket
+bash source code:
+    http://ftp.gnu.org/gnu/bash/
 
 

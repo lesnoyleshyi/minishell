@@ -2,6 +2,8 @@ NAME	=	minishell
 
 OS		=	$(shell uname)
 
+Linux_disto = $(shell cat /etc/*-release | grep "DISTRIB_ID" | cut -f2 -d"=")
+
 HEADER	=	${SRCS}/{NAME}.h
 
 LIBFT	=	./libft/libft.a
@@ -23,8 +25,15 @@ CC		=	cc
 		${CC} ${CFLAGS} $< -c -o $@
 
 ifeq (${OS},Linux)
+
+ ifeq (${Linux_disto},Ubuntu)
+${NAME}	:	${OBJS} ${LIBFT} bubunta
+			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
+
+ else ifeq (${Linux_disto},Arch)
 ${NAME}	:	${OBJS} ${LIBFT}
 			${CC} ${CFLAGS} ${OBJS} -lreadline -L./libft -lft -o ${NAME}
+ endif
 
 else ifeq (${OS},Darwin)
 ${NAME}	:	${OBJS} ${LIBFT}
@@ -47,6 +56,9 @@ ${LIBFT} : libft ;
 
 libft	:
 			${MAKE} -C ./libft
+
+bubunta	:
+			sudo apt-get install libreadline-dev
 
 clean	:
 			rm -rf ${OBJS}
