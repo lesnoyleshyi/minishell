@@ -26,5 +26,7 @@ about unix-domain-sockets
     https://www.brainboxes.com/faq/what-is-unix-domain-socket
 bash source code:
     http://ftp.gnu.org/gnu/bash/
+sound, color, cursor control bash:
+    https://www.opennet.ru/base/dev/console_ctl.txt.html
 
 

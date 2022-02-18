@@ -11,6 +11,8 @@
 # define ENOEXEC 				8
 # define EX_BINARY_FILE			126
 # define NO_PIPE				-1
+# define AMBIGUOUS_REDIRECT		-1
+# define HEREDOC_REDIRECT		-4		//here-doc temp file can't be created
 
 //extern volatile int last_command_exit_value;
 int					last_command_exit_value;
@@ -22,6 +24,13 @@ enum file_type {
 	E_OUT,
 	E_APPEND,
 	E_HEREDOC
+};
+
+enum r_instruction {
+	r_input_direction,
+	r_output_direction,
+	r_appending_to,
+	r_reading_until,
 };
 
 //Structure representing an array of file descriptors which we have to close
@@ -63,6 +72,20 @@ typedef	struct	s_data {
 }				t_data;
 
 
+typedef union {
+	int 	fd;
+	char	*filename;
+}	u_redirection;
+
+typedef struct	s_redirect {
+	struct s_redirect	*next;
+	u_redirection		redirector;
+	u_redirection		redirectee;
+	int					open_flags;
+	int					redir_flag;
+	enum file_type		redir_type;
+	char				*stop_word;
+}				t_redirect;
 
 int		ft_execute_cmd(char *cmd_w_args[]);
 void	ft_execute_builtin(char *cmd_w_args[]);
