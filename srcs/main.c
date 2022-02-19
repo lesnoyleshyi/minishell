@@ -12,13 +12,15 @@
 
 #include "minishell.h"
 
-void	ft_execute_pipeline(t_s_cmd *command_list);
-void	ft_get_command_list(t_s_cmd **command_list);
+void	ft_execute_pipeline(t_data *command_list);
+void	ft_get_command_list(t_data **command_list);
+
+int	execute(t_data *command_list, char *envp[]);
 
 int main(int argc, char *argv[], char *envp[])
 {
 	char	*usr_inp;
-	t_s_cmd	*command_list;
+	t_data 	*command_list;
 
 	if (argc || argv || envp)
 		;
@@ -32,7 +34,8 @@ int main(int argc, char *argv[], char *envp[])
 		}
 		add_history(usr_inp);
 		ft_get_command_list(&command_list);
-		ft_execute_pipeline(command_list);
+		execute(command_list, envp);
+//		ft_execute_pipeline(command_list);
 	}
 	free(usr_inp);
 	return 0;
