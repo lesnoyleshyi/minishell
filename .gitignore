@@ -1,6 +1,0 @@
-# Project exclude paths
-/cmake-build-debug/
-*.o
-.idea
-/libft/libft.a
-minishell

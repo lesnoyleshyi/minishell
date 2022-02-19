@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   param.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/20 00:06:39 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/20 00:06:41 by drayl            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 /**
@@ -7,12 +19,15 @@
 
 void	add_param(t_param **begin, t_param *new)
 {
-	t_param *element;
+	t_param	*element;
 
 	if (begin == NULL || *begin == NULL)
+	{
 		*begin = new;
+		return ;
+	}
 	element = *begin;
-	while (element->next != NULL)
+	while (element->next != NULL && ft_strcmp(element->name, new->name))
 		element = element->next;
 	element->next = new;
 }
@@ -56,12 +71,67 @@ t_param	*init_param(const char *str)
 	if (new == NULL)
 		return (NULL);
 	index = 0;
-	while (str[index] != '=')
+	while (str[index] != INIT_PARAM)
 		++index;
 	new->name = get_substr(str, 0, index);
 	new->value = get_substr(str, index + 1, ft_strlen(str));
-	if (new->value == NULL || new->name == NULL)
-		return (NULL);
+	new->app = FALSE;
+	new->value = replace_all_param(new->value);
+	remove_all_quote(new->value);
 	new->next = NULL;
+	if (new->name == NULL)
+		destroy_param(&new);
 	return (new);
+}
+
+/**
+ * This function removes the entire list of type "t_param"
+ */
+
+void	destroy_param(t_param **begin)
+{
+	t_param	*element;
+
+	if (begin == NULL)
+		return ;
+	while (*begin)
+	{
+		element = (*begin)->next;
+		if ((*begin)->name != NULL)
+			free((*begin)->name);
+		if ((*begin)->value != NULL)
+			free((*begin)->value);
+		free(*begin);
+		*begin = element;
+	}
+}
+
+/**
+ * This function looks up a variable by name in
+ * the list: "env" and "local_param" and returns
+ * its "value". Returns NULL if a variable with
+ * the same name does not exist.
+ */
+
+char	*get_param_value(const char *name)
+{
+	t_param	*param;
+
+	param = g_common->env;
+	if (ft_strcmp(name, "?") == 0)
+		return (ft_itoa(g_common->err_number));
+	while (param != NULL)
+	{
+		if (ft_strcmp(param->name, name) == 0)
+			return (param->value);
+		param = param->next;
+	}
+	param = g_common->local_param;
+	while (param != NULL)
+	{
+		if (ft_strcmp(param->name, name) == 0)
+			return (param->value);
+		param = param->next;
+	}
+	return (NULL);
 }

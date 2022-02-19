@@ -1,30 +1,28 @@
 NAME	=	minishell
 
-HEADER	=	${SRCS}/{NAME}.h
-
 LIBFT	=	./libft/libft.a
 
 CFLAGS	=	-Wall -Werror -Wextra
 
-SRCS	=	main.c	execute_funcs.c	get_command_list_funcs.c \
-			builtin_funcs1.c	builtin_funcs2.c	open_files_funcs.c
+SRCS	=	main.c	\
+			data/common.c			data/data.c				data/list.c			data/param.c	data/file.c	data/string_array.c\
+			utils/first_parser.c	utils/replace_param.c	utils/get_mod_file.c	utils/second_parser.c\
+			string/get_substr.c			string/insert_str.c	string/get_unsubstr.c	string/ft_strcmp.c string/remove_all_quote.c\
+			checks/check_function.c	checks/check_get_param.c	checks/check_determinate.c	checks/check_content.c \
+			xlam/print.c
+OBJS	=	${SRCS:.c=.o}
 
-SRC_DIR	=	./srcs
+CC		=	gcc
 
-D_SRCS	=	$(addprefix ${SRC_DIR}/,${SRCS})
+%.o	:	%.c
+		${CC} $< -c -o $@
 
-OBJS	=	${D_SRCS:.c=.o}
-
-CC		=	cc
-
-%.o	:	%.c ${HEADER}
-		${CC} ${CFLAGS} $< -c -o $@
-
-${NAME}	:	${OBJS} ${LIBFT}
-			${CC} ${CFLAGS} ${OBJS} -lreadline \
+${NAME}	:	${LIBFT} ${OBJS}
+			${CC} ${OBJS} -lreadline \
  			-L${HOME}/.brew/Cellar/readline/8.1.2/lib/ \
  			-I${HOME}/.brew/Cellar/readline/8.1.2/include/ \
  			-L./libft -lft -o ${NAME}
+
 
 .PHONY	:	all re clean fclean libft
 

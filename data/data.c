@@ -1,47 +1,92 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   data.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/20 00:06:13 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/20 00:06:14 by drayl            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 /**
- * This function checks if the element is space
+ * This function creates an element of type
+ * "t_data" with null values
  */
 
-static int	check_is_space(char ch)
+t_data	*create_data(void)
 {
-	return ((ch == ' ') || ch == '\n' || ch == '\t'
-			|| ch == '\r' || ch == '\f' || ch == '\v');
-}
-
-
-
-t_list *first_pars(const char *line)
-{
-	t_list	*begin;
-	size_t	start;
-	size_t	end;
-	char	flag;
-
-	end = 0;
-	start = 0;
-	while (line[start] != '\0')
-	{
-		flag = SPACE;
-		while (check_is_space(line[start]))
-			start++;
-		if (line[start] == QUOTE || line[start] == QUOTE2)
-			flag = line[start++];
-		end = start;
-		while (line[end] != '\0' || line[end] != flag)
-			++end;
-
-	}
-}
-
-t_data	*init_data(const char *line) {
 	t_data	*data;
 
 	data = (t_data *) malloc(sizeof(t_data));
+	if (data == NULL)
+		return (NULL);
+	data->file = NULL;
+	data->command = NULL;
+	data->next = NULL;
+	data->param_list = NULL;
+	return (data);
+}
 
+/**
+ * This function destroys an object
+ * of type "t_data" passed as a parameter
+ */
 
+void	destroy_data(t_data	**data)
+{
+	t_data	*el;
 
+	while (*data != NULL)
+	{
+		el = (*data)->next;
+		destroy_file(&((*data)->file));
+		destroy_array((*data)->command);
+		free(*data);
+		*data = el;
+	}
+}
+
+/**
+ * This function creates a new element of type "t_data"
+ * and adds it to the "next" field in the "data" variable,
+ * after which the pointer to the structure changes
+ * its value to a pointer to the new element
+ */
+
+int	add_new_data(t_data **data)
+{
+	t_data	*new;
+
+	new = create_data();
+	if (new == NULL)
+		return (MEMORY_ERROR);
+	(*data)->next = new;
+	*data = new;
+	return (OK);
+}
+
+/**
+ * This function acts as a general parser and returns
+ * a list of elements of type "t_data". In case of
+ * unsuccessful processing, it will return "NULL"
+ */
+
+t_data	*init_data(const char *line)
+{
+	t_data	*data;
+	t_list	*begin;
+
+	begin = NULL;
+	data = create_data();
+	if (data == NULL)
+		return (NULL);
+	first_pars(line, &begin);
+	if (begin == NULL)
+		return (NULL);
+	second_parser(&begin, data);
 	return (data);
 }

@@ -11,3 +11,8 @@ c"at" -e ../file.txt : [[cat][-e]] -> [file.txt]
 echo "'$PWD'" : [[echo]['VALUE PWD']]
 
 e"c"ho '"$PWD"' : [[echo]["$PWD"]]
+
+< fi""""le.txt wc -l : [<] -> [[file.txt][-l]]
+
+
+
