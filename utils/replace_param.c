@@ -76,13 +76,14 @@ char	*replace_all_param(char *str)
 	determinate = SPACE;
 	while (str[++start] != '\0')
 	{
-		if (str[start] == QUOTE && determinate == SPACE)
+		if ((str[start] == QUOTE || str[start] == QUOTE2)
+			&& determinate == SPACE)
 			determinate = str[start++];
-		if (str[start] == GET_PARAM && determinate == SPACE)
+		if (str[start] == GET_PARAM && determinate != QUOTE)
 			str = replace_name_with_value(str, &start);
 		if (str == NULL)
 			return (NULL);
-		if (str[start] == QUOTE && determinate == QUOTE)
+		if (str[start] == determinate)
 			determinate = SPACE;
 	}
 	return (str);
