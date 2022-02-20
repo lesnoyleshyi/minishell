@@ -17,6 +17,8 @@ sketchboard(visualize logic of implemented functions):
     https://sketchboard.me/nC50salhtKzB
 about waitpid() and how to get exit status of child process:
     https://pubs.opengroup.org/onlinepubs/9699919799/functions/waitpid.html
+    https://www.daniweb.com/programming/software-development/threads/364407/handling-sigchld-to-prevent-zombie-processes
+    https://www.geeksforgeeks.org/zombie-processes-prevention/
 how to check opened fd-s for specific process:
     https://rtfm.co.ua/ispolzovanie-utility-lsof-v-primerax/
     https://www.thegeekstuff.com/2012/08/lsof-command-examples/

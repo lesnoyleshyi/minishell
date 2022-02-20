@@ -19,16 +19,7 @@ int	ft_open_output_files(t_file *file_list);
 //Returns 0 in case there are no output redirections
 int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 
-//void	ft_execute_pipeline(t_data *command_list)
-//{
-//	int	reserved_stdin;
-//	int	reserved_stdout;
-//	int temp_fd_in;
-//	int temp_fd_out;
-//	int ret;
-//
-//
-//}
+//void	ft_zombie_killer(int signal_number);
 
 int	execute(t_data *command_list, char *envp[])
 {
@@ -39,12 +30,15 @@ int	execute(t_data *command_list, char *envp[])
 	pid_t	pid;
 	t_data	*curr_cmd;
 	int		pipe_fds[2];
+	int		i;
 //	pid_t
 
 	envp = NULL;
 	reserved_stdin = dup(0);
 	reserved_stdout = dup(1);
+	signal(SIGCHLD, SIG_IGN);
 
+	i = 0;
 	fd_in = dup(0);
 	curr_cmd = command_list;
 	while (curr_cmd)
@@ -119,3 +113,10 @@ int	ft_get_child_exit_status(pid_t pid)
 		return (WEXITSTATUS(exit_status));
 //		here we (theoretically) can catch different ex_st in case of signal termination
 }
+
+//void	ft_zombie_killer(int signal_number)
+//{
+//
+//	wait(NULL);
+//}
+
