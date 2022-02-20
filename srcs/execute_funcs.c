@@ -19,7 +19,10 @@ int	ft_open_output_files(t_file *file_list);
 //Returns 0 in case there are no output redirections
 int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 
-//void	ft_zombie_killer(int signal_number);
+//Opens input files(< or <<stop_word) in cycle if there are some.
+//Leaves only the last opened, close other ones.
+//
+int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd);
 
 int	execute(t_data *command_list, char *envp[])
 {
@@ -30,19 +33,21 @@ int	execute(t_data *command_list, char *envp[])
 	pid_t	pid;
 	t_data	*curr_cmd;
 	int		pipe_fds[2];
-	int		i;
-//	pid_t
 
 	envp = NULL;
 	reserved_stdin = dup(0);
 	reserved_stdout = dup(1);
 	signal(SIGCHLD, SIG_IGN);
 
-	i = 0;
 	fd_in = dup(0);
 	curr_cmd = command_list;
 	while (curr_cmd)
 	{
+		fd_in = ft_choose_inp_src(curr_cmd->file, fd_in);
+		if (fd_in == -1)
+			write(2, "ft_choose_inp_src returns -1\n", 30);
+		else if (fd_in == -2)
+			write(2, "ft_choose_inp_src returns -2\n", 30);
 		dup2(fd_in, 0);
 		close(fd_in);
 		if (curr_cmd->next == NULL)												//if it's the last command
@@ -114,9 +119,4 @@ int	ft_get_child_exit_status(pid_t pid)
 //		here we (theoretically) can catch different ex_st in case of signal termination
 }
 
-//void	ft_zombie_killer(int signal_number)
-//{
-//
-//	wait(NULL);
-//}
 

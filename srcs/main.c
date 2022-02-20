@@ -22,6 +22,7 @@ int main(int argc, char *argv[], char *envp[])
 	char	*usr_inp;
 	t_data 	*command_list;
 
+	signal(SIGINT, SIG_IGN);
 	if (argc || argv || envp)
 		;
 	while (1)
