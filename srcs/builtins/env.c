@@ -1,5 +1,10 @@
 #include "../../includes/minishell.h"
 
+/**
+ * This function prints all values stored
+ * in the global variable "g_common->env"
+ */
+
 void	env(void)
 {
 	t_param	*param;

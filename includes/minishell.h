@@ -105,6 +105,7 @@ char		*get_unsubstr(char *str, size_t start, size_t end);
 char		*insert_srt(char *str, char *substr, size_t *index);
 char		*get_substr(const char *str, size_t start, size_t end);
 void		remove_all_quote(char *str);
+char		*remove_string(char *str);
 
 //   --- checks ---   //
 int			check_function(const char *function);

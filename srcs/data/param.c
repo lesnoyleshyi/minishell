@@ -51,8 +51,10 @@ void	delete_param(t_param **begin, t_param *element)
 		if (param != NULL)
 			param->next = element->next;
 	}
-	free(element->name);
-	free(element->value);
+	if (element->name != NULL)
+		free(element->name);
+	if (element->value != NULL)
+		free(element->value);
 	free(element);
 }
 
@@ -79,8 +81,10 @@ t_param	*init_param(const char *str)
 	new->value = replace_all_param(new->value);
 	remove_all_quote(new->value);
 	new->next = NULL;
-	if (new->name == NULL)
-		destroy_param(&new);
+	if (new->name != NULL && *new->name == '\0')
+		new->name = remove_string(new->name);
+	if (new->value != NULL && *new->value == '\0')
+		new->value = remove_string(new->value);
 	return (new);
 }
 
