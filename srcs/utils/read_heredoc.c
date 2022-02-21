@@ -12,6 +12,11 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * This function concatenates 2 strings,
+ * deletes the first one and returns the result
+ */
+
 static char	*up_strjoin(char *str1, char *str2)
 {
 	char	*result;
@@ -24,6 +29,11 @@ static char	*up_strjoin(char *str1, char *str2)
 	return (result);
 }
 
+/**
+ * This function reads text from standard input
+ * until the string "stop_word" or EOF is encountered.
+ */
+
 static int	read_text(const char *stop_word, char **result)
 {
 	char	*text;
@@ -35,7 +45,7 @@ static int	read_text(const char *stop_word, char **result)
 	buff = readline("> ");
 	while (buff != NULL)
 	{
-		if (ft_strcmp(buff,stop_word) == 0)
+		if (ft_strcmp(buff, stop_word) == 0)
 			break ;
 		buff = up_strjoin(buff, "\n");
 		text = up_strjoin(text, buff);
@@ -47,6 +57,13 @@ static int	read_text(const char *stop_word, char **result)
 	*result = text;
 	return (OK);
 }
+
+/**
+ * This function iterates over the entire list of
+ * elements of type "t_data" and if the element has
+ * a variable of type "t_file" with modifier "mod"
+ * equal to "E_HEREDOC" reads text from standard input
+ */
 
 int	read_heredoc(t_data *data)
 {
