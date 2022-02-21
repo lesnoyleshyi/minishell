@@ -14,11 +14,6 @@
 
 int	ft_open_output_files(t_file *file_list);
 
-//Checks whether list_of_all_redirections contains output redirections( >> or >)
-//Returns 1 in case there is any
-//Returns 0 in case there are no output redirections
-int ft_is_here_output_redirections(t_file *list_of_all_redirections);
-
 //Opens input files(< or <<stop_word) in cycle if there are some.
 //Leaves only the last opened, close other ones.
 //
@@ -91,20 +86,6 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 	close(reserved_stdin);
 	close(reserved_stdout);
 	return(ft_get_child_exit_status(pid));
-}
-
-int ft_is_here_output_redirections(t_file *list_of_all_redirections)
-{
-	t_file	*cur_redirection;
-
-	cur_redirection = list_of_all_redirections;
-	while (cur_redirection != NULL)
-	{
-		if (cur_redirection->mod == E_APPEND || cur_redirection->mod == E_OUT)
-			return (1);
-		cur_redirection = cur_redirection->next;
-	}
-	return (0);
 }
 
 int	ft_get_child_exit_status(pid_t pid)

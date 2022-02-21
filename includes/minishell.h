@@ -145,12 +145,15 @@ void		remove_first_element(t_list **begin);
 /* PROTOTYPE */
 
 /* STYCHO */
+//   --- execute/execute_funcs.c ---   //
 int	ft_execute_pipeline(t_data *command_list, char *envp[]);
-int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd);
-int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 int	ft_get_child_exit_status(pid_t pid);
 
-//   --- signal/ ---   //
+//   --- execute/open_files_funcs.c ---   //
+int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd);
+int ft_is_here_output_redirections(t_file *list_of_all_redirections);
+
+//   --- signal/signal_funcs.c ---   //
 void	ft_clear_input(int signal);
 /* STYCHO */
 

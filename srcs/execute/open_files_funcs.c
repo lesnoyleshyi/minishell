@@ -20,9 +20,17 @@ int	ft_open_file(char *filename, int mode_for_open);
 //Decision about storage rely on len(heredoc_string) and max size of pipe.
 int	ft_heredoc_to_fd(char *heredoc_string);
 
+//Checks whether list_of_all_redirections contains output redirections( >> or >)
+//Returns 1 in case there is any
+//Returns 0 in case there are no output redirections
+int ft_is_here_output_redirections(t_file *list_of_all_redirections);
+
 //Returns file descriptor of opened file if there is any of them in file_list
 //Returns -2 if file_list is empty or doesn't contain any output files (> or >>)
 //Returns -1 in case open() returns -1. It's an error indicator.
+int	ft_open_output_files(t_file *redirect_list);
+
+
 int	ft_open_output_files(t_file *redirect_list)
 {
 	int		cur_fd;
@@ -111,4 +119,18 @@ int ft_heredoc_to_fd(char *string)
 		return (0);
 	else
 		return (1);
+}
+
+int ft_is_here_output_redirections(t_file *list_of_all_redirections)
+{
+	t_file	*cur_redirection;
+
+	cur_redirection = list_of_all_redirections;
+	while (cur_redirection != NULL)
+	{
+		if (cur_redirection->mod == E_APPEND || cur_redirection->mod == E_OUT)
+			return (1);
+		cur_redirection = cur_redirection->next;
+	}
+	return (0);
 }
