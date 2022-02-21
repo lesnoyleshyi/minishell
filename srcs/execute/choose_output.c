@@ -22,6 +22,11 @@
 //*
 int	ft_choose_output(int *old_output, t_file *redir_list);
 
+//Checks whether list_of_all_redirections contains output redirections( >> or >)
+//Returns 1 in case there is any
+//Returns 0 in case there are no output redirections
+int ft_is_here_output_redirections(t_file *list_of_all_redirections);
+
 //Checks for reading permissions for filename
 //*
 //Returns 0 if read permissions OK,
@@ -29,6 +34,11 @@ int	ft_choose_output(int *old_output, t_file *redir_list);
 //*
 //I want to add checking for directory here later
 int	ft_check_read_permissions(char *filename);
+
+//Returns file descriptor of opened file if there is any of them in file_list
+//Returns -2 if file_list is empty or doesn't contain any output files (> or >>)
+//Returns -1 in case open() returns -1. It's an error indicator.
+int	ft_open_output_files(t_file *redirect_list);
 
 int	ft_choose_output(int *old_output, t_file *redir_list)
 {
@@ -64,4 +74,39 @@ int	ft_check_read_permissions(char *filename)
 	if (access(filename, R_OK) == 1)
 		return (1);
 	return  (0);
+}
+
+int ft_is_here_output_redirections(t_file *list_of_all_redirections)
+{
+	t_file	*cur_redirection;
+
+	cur_redirection = list_of_all_redirections;
+	while (cur_redirection != NULL)
+	{
+		if (cur_redirection->mod == E_APPEND || cur_redirection->mod == E_OUT)
+			return (1);
+		cur_redirection = cur_redirection->next;
+	}
+	return (0);
+}
+
+int	ft_open_output_files(t_file *redirect_list)
+{
+	int		cur_fd;
+	t_file	*cur_file;
+	cur_fd = -2;
+	cur_file = redirect_list;
+	while (cur_file != NULL)
+	{
+		if (cur_file->mod == E_OUT || cur_file->mod == E_APPEND)
+		{
+			if (cur_fd != -2)
+				close(cur_fd);
+			cur_fd = ft_open_file(cur_file->name, cur_file->mod);
+			if (cur_fd == -1)
+				return (-1);
+		}
+		cur_file = cur_file->next;
+	}
+	return (cur_fd);
 }

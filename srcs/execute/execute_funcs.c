@@ -33,9 +33,6 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 	curr_cmd = command_list;
 	while (curr_cmd)
 	{
-//		fd_in = ft_choose_inp_src(curr_cmd->file, fd_in);
-//		if (fd_in == -1)
-//			write(2, "ft_choose_inp_src returns -1\n", 30);
 		dup2(fd_in, 0);
 		close(fd_in);
 		if (curr_cmd->next == NULL)												//if it's the last command

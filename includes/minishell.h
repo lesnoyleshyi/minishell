@@ -24,7 +24,7 @@
 # define NO_PIPE				-1
 # define AMBIGUOUS_REDIRECT		-1
 # define HEREDOC_REDIRECT		-4		//here-doc temp file can't be created
-
+# define PIPE_BUF				4096
 
 enum e_function {
 	E_NOT_FUNCTION,

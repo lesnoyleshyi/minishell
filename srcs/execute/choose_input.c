@@ -20,15 +20,16 @@ int	ft_open_file(char *filename, int mode_for_open);
 //Decision about storage rely on len(heredoc_string) and max size of pipe.
 int	ft_heredoc_to_fd(char *heredoc_string);
 
-//Checks whether list_of_all_redirections contains output redirections( >> or >)
-//Returns 1 in case there is any
-//Returns 0 in case there are no output redirections
-int ft_is_here_output_redirections(t_file *list_of_all_redirections);
+//Creates pipe and writes heredoc_len bytes from string to this pipe,
+//closes pipe_input at the end of writing
+//*
+//No error handling here, but it should be
+int	ft_heredoc_to_pipe(char *string, int heredoc_len);
 
-//Returns file descriptor of opened file if there is any of them in file_list
-//Returns -2 if file_list is empty or doesn't contain any output files (> or >>)
-//Returns -1 in case open() returns -1. It's an error indicator.
-int	ft_open_output_files(t_file *redirect_list);
+//Creates temp file and writes heredoc_len bytes to it
+//*
+//IDK how to delete this file without using global variable
+int	ft_heredoc_to_temp_file(char *string, int heredoc_len);
 
 //Changes input_source from previous (could be stdin or pipe's output) to output
 //file/heredoc if there is any in redirect_list
@@ -41,26 +42,33 @@ int	ft_open_output_files(t_file *redirect_list);
 //
 int	ft_choose_inp_src(t_file *redirect_list);
 
-int	ft_open_output_files(t_file *redirect_list)
+int	ft_choose_inp_src(t_file *redirect_list)
 {
-	int		cur_fd;
 	t_file	*cur_file;
+	int		input_fd;
 
-	cur_fd = -2;
+	input_fd = 0;
 	cur_file = redirect_list;
 	while (cur_file != NULL)
 	{
-		if (cur_file->mod == E_OUT || cur_file->mod == E_APPEND)
+		if (cur_file->mod == E_IN || cur_file->mod == E_HEREDOC)
 		{
-			if (cur_fd != -2)
-				close(cur_fd);
-			cur_fd = ft_open_file(cur_file->name, cur_file->mod);
-			if (cur_fd == -1)
-				return (-1);
+			close(input_fd);
+			input_fd = ft_open_file(cur_file->name, cur_file->mod);
+			if (input_fd == -1)
+				break;
 		}
 		cur_file = cur_file->next;
 	}
-	return (cur_fd);
+	if (input_fd == -1)
+	{
+		perror(cur_file->name);
+		return (-1);
+	}
+	dup2(input_fd, 0);
+	if (input_fd != 0)
+		close(input_fd);
+	return (0);
 }
 
 int	ft_open_file(char *filename, int mode_for_open)
@@ -95,53 +103,40 @@ int	ft_open_file(char *filename, int mode_for_open)
 	return (fd);
 }
 
-int	ft_choose_inp_src(t_file *redirect_list)
-{
-	t_file	*cur_file;
-	int		input_fd;
-
-	input_fd = 0;
-	cur_file = redirect_list;
-	while (cur_file != NULL)
-	{
-		if (cur_file->mod == E_IN || cur_file->mod == E_HEREDOC)
-		{
-			close(input_fd);
-			input_fd = ft_open_file(cur_file->name, cur_file->mod);
-			if (input_fd == -1)
-				break;
-		}
-		cur_file = cur_file->next;
-	}
-	if (input_fd == -1)
-	{
-		perror(cur_file->name);
-		return (-1);
-	}
-	dup2(input_fd, 0);
-	if (input_fd != 0)
-		close(input_fd);
-	return (0);
-}
-
 int ft_heredoc_to_fd(char *string)
 {
-	if (string)
-		return (0);
+	int fd;
+	int	heredoc_len;
+
+	if (string == NULL)
+		heredoc_len = 0;
 	else
-		return (1);
+		heredoc_len = ft_strlen(string);
+	if (heredoc_len == 0)
+		fd = ft_open_file("/dev/null", O_RDONLY);
+	else if (heredoc_len < PIPE_BUF)
+		fd = ft_heredoc_to_pipe(string, heredoc_len);
+	else
+		fd = ft_heredoc_to_temp_file(string, heredoc_len);
+	return (fd);
 }
 
-int ft_is_here_output_redirections(t_file *list_of_all_redirections)
+int	ft_heredoc_to_pipe(char *string, int heredoc_len)
 {
-	t_file	*cur_redirection;
+	int		pipe_fds[2];
 
-	cur_redirection = list_of_all_redirections;
-	while (cur_redirection != NULL)
-	{
-		if (cur_redirection->mod == E_APPEND || cur_redirection->mod == E_OUT)
-			return (1);
-		cur_redirection = cur_redirection->next;
-	}
-	return (0);
+	pipe(pipe_fds);
+	write(pipe_fds[1], &string, heredoc_len);
+	close(pipe_fds[1]);
+	return (pipe_fds[0]);
+}
+
+int	ft_heredoc_to_temp_file(char *string, int heredoc_len)
+{
+	int	fd;
+
+	unlink("ya_i_yura_ssali_na_zeleny_sapog");
+	fd = open("ya_i_yura_ssali_na_zeleny_sapog", O_RDWR | O_CREAT, 00600);
+	write(fd, &string, heredoc_len);
+	return (fd);
 }
