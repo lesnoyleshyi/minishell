@@ -38,11 +38,9 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 	curr_cmd = command_list;
 	while (curr_cmd)
 	{
-		fd_in = ft_choose_inp_src(curr_cmd->file, fd_in);
-		if (fd_in == -1)
-			write(2, "ft_choose_inp_src returns -1\n", 30);
-		else if (fd_in == -2)
-			write(2, "ft_choose_inp_src returns -2\n", 30);
+//		fd_in = ft_choose_inp_src(curr_cmd->file, fd_in);
+//		if (fd_in == -1)
+//			write(2, "ft_choose_inp_src returns -1\n", 30);
 		dup2(fd_in, 0);
 		close(fd_in);
 		if (curr_cmd->next == NULL)												//if it's the last command
@@ -67,13 +65,16 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 			fd_out = pipe_fds[1];												//we'll redirect output to pipe's input
 			fd_in = pipe_fds[0];												//and read from pipe's output
 		}
-		dup2(fd_out, 1);														//fd==1 now points to fd_out - depends on next: it's the last command(reserved stdout or file) or not (pipe's input)
+		if (ft_choose_output(&fd_out, curr_cmd->file) != -1)
+			dup2(fd_out, 1);													//fd==1 now points to fd_out - depends on next: it's the last command(reserved stdout or file) or not (pipe's input)
 		close(fd_out);															//I'm not sure if it's safe in case fd_out == 1 - maybe should be checked
 		pid = fork();
 		if (pid == 0)															//in child process
 		{
+			if (fd_out == -1)
+				exit(1);
 //			env = ft_update_env();
-			close(pipe_fds[0]);
+//			close(pipe_fds[0]);
 			execve(curr_cmd->command[0], curr_cmd->command, NULL);
 			perror("execve");
 			exit(1);

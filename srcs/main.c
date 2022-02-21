@@ -37,7 +37,7 @@ int main(int argc, char **argv, char **envp)
 	if (argc || argv)
 		;
 	g_common = init_common_data((const char **)envp);
-	print_common_param();
+//	print_common_param();
 	data = NULL;
 	while (1)
 	{
@@ -50,7 +50,7 @@ int main(int argc, char **argv, char **envp)
 //		printf("%s\n", input);
 		data = init_data(input);
 //		printf("\nPRINT DATA\n");
-		print_data(data);
+//		print_data(data);
 //		printf("END OF DATA\n");
 		ft_execute_pipeline(data, envp);
 		destroy_data(&data);
