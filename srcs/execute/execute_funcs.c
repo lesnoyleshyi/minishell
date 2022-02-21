@@ -14,11 +14,6 @@
 
 int	ft_open_output_files(t_file *file_list);
 
-//Opens input files(< or <<stop_word) in cycle if there are some.
-//Leaves only the last opened, close other ones.
-//
-int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd);
-
 int	ft_execute_pipeline(t_data *command_list, char *envp[])
 {
 	int		reserved_stdin;
@@ -62,11 +57,11 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 		else																	//it's not the last command in pipeline
 		{
 			pipe(pipe_fds);
-			fd_out = pipe_fds[1];												//we'll redirect output to pipe's input
-			fd_in = pipe_fds[0];												//and read from pipe's output
+			fd_out = pipe_fds[1];
+			fd_in = pipe_fds[0];
 		}
 		if (ft_choose_output(&fd_out, curr_cmd->file) != -1)
-			dup2(fd_out, 1);													//fd==1 now points to fd_out - depends on next: it's the last command(reserved stdout or file) or not (pipe's input)
+			dup2(fd_out, 1);
 		close(fd_out);															//I'm not sure if it's safe in case fd_out == 1 - maybe should be checked
 		pid = fork();
 		if (pid == 0)															//in child process
@@ -74,7 +69,9 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 			if (fd_out == -1)
 				exit(1);
 //			env = ft_update_env();
-//			close(pipe_fds[0]);
+			close(pipe_fds[0]);
+			if (ft_choose_inp_src(curr_cmd->file) == -1)
+				exit(1);
 			execve(curr_cmd->command[0], curr_cmd->command, NULL);
 			perror("execve");
 			exit(1);

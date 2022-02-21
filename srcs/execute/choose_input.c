@@ -30,6 +30,16 @@ int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 //Returns -1 in case open() returns -1. It's an error indicator.
 int	ft_open_output_files(t_file *redirect_list);
 
+//Changes input_source from previous (could be stdin or pipe's output) to output
+//file/heredoc if there is any in redirect_list
+//*
+//Closes previous input fd only if it finds any input redirection in redirect_list
+//*
+//Returns -1 in case of error
+//Opens input files(< or <<stop_word) in cycle if there are some.
+//Leaves only the last opened, close other ones.
+//
+int	ft_choose_inp_src(t_file *redirect_list);
 
 int	ft_open_output_files(t_file *redirect_list)
 {
@@ -85,32 +95,33 @@ int	ft_open_file(char *filename, int mode_for_open)
 	return (fd);
 }
 
-int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd)
+int	ft_choose_inp_src(t_file *redirect_list)
 {
-	int		new_input_fd;
 	t_file	*cur_file;
+	int		input_fd;
 
-	write(2, "ft_choose_inp_src\n", 19);
-	new_input_fd = -2;
+	input_fd = 0;
 	cur_file = redirect_list;
 	while (cur_file != NULL)
 	{
 		if (cur_file->mod == E_IN || cur_file->mod == E_HEREDOC)
 		{
-			if (new_input_fd != -2)
-				close(new_input_fd);
-			new_input_fd = ft_open_file(cur_file->name, cur_file->mod);
-			if (new_input_fd == -1)
-				return (-1);
-			write(2, "+1 opened file\n", 16);
+			close(input_fd);
+			input_fd = ft_open_file(cur_file->name, cur_file->mod);
+			if (input_fd == -1)
+				break;
 		}
-		write(2, "+1 checked file\n", 17);
 		cur_file = cur_file->next;
 	}
-	if (new_input_fd != -2)
-		return (new_input_fd);
-	else
-		return (old_input_fd);
+	if (input_fd == -1)
+	{
+		perror(cur_file->name);
+		return (-1);
+	}
+	dup2(input_fd, 0);
+	if (input_fd != 0)
+		close(input_fd);
+	return (0);
 }
 
 int ft_heredoc_to_fd(char *string)

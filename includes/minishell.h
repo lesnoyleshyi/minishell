@@ -156,7 +156,7 @@ int	ft_get_child_exit_status(pid_t pid);
 int	ft_open_file(char *filename, int mode_for_open);
 int	ft_choose_output(int *old_output, t_file *redir_list);
 
-int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd);
+int	ft_choose_inp_src(t_file *redirect_list);
 int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 
 //   --- signal/signal_funcs.c ---   //
