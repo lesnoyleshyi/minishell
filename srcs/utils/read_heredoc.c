@@ -82,6 +82,7 @@ int	read_heredoc(t_data *data)
 				if (read_text(file->name, &text) != OK)
 					return (MEMORY_ERROR);
 				free(file->name);
+				text = replace_all_param(text);
 				file->name = text;
 			}
 			file = file->next;
