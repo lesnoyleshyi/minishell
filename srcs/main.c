@@ -49,10 +49,12 @@ int main(int argc, char **argv, char **envp)
 
 //		printf("%s\n", input);
 		data = init_data(input);
+		if (data != NULL)
+			choice_builtin(data, check_function(data->command[0]));
 //		printf("\nPRINT DATA\n");
 //		print_data(data);
 //		printf("END OF DATA\n");
-		ft_execute_pipeline(data, envp);
+//		ft_execute_pipeline(data, envp);
 		destroy_data(&data);
 		add_history(input);
 		free(input);

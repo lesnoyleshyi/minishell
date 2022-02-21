@@ -98,6 +98,7 @@ void		second_parser(t_list **begin, t_data *data);
 char		*replace_all_param(char *str);
 int			get_mod_file(t_list **begin, t_list **element, int mod);
 int			read_heredoc(t_data *data);
+void		choice_builtin(t_data *data, int flag);
 
 //   --- string ---   //
 int			ft_strcmp(const char *s1, const char *s2);
@@ -144,6 +145,10 @@ void		destroy_file(t_file **file);
 t_list		*remove_element(t_list **begin, t_list *element);
 void		remove_all_list(t_list **begin);
 void		remove_first_element(t_list **begin);
+
+//   --- builtins ---   //
+void		env(void);
+
 
 /* PROTOTYPE */
 
