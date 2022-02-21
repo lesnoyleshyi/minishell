@@ -145,23 +145,13 @@ void		remove_first_element(t_list **begin);
 /* PROTOTYPE */
 
 /* STYCHO */
-int		ft_execute_cmd(char *cmd_w_args[]);
-void	ft_execute_builtin(char *cmd_w_args[]);
-void	ft_echo(char *cmd_w_args[]);
-void	ft_cd(const char *path);
-void	ft_pwd(void);
-void	ft_export(char *cmd_w_args[]);
-void	ft_unset(char *cmd_w_args[]);
-void	ft_env(void);
-void	ft_exit(char *cmd_w_args[]);
+int	ft_execute_pipeline(t_data *command_list, char *envp[]);
+int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd);
+int ft_is_here_output_redirections(t_file *list_of_all_redirections);
+int	ft_get_child_exit_status(pid_t pid);
 
-int		ft_open_output_file(char *filename, int mode);
-int		ft_open_input_file(char *filename);
-
-int		ft_get_child_exit_status(pid_t pid);
-void	ft_skip_after_child_failure(int pipe_input, int pipe_output, t_data *cmd_data);
-
-char	*ft_get_abs_path_to_binary(char *pathname);
+//   --- signal/ ---   //
+void	ft_clear_input(int signal);
 /* STYCHO */
 
 void		print_param(t_param *param);

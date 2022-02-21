@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 void	ft_apply_redirections_in(int pipe_input, int pipe_output, char *infile);
 void	ft_apply_redirections_out(int pipe_input, int pipe_output, char *outfile, t_s_cmd *cmd_data);

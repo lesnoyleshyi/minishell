@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 int	ft_open_output_files(t_file *file_list);
 
@@ -24,7 +24,7 @@ int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 //
 int	ft_choose_inp_src(t_file *redirect_list, int old_input_fd);
 
-int	execute(t_data *command_list, char *envp[])
+int	ft_execute_pipeline(t_data *command_list, char *envp[])
 {
 	int		reserved_stdin;
 	int		reserved_stdout;
@@ -59,7 +59,7 @@ int	execute(t_data *command_list, char *envp[])
 				if (fd_out == -1)
 				{
 					write(2, "ft_open_output_files returned -1\n", 34);
-					last_command_exit_value = -1;
+					g_common->err_number = -1;
 					break;
 				}
 			}

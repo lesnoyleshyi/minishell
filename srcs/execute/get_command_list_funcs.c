@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 void	ft_get_command_list(t_data **command_list)
 {

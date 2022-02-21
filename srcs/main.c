@@ -33,7 +33,7 @@ int main(int argc, char **argv, char **envp)
 	char	*input;
 	t_data	*data;
 
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, ft_clear_input);
 	if (argc || argv)
 		;
 	g_common = init_common_data((const char **)envp);
@@ -47,10 +47,12 @@ int main(int argc, char **argv, char **envp)
 			return (0);
 		}
 
-		printf("%s\n", input);
+//		printf("%s\n", input);
 		data = init_data(input);
-		printf("\nPRINT DATA\n");
+//		printf("\nPRINT DATA\n");
 		print_data(data);
+//		printf("END OF DATA\n");
+		ft_execute_pipeline(data, envp);
 		destroy_data(&data);
 		add_history(input);
 		free(input);

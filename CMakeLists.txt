@@ -3,4 +3,4 @@ project(minishell C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(minishell srcs/old_main.c)
+add_executable(minishell srcs/execute/old_main.c)
