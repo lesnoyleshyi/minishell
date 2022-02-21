@@ -1,42 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   insert_str.c                                       :+:      :+:    :+:   */
+/*   get_unsubstr.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/20 00:04:05 by drayl             #+#    #+#             */
-/*   Updated: 2022/02/20 00:04:07 by drayl            ###   ########.fr       */
+/*   Created: 2022/02/20 00:03:56 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/20 00:03:58 by drayl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 /**
- * This function inserts the string "substr" into the
- * string "str" at position "index". Deletes the
- * previous variant, sets the pointer to the end of the
- * inserted string on a new line, and returns the result
+ * This function returns a string with no elements
+ * enclosed between indexes "start"(inclusive) and
+ * "end"(exclusive) then deletes the previous string
  */
 
-char	*insert_srt(char *str, char *substr, size_t *index)
+char	*get_unsubstr(char *str, size_t start, size_t end)
 {
-	char	*res;
 	size_t	i;
 	size_t	j;
+	char	*res;
 
-	if (substr == NULL)
-		return (str);
-	res = malloc((ft_strlen(str) + ft_strlen(substr) + 1));
+	if (str == NULL)
+		return (NULL);
+	res = malloc(sizeof (char) * (start + ft_strlen(str) - end + 1));
 	if (res == NULL)
 		return (NULL);
 	i = -1;
-	while (str[++i] != '\0' && i < *index)
+	while (str[++i] != '\0' && i < start)
 		res[i] = str[i];
-	while (*substr != '\0')
-		res[i++] = *(substr++);
-	j = *index;
-	*index = i - 1;
+	j = end;
 	while (str[j] != '\0')
 		res[i++] = str[j++];
 	res[i] = '\0';

@@ -1,43 +1,58 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: stycho <stycho@student.21-school.ru>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/03 20:03:04 by stycho            #+#    #+#             */
-/*   Updated: 2022/02/03 20:03:06 by stycho           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
+//delete
+//#include "data/data.c"
+//#include "data/string_array.c"
+//#include "data/file.c"
+//#include "data/list.c"
+//#include "data/param.c"
+//#include "data/common.c"
+//#include "string/get_substr.c"
+//#include "xlam/div.c"
+//#include "string/get_unsubstr.c"
+//#include "string/insert_str.c"
+//#include "string/remove_all_quote.c"
+//#include "string/multi_join.c"
+//#include "utils/first_parser.c"
+//#include "utils/second_parser.c"
+//#include "utils/replace_param.c"
+//#include "files/search_in_file_name.c"
+//#include "files/search_out_file_name.c"
+//#include "checks/check_get_param.c"
+//#include "checks/check_spec_sym.c"
+//#include "checks/check_init_param.c"
+//#include "checks/check_function.c"
+//#include "checks/check_input_file.c"
+//#include "checks/check_output_file.c"
+//#include "checks/check_determinate.c"
+//#include "xlam/print.c"
+//delete
 
-void	ft_execute_pipeline(t_data *command_list);
-void	ft_get_command_list(t_data **command_list);
-
-int	execute(t_data *command_list, char *envp[]);
-
-int main(int argc, char *argv[], char *envp[])
+int main(int argc, char **argv, char **envp)
 {
-	char	*usr_inp;
-	t_data 	*command_list;
+	char	*input;
+	t_data	*data;
 
 	signal(SIGINT, SIG_IGN);
-	if (argc || argv || envp)
+	if (argc || argv)
 		;
+	g_common = init_common_data((const char **)envp);
+	print_common_param();
+	data = NULL;
 	while (1)
 	{
-		usr_inp = readline("shalom goi$ ");
-		if (usr_inp == NULL)
-		{
+		input = readline("minishell$ ");
+		if (input == NULL) {
 			printf("Goi has pressed Ctrl-D\n");
 			return (0);
 		}
-		add_history(usr_inp);
-		ft_get_command_list(&command_list);
-		execute(command_list, envp);
-//		ft_execute_pipeline(command_list);
+
+		printf("%s\n", input);
+		data = init_data(input);
+		printf("\nPRINT DATA\n");
+		print_data(data);
+		destroy_data(&data);
+		add_history(input);
+		free(input);
 	}
-	free(usr_inp);
-	return 0;
 }

@@ -18,6 +18,13 @@
 # include <stdio.h>
 # include <readline/readline.h>
 # include "readline/history.h"
+# define EXIT_COMMAND_NOT_FOUND	127
+# define ENOEXEC 				8
+# define EX_BINARY_FILE			126
+# define NO_PIPE				-1
+# define AMBIGUOUS_REDIRECT		-1
+# define HEREDOC_REDIRECT		-4		//here-doc temp file can't be created
+
 
 enum e_function {
 	E_NOT_FUNCTION,
@@ -136,6 +143,27 @@ void		remove_all_list(t_list **begin);
 void		remove_first_element(t_list **begin);
 
 /* PROTOTYPE */
+
+/* STYCHO */
+int		ft_execute_cmd(char *cmd_w_args[]);
+void	ft_execute_builtin(char *cmd_w_args[]);
+void	ft_echo(char *cmd_w_args[]);
+void	ft_cd(const char *path);
+void	ft_pwd(void);
+void	ft_export(char *cmd_w_args[]);
+void	ft_unset(char *cmd_w_args[]);
+void	ft_env(void);
+void	ft_exit(char *cmd_w_args[]);
+
+int		ft_open_output_file(char *filename, int mode);
+int		ft_open_input_file(char *filename);
+
+int		ft_get_child_exit_status(pid_t pid);
+void	ft_skip_after_child_failure(int pipe_input, int pipe_output, t_data *cmd_data);
+
+char	*ft_get_abs_path_to_binary(char *pathname);
+/* STYCHO */
+
 void		print_param(t_param *param);
 void		print_common_param(void);
 void		print_list(t_list *list);
