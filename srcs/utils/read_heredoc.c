@@ -68,6 +68,7 @@ static int	read_text(const char *stop_word, char **result)
 int	read_heredoc(t_data *data)
 {
 	t_file	*file;
+	char	*text;
 
 	while (data != NULL)
 	{
@@ -78,8 +79,10 @@ int	read_heredoc(t_data *data)
 			{
 				if (file->name == NULL)
 					return (SYNTAX_ERROR);
-				if (read_text(file->name, &(file->text)) != OK)
+				if (read_text(file->name, &text) != OK)
 					return (MEMORY_ERROR);
+				free(file->name);
+				file->name = text;
 			}
 			file = file->next;
 		}

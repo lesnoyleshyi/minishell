@@ -77,7 +77,6 @@ typedef struct s_common {
 typedef struct s_file {
 	int				mod;
 	char			*name;
-	char			*text;
 	struct s_file	*next;
 }	t_file;
 

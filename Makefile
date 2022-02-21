@@ -17,7 +17,7 @@ SRCS	=	main.c	\
 			checks/check_function.c	checks/check_get_param.c	checks/check_determinate.c	checks/check_content.c \
 			xlam/print.c \
 			$(addprefix builtins/,env.c) \
-			$(addprefix execute/,execute_funcs.c open_files_funcs.c choose_output.c) \
+			$(addprefix execute/,execute_funcs.c choose_input.c choose_output.c) \
 			$(addprefix signal/,signal_funcs.c)
 
 D_SRCS	=	$(addprefix ${SRC_DIR}/,${SRCS})

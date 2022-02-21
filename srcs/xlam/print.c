@@ -55,8 +55,6 @@ void	print_data(t_data *data)
 		while (file != NULL)
 		{
 			printf("%s %d\n", file->name, file->mod);
-			if (file->mod == E_HEREDOC)
-				printf("text : >%s<", file->text);
 			file = file->next;
 		}
 		printf("COMMAND\n");

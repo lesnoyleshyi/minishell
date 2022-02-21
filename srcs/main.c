@@ -49,7 +49,7 @@ int main(int argc, char **argv, char **envp)
 
 //		printf("%s\n", input);
 		data = init_data(input);
-		if (data != NULL)
+		if (data != NULL && data->command != NULL)
 			choice_builtin(data, check_function(data->command[0]));
 //		printf("\nPRINT DATA\n");
 //		print_data(data);
