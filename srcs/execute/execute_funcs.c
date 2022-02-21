@@ -14,6 +14,14 @@
 
 int	ft_open_output_files(t_file *file_list);
 
+//Do nothing but exit(0)
+int	ft_execute_null_cmd();
+
+//Expand pathname and call execve() on it
+void	ft_execve(char *pathname, char *argv[]);
+
+char	*ft_get_abs_path_to_binary(char *pathname);
+
 int	ft_execute_pipeline(t_data *command_list, char *envp[])
 {
 	int		reserved_stdin;
@@ -39,7 +47,6 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 		{
 			if (ft_is_here_output_redirections(curr_cmd->file) == 1)			//if last simple command has output redirection
 			{
-				write(2, "has output redirection\n", 24);
 				fd_out = ft_open_output_files(curr_cmd->file);					//we should open all "output files" in list of files to be opened, and leave only the last file opened
 				if (fd_out == -1)
 				{
@@ -65,15 +72,13 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 		{
 			if (fd_out == -1)
 				exit(1);
-//			env = ft_update_env();
 			close(pipe_fds[0]);
 			if (ft_choose_inp_src(curr_cmd->file) == -1)
 				exit(1);
-			execve(curr_cmd->command[0], curr_cmd->command, NULL);
-			perror("execve");
-			exit(1);
+			ft_execve(curr_cmd->command[0], curr_cmd->command);
 		}
 //		ft_reset_env();
+//		delete_temp_file();
 		curr_cmd = curr_cmd->next;
 	}
 	dup2(reserved_stdin, 0);
@@ -81,6 +86,23 @@ int	ft_execute_pipeline(t_data *command_list, char *envp[])
 	close(reserved_stdin);
 	close(reserved_stdout);
 	return(ft_get_child_exit_status(pid));
+}
+
+void	ft_execve(char *pathname, char *argv[])
+{
+	char	*abs_path;
+
+	if (pathname == NULL)
+		ft_execute_null_cmd();
+	abs_path = ft_get_abs_path_to_binary(pathname);
+	execve(abs_path, argv, NULL);
+	perror("execve");
+	exit(1);
+}
+
+int	ft_execute_null_cmd()
+{
+	exit(0);
 }
 
 int	ft_get_child_exit_status(pid_t pid)
@@ -94,5 +116,3 @@ int	ft_get_child_exit_status(pid_t pid)
 		return (WEXITSTATUS(exit_status));
 //		here we (theoretically) can catch different ex_st in case of signal termination
 }
-
-

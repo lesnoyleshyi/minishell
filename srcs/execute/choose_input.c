@@ -13,6 +13,7 @@
 #include "../../includes/minishell.h"
 #include "fcntl.h"
 //Opens file referenced by filename, no matter where this file is located
+//and no matter what kind of file it is - regular/heredoc/for input/for output
 int	ft_open_file(char *filename, int mode_for_open);
 
 //We'll receive full string that parser expands from heredoc, not pathname.
@@ -125,8 +126,9 @@ int	ft_heredoc_to_pipe(char *string, int heredoc_len)
 {
 	int		pipe_fds[2];
 
+	write(2, string, heredoc_len);
 	pipe(pipe_fds);
-	write(pipe_fds[1], &string, heredoc_len);
+	write(pipe_fds[1], string, heredoc_len);
 	close(pipe_fds[1]);
 	return (pipe_fds[0]);
 }
@@ -137,6 +139,6 @@ int	ft_heredoc_to_temp_file(char *string, int heredoc_len)
 
 	unlink("ya_i_yura_ssali_na_zeleny_sapog");
 	fd = open("ya_i_yura_ssali_na_zeleny_sapog", O_RDWR | O_CREAT, 00600);
-	write(fd, &string, heredoc_len);
+	write(fd, string, heredoc_len);
 	return (fd);
 }
