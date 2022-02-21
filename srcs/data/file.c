@@ -27,6 +27,7 @@ t_file	*init_new_file(char *name)
 		return (NULL);
 	file->mod = 0;
 	file->name = name;
+	file->text = NULL;
 	file->next = NULL;
 	return (file);
 }

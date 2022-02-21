@@ -88,5 +88,6 @@ t_data	*init_data(const char *line)
 	if (begin == NULL)
 		return (NULL);
 	second_parser(&begin, data);
+	read_heredoc(data);
 	return (data);
 }

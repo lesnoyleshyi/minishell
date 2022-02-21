@@ -77,6 +77,7 @@ typedef struct s_common {
 typedef struct s_file {
 	int				mod;
 	char			*name;
+	char			*text;
 	struct s_file	*next;
 }	t_file;
 
@@ -90,11 +91,13 @@ typedef struct s_data {
 t_common	*g_common;
 
 /* PROTOTYPE */
+
 //   --- utils ---   //
 void		first_pars(const char *line, t_list **begin);
 void		second_parser(t_list **begin, t_data *data);
 char		*replace_all_param(char *str);
 int			get_mod_file(t_list **begin, t_list **element, int mod);
+int			read_heredoc(t_data *data);
 
 //   --- string ---   //
 int			ft_strcmp(const char *s1, const char *s2);
@@ -124,8 +127,8 @@ void		destroy_common_date(void);
 //   --- data/data.c ---   //
 t_data		*create_data(void);
 t_data		*init_data(const char *line);
-int			add_new_data(t_data **data);
 void		destroy_data(t_data	**data);
+int			add_new_data(t_data **data);
 
 //   --- data/string_array.c ---   //
 char		**convert_list_to_array(t_list *lst);
