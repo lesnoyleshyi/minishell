@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include "errno.h"
 
 //Changes old_output from pipe to output file or leaves it unchanged
 //*
@@ -35,10 +36,25 @@ int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 //I want to add checking for directory here later
 int	ft_check_read_permissions(char *filename);
 
-//Returns file descriptor of opened file if there is any of them in file_list
-//Returns -2 if file_list is empty or doesn't contain any output files (> or >>)
-//Returns -1 in case open() returns -1. It's an error indicator.
-int	ft_open_output_files(t_file *redirect_list);
+//Perform required redirections to redirect command's output to
+//a) file - if ft_is_here... finds any output redirection
+//b) stdout - if no > or >> redirections are in redir_list
+//*
+//Returns -1 if there is any error with any file from redir_list
+//Returns 0 on success
+int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
+
+//Creates pipe inside itself and make
+//fd_in points to pipe's input
+//fd_out points to pipe's output
+//*
+//It do the next, but with structure fields
+//
+//	pipe(pipe_fds);
+//	fd_in = pipe_fds[0];
+//	fd_out = pipe_fds[1];
+//
+int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 
 int	ft_choose_output(int *old_output, t_file *redir_list)
 {
@@ -47,22 +63,18 @@ int	ft_choose_output(int *old_output, t_file *redir_list)
 	cur_file = redir_list;
 	while (cur_file != NULL)
 	{
-		if (cur_file->mod == E_IN && ft_check_read_permissions(cur_file->name) == 1)
+		if (cur_file->mod == E_IN && ft_check_read_permissions(cur_file->name) == -1)
 		{
 			close(*old_output);
 			*old_output = -1;
-			perror(cur_file->name);
-			return (-1);
+			return (ft_perror_and_return(cur_file->name, -1));
 		}
 		else if (cur_file->mod == E_OUT || cur_file->mod == E_APPEND)
 		{
 			close(*old_output);
 			*old_output = ft_open_file(cur_file->name, cur_file->mod);
 			if (*old_output == -1)
-			{
-				perror(cur_file->name);
-				return (-1);
-			}
+				return (ft_perror_and_return(cur_file->name, -1));
 		}
 		cur_file = cur_file->next;
 	}
@@ -71,8 +83,8 @@ int	ft_choose_output(int *old_output, t_file *redir_list)
 
 int	ft_check_read_permissions(char *filename)
 {
-	if (access(filename, R_OK) == 1)
-		return (1);
+	if (access(filename, R_OK) == -1)
+		return (-1);
 	return  (0);
 }
 
@@ -90,23 +102,23 @@ int ft_is_here_output_redirections(t_file *list_of_all_redirections)
 	return (0);
 }
 
-int	ft_open_output_files(t_file *redirect_list)
+int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list)
 {
-	int		cur_fd;
-	t_file	*cur_file;
-	cur_fd = -2;
-	cur_file = redirect_list;
-	while (cur_file != NULL)
+	if (ft_is_here_output_redirections(redir_list) == 1)
 	{
-		if (cur_file->mod == E_OUT || cur_file->mod == E_APPEND)
-		{
-			if (cur_fd != -2)
-				close(cur_fd);
-			cur_fd = ft_open_file(cur_file->name, cur_file->mod);
-			if (cur_fd == -1)
-				return (-1);
-		}
-		cur_file = cur_file->next;
+		if (ft_choose_output(&pipeline_fds_s->fd_out, redir_list) == -1)
+			return (-1);
 	}
-	return (cur_fd);
+	else
+		pipeline_fds_s->fd_out = dup(pipeline_fds_s->reserved_stdout);
+	return (0);
+}
+
+int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name)
+{
+	if (pipe(pipe_fds_struct->pipe_fds) == -1)
+		return (ft_perror_and_return(cmd_name, errno));
+	pipe_fds_struct->fd_in = pipe_fds_struct->pipe_fds[0];
+	pipe_fds_struct->fd_out = pipe_fds_struct->pipe_fds[1];
+	return (0);
 }

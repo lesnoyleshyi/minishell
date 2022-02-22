@@ -45,12 +45,9 @@ int main(int argc, char **argv, char **envp)
 	data = NULL;
 	while (1)
 	{
-		input = readline("minishell$ ");
-		if (input == NULL) {
-			printf("Goi has pressed Ctrl-D\n");
+		input = readline("minishval'$ ");
+		if (input == NULL)
 			return (0);
-		}
-
 //		printf("%s\n", input);
 		data = init_data(input);
 		if (data != NULL && data->command != NULL)
@@ -58,7 +55,7 @@ int main(int argc, char **argv, char **envp)
 //		printf("\nPRINT DATA\n");
 //		print_data(data);
 //		printf("END OF DATA\n");
-//		ft_execute_pipeline(data, envp);
+		ft_execute_pipeline(data, envp);
 		destroy_data(&data);
 		add_history(input);
 		free(input);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include "errno.h"
 
 int	ft_open_output_files(t_file *file_list);
 
@@ -20,71 +21,52 @@ int	ft_execute_null_cmd();
 //Expand pathname and call execve() on it
 void	ft_execve(char *pathname, char *argv[]);
 
+//Helps reduce lines of ft_execute_pipeline
+//*
+void	ft_initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
+
+//Resets stdin to 0 and stdout to 1 after execution command
+void	ft_reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
+
 char	*ft_get_abs_path_to_binary(char *pathname);
+
+
+void	ft_execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd);
 
 int	ft_execute_pipeline(t_data *command_list, char *envp[])
 {
-	int		reserved_stdin;
-	int		reserved_stdout;
-	int		fd_in;
-	int		fd_out;
+	t_pipeline_fds	fds;
 	pid_t	pid;
 	t_data	*curr_cmd;
-	int		pipe_fds[2];
 
 	envp = NULL;
-	reserved_stdin = dup(0);
-	reserved_stdout = dup(1);
 	signal(SIGCHLD, SIG_IGN);
 
-	fd_in = dup(0);
+	ft_initialise_stdin_stdout(&fds);
 	curr_cmd = command_list;
 	while (curr_cmd)
 	{
-		dup2(fd_in, 0);
-		close(fd_in);
+		dup2(fds.fd_in, 0);
+		close(fds.fd_in);
 		if (curr_cmd->next == NULL)												//if it's the last command
 		{
-			if (ft_is_here_output_redirections(curr_cmd->file) == 1)			//if last simple command has output redirection
-			{
-				fd_out = ft_open_output_files(curr_cmd->file);					//we should open all "output files" in list of files to be opened, and leave only the last file opened
-				if (fd_out == -1)
-				{
-					write(2, "ft_open_output_files returned -1\n", 34);
-					g_common->err_number = -1;
-					break;
-				}
-			}
-			else																//if last simple command doesn't have output redirection
-				fd_out = dup(reserved_stdout);									//we should restore stdout, because it might be changed inside while loop
+			if (ft_make_last_cmd_redirs(&fds, curr_cmd->file) < 0)
+				break ;
 		}
 		else																	//it's not the last command in pipeline
-		{
-			pipe(pipe_fds);
-			fd_out = pipe_fds[1];
-			fd_in = pipe_fds[0];
-		}
-		if (ft_choose_output(&fd_out, curr_cmd->file) != -1)
-			dup2(fd_out, 1);
-		close(fd_out);															//I'm not sure if it's safe in case fd_out == 1 - maybe should be checked
+			if (ft_do_piping(&fds, curr_cmd->command[0]) != 0)
+				break ;
+		if (ft_choose_output(&fds.fd_out, curr_cmd->file) != -1)
+			dup2(fds.fd_out, 1);
+		close(fds.fd_out);														//I'm not sure if it's safe in case fd_out == 1 - maybe should be checked
 		pid = fork();
 		if (pid == 0)															//in child process
-		{
-			if (fd_out == -1)
-				exit(1);
-			close(pipe_fds[0]);
-			if (ft_choose_inp_src(curr_cmd->file) == -1)
-				exit(1);
-			ft_execve(curr_cmd->command[0], curr_cmd->command);
-		}
+			ft_execute_in_child(&fds, curr_cmd);
 //		ft_reset_env();
 //		delete_temp_file();
 		curr_cmd = curr_cmd->next;
 	}
-	dup2(reserved_stdin, 0);
-	dup2(reserved_stdout, 1);
-	close(reserved_stdin);
-	close(reserved_stdout);
+	ft_reset_stdin_stdout(&fds);
 	return(ft_get_child_exit_status(pid));
 }
 
@@ -95,9 +77,11 @@ void	ft_execve(char *pathname, char *argv[])
 	if (pathname == NULL)
 		ft_execute_null_cmd();
 	abs_path = ft_get_abs_path_to_binary(pathname);
+	if (ft_strcmp("command not found", abs_path) == 0)
+		ft_exit_command_not_found(pathname);
 	execve(abs_path, argv, NULL);
-	perror("execve");
-	exit(1);
+	ft_perror_and_return(pathname, 1);
+	exit(errno);
 }
 
 int	ft_execute_null_cmd()
@@ -115,4 +99,30 @@ int	ft_get_child_exit_status(pid_t pid)
 	else
 		return (WEXITSTATUS(exit_status));
 //		here we (theoretically) can catch different ex_st in case of signal termination
+}
+
+void	ft_initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
+{
+	pipe_fds_struct->reserved_stdin = dup(0);
+	pipe_fds_struct->reserved_stdout = dup(1);
+	pipe_fds_struct->fd_in = dup(0);
+	pipe_fds_struct->fd_out = 1;
+}
+
+void	ft_reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
+{
+	dup2(pipe_fds_struct->reserved_stdin, 0);
+	dup2(pipe_fds_struct->reserved_stdout, 1);
+	close(pipe_fds_struct->reserved_stdin);
+	close(pipe_fds_struct->reserved_stdout);
+}
+
+void	ft_execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
+{
+	if (pipe_fds_struct->fd_out == -1)
+		exit(1);
+	close(pipe_fds_struct->pipe_fds[0]);
+	if (ft_choose_inp_src(cmd->file) != 0)
+		exit(1);
+	ft_execve(cmd->command[0], cmd->command);
 }

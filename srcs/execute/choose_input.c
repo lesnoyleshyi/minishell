@@ -63,8 +63,9 @@ int	ft_choose_inp_src(t_file *redirect_list)
 	}
 	if (input_fd == -1)
 	{
-		perror(cur_file->name);
-		return (-1);
+		if (cur_file->mod == E_HEREDOC)
+			return(ft_perror_and_return("heredoc", 1));
+		return (ft_perror_and_return(cur_file->name, -1));
 	}
 	dup2(input_fd, 0);
 	if (input_fd != 0)
@@ -75,32 +76,17 @@ int	ft_choose_inp_src(t_file *redirect_list)
 int	ft_open_file(char *filename, int mode_for_open)
 {
 	int		fd;
-//	int		oflag;
 
 	if (mode_for_open == E_APPEND)
-	{
-//		oflag = O_WRONLY | O_CREAT | O_APPEND;
 		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 00644);
-	}
 	else if (mode_for_open == E_OUT)
-	{
-//		oflag = O_WRONLY | O_CREAT | O_TRUNC;
 		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 00644);
-	}
 	else if (mode_for_open == E_IN)
-	{
 		fd = open(filename, O_RDONLY);
-	}
 	else if (mode_for_open == E_HEREDOC)
-	{
 		fd = ft_heredoc_to_fd(filename);
-	}
 	else
-	{
-//		oflag = 0;
 		return (-1);
-	}
-
 	return (fd);
 }
 

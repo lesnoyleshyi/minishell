@@ -18,7 +18,8 @@ void	ft_free_arr(char **paths_arr);
 //Searches full path to binary in $PATH
 //*
 //Returns "<path_prefix> + / + pathname" in case of success
-//Returns pathname in case binary not found in $PATH
+//Returns "command not found" in case binary not found in $PATH
+//to handle this error like bash does.
 char	*ft_get_abs_path_to_binary(char *pathname);
 
 char	*ft_get_abs_path_to_binary(char *pathname)
@@ -46,7 +47,7 @@ char	*ft_get_abs_path_to_binary(char *pathname)
 	}
 	ft_free_arr(paths_arr);
 	free(pathname_w_slash);
-	return (pathname);
+	return ("command not found");
 }
 
 void	ft_free_arr(char **paths_arr)

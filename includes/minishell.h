@@ -93,6 +93,14 @@ typedef struct s_data {
 	struct s_data	*next;
 }	t_data;
 
+typedef struct s_pipeline_fds {
+	int	fd_in;
+	int fd_out;
+	int pipe_fds[2];
+	int reserved_stdin;
+	int reserved_stdout;
+}				t_pipeline_fds;
+
 t_common	*g_common;
 
 /* PROTOTYPE */
@@ -169,15 +177,22 @@ void		unset(char **arg);
 int	ft_execute_pipeline(t_data *command_list, char *envp[]);
 int	ft_get_child_exit_status(pid_t pid);
 
-//   --- execute/open_files_funcs.c ---   //
+//   --- execute/choose_output.c ---   //
 int	ft_open_file(char *filename, int mode_for_open);
 int	ft_choose_output(int *old_output, t_file *redir_list);
-
-int	ft_choose_inp_src(t_file *redirect_list);
+int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 int ft_is_here_output_redirections(t_file *list_of_all_redirections);
+int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
+
+//   --- execute/choose_input.c ---   //
+int	ft_choose_inp_src(t_file *redirect_list);
 
 //   --- signal/signal_funcs.c ---   //
 void	ft_clear_input(int signal);
+
+//   --- error/error.c ---   //
+int		ft_perror_and_return(char *message, int ret_val);
+void	ft_exit_command_not_found(char *filename);
 /* STYCHO */
 
 void		print_param(t_param *param);
@@ -186,3 +201,4 @@ void		print_list(t_list *list);
 void		print_data(t_data *data);
 void		print_array_string(char **array);
 #endif
+
