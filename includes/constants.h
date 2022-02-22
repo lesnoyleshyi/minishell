@@ -13,6 +13,7 @@
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
 
+# define NAME "minishell"
 # define C_ECHO "echo"
 # define C_CD "cd"
 # define C_PWD "pwd"

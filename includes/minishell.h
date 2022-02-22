@@ -113,6 +113,7 @@ int			check_determinate(char c);
 int			check_get_param(const char *str);
 int			check_spec_sym(char c);
 int			check_content(const char *str, int flag);
+char		check_param_name(char *str);
 
 //   --- data/param.c ---   //
 t_param		*init_param(const char *str);

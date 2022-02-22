@@ -100,7 +100,7 @@ void	export(char **arg)
 		param = init_param(*arg);
 		if (param == NULL)
 			flag = MEMORY_ERROR;
-		else if (param->name == NULL)
+		else if (param->name == NULL || check_param_name(*arg) != INIT_PARAM)
 			flag = SYNTAX_ERROR;
 		add_param_for_env(&new_list, param);
 		++arg;

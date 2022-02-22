@@ -59,7 +59,7 @@ static int	add_new_param(t_list **begin, t_list **element)
 	*element = remove_element(begin, *element);
 	if (param == NULL)
 		return (MEMORY_ERROR);
-	if (param->name == NULL)
+	if (param->name == NULL || check_param_name(param->name) != '\0')
 	{
 		destroy_param(&param);
 		return (SYNTAX_ERROR);
