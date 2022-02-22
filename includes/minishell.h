@@ -60,6 +60,12 @@ enum e_errors {
 	MEMORY_ERROR,
 };
 
+enum e_param_type {
+	NEW_PARAM,
+	ENV_PARAM,
+	LOCAL_PARAM
+};
+
 typedef struct s_param {
 	int				app;
 	char			*name;
@@ -104,6 +110,7 @@ int			ft_strcmp(const char *s1, const char *s2);
 char		*get_unsubstr(char *str, size_t start, size_t end);
 char		*insert_srt(char *str, char *substr, size_t *index);
 char		*get_substr(const char *str, size_t start, size_t end);
+char		*get_substr_for_value(const char *str, size_t start, size_t end);
 void		remove_all_quote(char *str);
 char		*remove_string(char *str);
 
@@ -113,6 +120,8 @@ int			check_determinate(char c);
 int			check_get_param(const char *str);
 int			check_spec_sym(char c);
 int			check_content(const char *str, int flag);
+int			check_presence_param(t_param **element, char *name);
+int			check_valid_param_name(char **arg);
 char		check_param_name(char *str);
 
 //   --- data/param.c ---   //
@@ -151,6 +160,7 @@ void		remove_first_element(t_list **begin);
 void		env(void);
 void		export(char **arg);
 void		echo(char **arg);
+void		unset(char **arg);
 
 /* PROTOTYPE */
 

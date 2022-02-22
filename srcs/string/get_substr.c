@@ -34,3 +34,10 @@ char	*get_substr(const char *str, size_t start, size_t end)
 	substr[i] = '\0';
 	return (substr);
 }
+
+char	*get_substr_for_value(const char *str, size_t start, size_t end)
+{
+	if (start >= end && (start == 0 || str[start - 1] != INIT_PARAM))
+		return (NULL);
+	return (get_substr(str, start, end));
+}

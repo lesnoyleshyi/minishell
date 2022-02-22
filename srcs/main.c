@@ -26,6 +26,10 @@
 //#include "checks/check_output_file.c"
 //#include "checks/check_determinate.c"
 //#include "xlam/print.c"
+//#include "checks/check_param_name.c"
+//#include "checks/check_presence_param.c"
+//#include "builtins/unset.c"
+//#include "builtins/export.c"
 //delete
 
 int main(int argc, char **argv, char **envp)

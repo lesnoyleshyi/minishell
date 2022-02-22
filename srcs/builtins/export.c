@@ -36,56 +36,33 @@ static void	print_export(void)
 	}
 }
 
-static int	check_presence_param(t_param **element, char *name)
+static void	export_env_param(t_param *element, t_param *param)
 {
-	if (name == NULL)
-		return (0);
-	*element = g_common->env;
-	while (*element != NULL)
-	{
-		if (ft_strcmp((*element)->name, name) == 0)
-			return (1);
-		*element = (*element)->next;
-	}
-	*element = g_common->local_param;
-	while (*element != NULL)
-	{
-		if (ft_strcmp((*element)->name, name) == 0)
-			return (2);
-		*element = (*element)->next;
-	}
-	return (0);
-}
-
-static void	add_param_for_env(t_param **new_list, t_param *param)
-{
-	int		flag;
-	t_param	*element;
-
-	if (param == NULL)
-		return ;
-	flag = check_presence_param(&element, param->name);
-	if (flag == 0)
-		add_param(new_list, param);
-	else if (flag == 1)
+	if (param->value != NULL)
 	{
 		if (element->value != NULL)
-			free(element->value);
+		free(element->value);
 		element->value = param->value;
-		free(param->name);
-		free(param);
 	}
-	else
+	param->value = NULL;
+	destroy_param(&param);
+}
+
+static void	export_local_param(t_param *element, t_param *param)
+{
+	if (param->value == NULL)
 	{
-		delete_param(&g_common->local_param, element);
-		add_param(new_list, param);
+		param->value = element->value;
+		element->value = NULL;
 	}
+	add_param(&(g_common->env), param);
+	delete_param(&(g_common->local_param), element);
 }
 
 void	export(char **arg)
 {
 	t_param	*param;
-	t_param	*new_list;
+	t_param	*element;
 	int		flag;
 
 	if (*arg == NULL)
@@ -93,19 +70,19 @@ void	export(char **arg)
 		print_export();
 		return ;
 	}
-	new_list = NULL;
-	flag = OK;
-	while (*arg != NULL && flag == OK)
+	if (check_valid_param_name(arg) != OK)
+		return ;
+	element = NULL;
+	while (*arg != NULL)
 	{
 		param = init_param(*arg);
-		if (param == NULL)
-			flag = MEMORY_ERROR;
-		else if (param->name == NULL || check_param_name(*arg) != INIT_PARAM)
-			flag = SYNTAX_ERROR;
-		add_param_for_env(&new_list, param);
+		flag = check_presence_param(&element, param->name);
+		if (flag == NEW_PARAM)
+			add_param(&(g_common->env), param);
+		else if (flag == ENV_PARAM)
+			export_env_param(element, param);
+		else if (flag == LOCAL_PARAM)
+			export_local_param(element, param);
 		++arg;
 	}
-	if (flag != OK)
-		destroy_param(&new_list);
-	add_param(&g_common->env, new_list);
 }

@@ -13,9 +13,9 @@ void	echo(char **arg)
 	while (*arg != NULL)
 	{
 		write(1, *arg, ft_strlen(*arg));
-		++arg;
-		if (*arg != NULL)
+		if (**arg != '\0' && *(arg + 1) != NULL)
 			write(1, " ", 1);
+		++arg;
 	}
 	if (n == 0)
 		write(1, "\n", 1);

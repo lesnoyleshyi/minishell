@@ -41,6 +41,8 @@ void	delete_param(t_param **begin, t_param *element)
 {
 	t_param	*param;
 
+	if (element == NULL)
+		return ;
 	if (*begin == element)
 		*begin = element->next;
 	else
@@ -73,18 +75,16 @@ t_param	*init_param(const char *str)
 	if (new == NULL)
 		return (NULL);
 	index = 0;
-	while (str[index] != INIT_PARAM)
+	while (str[index] != '\0' && str[index] != INIT_PARAM)
 		++index;
 	new->name = get_substr(str, 0, index);
-	new->value = get_substr(str, index + 1, ft_strlen(str));
+	new->value = get_substr_for_value(str, index + 1, ft_strlen(str));
 	new->app = FALSE;
 	new->value = replace_all_param(new->value);
 	remove_all_quote(new->value);
 	new->next = NULL;
 	if (new->name != NULL && *new->name == '\0')
 		new->name = remove_string(new->name);
-	if (new->value != NULL && *new->value == '\0')
-		new->value = remove_string(new->value);
 	return (new);
 }
 

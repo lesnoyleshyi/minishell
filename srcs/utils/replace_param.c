@@ -70,6 +70,8 @@ char	*replace_all_param(char *str)
 	size_t	start;
 	char	determinate;
 
+	if (str == NULL)
+		return (NULL);
 	if (g_common == NULL || check_get_param(str) == FALSE)
 		return (str);
 	start = -1;

@@ -14,8 +14,6 @@ void	env(void)
 	{
 		if (param->value != NULL)
 			printf("%s=%s\n", param->name, param->value);
-		else
-			printf("%s=", param->name);
 		param = param->next;
 	}
 }

@@ -14,11 +14,11 @@ SRCS	=	main.c	\
 			data/common.c	data/data.c		data/list.c		data/param.c	data/file.c		data/string_array.c\
 			utils/first_parser.c	utils/replace_param.c	utils/get_mod_file.c	utils/second_parser.c	utils/read_heredoc.c	utils/choice_builtin.c\
 			string/get_substr.c		string/insert_str.c		string/get_unsubstr.c	string/ft_strcmp.c string/remove_all_quote.c	string/remove_string.c\
-			checks/check_function.c	checks/check_get_param.c	checks/check_determinate.c	checks/check_content.c checks/check_param_name.c\
 			xlam/print.c \
-			$(addprefix builtins/,env.c export.c echo.c) \
+			$(addprefix checks/,check_function.c check_get_param.c check_determinate.c check_content.c check_param_name.c check_presence_param.c)\
+			$(addprefix builtins/,env.c export.c echo.c unset.c) \
 			$(addprefix execute/,execute_funcs.c choose_input.c choose_output.c get_abs_path.c) \
-			$(addprefix signal/,signal_funcs.c)
+			$(addprefix signal/,signal_funcs.c)\
 
 D_SRCS	=	$(addprefix ${SRC_DIR}/,${SRCS})
 

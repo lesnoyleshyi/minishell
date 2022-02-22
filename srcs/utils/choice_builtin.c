@@ -10,6 +10,8 @@ void	choice_builtin(t_data *data, int flag)
 		export(&data->command[1]);
 	else if (flag == E_ECHO)
 		echo(&data->command[1]);
+	else if (flag == E_UNSET)
+		unset(data->command);
 	if (data)
 		;
 }
