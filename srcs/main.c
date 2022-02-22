@@ -51,10 +51,10 @@ int main(int argc, char **argv, char **envp)
 		data = init_data(input);
 		if (data != NULL && data->command != NULL)
 			choice_builtin(data, check_function(data->command[0]));
-//		printf("\nPRINT DATA\n");
-//		print_data(data);
-//		printf("END OF DATA\n");
-		ft_execute_pipeline(data, envp);
+		printf("\nPRINT DATA\n");
+		print_data(data);
+		printf("END OF DATA\n");
+//		ft_execute_pipeline(data, envp);
 		destroy_data(&data);
 		add_history(input);
 		free(input);

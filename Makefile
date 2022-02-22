@@ -16,7 +16,7 @@ SRCS	=	main.c	\
 			string/get_substr.c		string/insert_str.c		string/get_unsubstr.c	string/ft_strcmp.c string/remove_all_quote.c	string/remove_string.c\
 			checks/check_function.c	checks/check_get_param.c	checks/check_determinate.c	checks/check_content.c \
 			xlam/print.c \
-			$(addprefix builtins/,env.c) \
+			$(addprefix builtins/,env.c export.c) \
 			$(addprefix execute/,execute_funcs.c choose_input.c choose_output.c get_abs_path.c) \
 			$(addprefix signal/,signal_funcs.c)
 

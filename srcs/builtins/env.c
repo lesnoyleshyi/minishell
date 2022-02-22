@@ -12,7 +12,10 @@ void	env(void)
 	param = g_common->env;
 	while (param != NULL)
 	{
-		printf("%s=%s\n", param->name, param->value);
+		if (param->value != NULL)
+			printf("%s=%s\n", param->name, param->value);
+		else
+			printf("%s=", param->name);
 		param = param->next;
 	}
 }

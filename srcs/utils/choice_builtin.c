@@ -6,6 +6,8 @@ void	choice_builtin(t_data *data, int flag)
 		return ;
 	else if (flag == E_ENV)
 		env();
+	else if (flag == E_EXPORT)
+		export(&data->command[1]);
 	if (data)
 		;
 }

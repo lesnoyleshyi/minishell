@@ -21,13 +21,13 @@ void	add_param(t_param **begin, t_param *new)
 {
 	t_param	*element;
 
-	if (begin == NULL || *begin == NULL)
+	if (*begin == NULL)
 	{
 		*begin = new;
 		return ;
 	}
 	element = *begin;
-	while (element->next != NULL && ft_strcmp(element->name, new->name))
+	while (element->next != NULL)
 		element = element->next;
 	element->next = new;
 }
@@ -98,7 +98,7 @@ void	destroy_param(t_param **begin)
 
 	if (begin == NULL)
 		return ;
-	while (*begin)
+	while (*begin != NULL)
 	{
 		element = (*begin)->next;
 		if ((*begin)->name != NULL)
