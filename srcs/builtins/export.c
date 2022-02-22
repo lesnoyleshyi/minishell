@@ -3,7 +3,7 @@
 static t_param	*get_min_param(t_param *limiter)
 {
 	t_param	*element;
-	t_param *min;
+	t_param	*min;
 
 	element = g_common->env;
 	min = NULL;
@@ -36,7 +36,7 @@ static void	print_export(void)
 	}
 }
 
-static int check_presence_param(t_param **element, char *name)
+static int	check_presence_param(t_param **element, char *name)
 {
 	if (name == NULL)
 		return (0);
@@ -103,7 +103,7 @@ void	export(char **arg)
 		else if (param->name == NULL)
 			flag = SYNTAX_ERROR;
 		add_param_for_env(&new_list, param);
-		arg++;
+		++arg;
 	}
 	if (flag != OK)
 		destroy_param(&new_list);

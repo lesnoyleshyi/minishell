@@ -149,7 +149,7 @@ void		remove_first_element(t_list **begin);
 //   --- builtins ---   //
 void		env(void);
 void		export(char **arg);
-
+void		echo(char **arg);
 
 /* PROTOTYPE */
 

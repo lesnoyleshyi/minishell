@@ -8,6 +8,8 @@ void	choice_builtin(t_data *data, int flag)
 		env();
 	else if (flag == E_EXPORT)
 		export(&data->command[1]);
+	else if (flag == E_ECHO)
+		echo(&data->command[1]);
 	if (data)
 		;
 }
