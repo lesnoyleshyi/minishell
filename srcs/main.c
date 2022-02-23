@@ -16,6 +16,7 @@
 //#include "utils/first_parser.c"
 //#include "utils/second_parser.c"
 //#include "utils/replace_param.c"
+//#include "utils/history.c"
 //#include "files/search_in_file_name.c"
 //#include "files/search_out_file_name.c"
 //#include "checks/check_get_param.c"
@@ -41,13 +42,14 @@ int main(int argc, char **argv, char **envp)
 	if (argc || argv)
 		;
 	g_common = init_common_data((const char **)envp);
+	read_old_history();
 //	print_common_param();
 	data = NULL;
-	while (1)
+	while (TRUE)
 	{
 		input = readline("minishval'$ ");
 		if (input == NULL)
-			return (0);
+			break ;
 //		printf("%s\n", input);
 		data = init_data(input);
 		if (data != NULL && data->command != NULL)
@@ -55,9 +57,10 @@ int main(int argc, char **argv, char **envp)
 //		printf("\nPRINT DATA\n");
 //		print_data(data);
 //		printf("END OF DATA\n");
-		ft_execute_pipeline(data, envp);
+//		ft_execute_pipeline(data, envp);
 		destroy_data(&data);
 		add_history(input);
-		free(input);
+		ft_lstadd_back(&(g_common->history), ft_lstnew(input));
 	}
+	add_new_history();
 }

@@ -14,6 +14,8 @@
 # define CONSTANTS_H
 
 # define NAME "minishell"
+# define HISTORY_FILE "minisell_history_"
+
 # define C_ECHO "echo"
 # define C_CD "cd"
 # define C_PWD "pwd"

@@ -1,5 +1,7 @@
 NAME	=	libft.a
 
+GNL		=	$(addprefix gnl/, get_next_line.c get_next_line_utils.c)
+
 SRCS	=	ft_isalpha.c	ft_isdigit.c	ft_isalnum.c	ft_isascii.c\
 			ft_isprint.c	ft_strlen.c		ft_memset.c		ft_bzero.c\
 			ft_memcpy.c		ft_memmove.c	ft_strlcpy.c	ft_strlcat.c\
@@ -23,7 +25,7 @@ FLAGS	:=	-Wall -Werror -Wextra
 %.o		:	%.c libft.h
 			gcc $(FLAGS) -c $< -o $@
 
-${NAME}	: 	$(OBJS) $(BONUSES:.c=.o)
+${NAME}	: 	$(OBJS) $(BONUSES:.c=.o) $(GNL:.c=.o)
 			ar rcs $(NAME) $?
 
 .PHONY	:	all clean fclean re
@@ -31,7 +33,7 @@ ${NAME}	: 	$(OBJS) $(BONUSES:.c=.o)
 all		:	${NAME}
 
 clean	:
-			rm -f ${OBJS} ${BONUSES:.c=.o}
+			rm -f ${OBJS} ${BONUSES:.c=.o} ${GNL:.c=.o}
 
 fclean	:	clean
 			rm -f ${NAME}

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include "fcntl.h"
+
 //Opens file referenced by filename, no matter where this file is located
 //and no matter what kind of file it is - regular/heredoc/for input/for output
 int	ft_open_file(char *filename, int mode_for_open);

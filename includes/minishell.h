@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 # include "constants.h"
 # include <stdio.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include "readline/history.h"
 # define EXIT_COMMAND_NOT_FOUND	127
@@ -75,6 +76,8 @@ typedef struct s_param {
 
 typedef struct s_common {
 	int				err_number;
+	char			*history_file;
+	t_list			*history;
 	t_param			*env;
 	t_param			*local_param;
 	t_param			*new_list;
@@ -112,6 +115,8 @@ char		*replace_all_param(char *str);
 int			get_mod_file(t_list **begin, t_list **element, int mod);
 int			read_heredoc(t_data *data);
 void		choice_builtin(t_data *data, int flag);
+void		read_old_history(void);
+void		add_new_history(void);
 
 //   --- string ---   //
 int			ft_strcmp(const char *s1, const char *s2);
