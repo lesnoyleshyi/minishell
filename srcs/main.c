@@ -57,12 +57,14 @@ int main(int argc, char **argv, char **envp)
 			break ;
 //		printf("%s\n", input);
 		data = init_data(input);
-		if (data != NULL && data->command != NULL)
-			choice_builtin(data, check_function(data->command[0]));
+//		execute(data);
+//		if (data != NULL && data->command != NULL && data->next == NULL)
+//			choice_builtin(data, check_function(data->command[0]));
 //		printf("\nPRINT DATA\n");
-//		print_data(data);
+		print_data(data);
 //		printf("END OF DATA\n");
-//		ft_execute_pipeline(data, envp);
+//		execute_pipeline(data, envp);
+		execute(data, envp);
 		destroy_data(&data);
 		add_history(input);
 		ft_lstadd_back(&(g_common->history), ft_lstnew(input));

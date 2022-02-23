@@ -185,18 +185,28 @@ void		pwd(void);
 
 /* STYCHO */
 //   --- execute/execute_funcs.c ---   //
-int	ft_execute_pipeline(t_data *command_list, char *envp[]);
+int	execute_pipeline(t_data *command_list, char *envp[]);
 int	ft_get_child_exit_status(pid_t pid);
+void	ft_execve(char *pathname, char *argv[], char *envp[]);
+void	execute(t_data *data, char *envp[]);
+void	execute_simple(t_data *cmd_data, char *envp[]);
 
 //   --- execute/choose_output.c ---   //
 int	ft_open_file(char *filename, int mode_for_open);
-int	ft_choose_output(int *old_output, t_file *redir_list);
+int	choose_output(int *old_output, t_file *redir_list);
 int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 int ft_is_here_output_redirections(t_file *list_of_all_redirections);
 int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
 
 //   --- execute/choose_input.c ---   //
-int	ft_choose_inp_src(t_file *redirect_list);
+int	choose_inp_src(t_file *redirect_list);
+
+//   --- execute/new_env.c ---   //
+char **new_env(char *envp[], t_param *param_list);
+char **param_list_to_arr(t_param *param_list);
+char *param_to_string(t_param *param);
+size_t	param_list_len(t_param *param);
+size_t	char_p_arr_len(char **arr);
 
 //   --- signal/signal_funcs.c ---   //
 void	ft_clear_input(int signal);

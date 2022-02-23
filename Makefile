@@ -20,7 +20,7 @@ SRCS	=	main.c	\
 			$(addprefix checks/, check_function.c check_get_param.c check_determinate.c \
 						check_content.c check_param_name.c check_presence_param.c check_common.c)\
 			$(addprefix builtins/, env.c export.c echo.c unset.c pwd.c cd.c) \
-			$(addprefix execute/, execute_funcs.c choose_input.c choose_output.c get_abs_path.c) \
+			$(addprefix execute/, execute_funcs.c choose_input.c choose_output.c get_abs_path.c execute_simple.c new_env.c) \
 			$(addprefix signal/, signal_funcs.c) \
 			$(addprefix error/, error.c)
 

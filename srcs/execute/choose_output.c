@@ -13,7 +13,7 @@
 #include "../../includes/minishell.h"
 #include "errno.h"
 
-//Changes old_output from pipe to output file or leaves it unchanged
+//Changes old_output to output file or leaves it unchanged
 //*
 //It checks all files in redir_list consequently to mimic original bash's behaviour.
 //*
@@ -21,7 +21,7 @@
 //return (-1) helps to preserve dup2() in ft_execute_pipeline() from error.
 //fd_out == -1 means we should exit(1) in child process in ft_execute_pipeline()
 //*
-int	ft_choose_output(int *old_output, t_file *redir_list);
+int	choose_output(int *old_output, t_file *redir_list);
 
 //Checks whether list_of_all_redirections contains output redirections( >> or >)
 //Returns 1 in case there is any
@@ -56,7 +56,7 @@ int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
 //
 int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 
-int	ft_choose_output(int *old_output, t_file *redir_list)
+int	choose_output(int *old_output, t_file *redir_list)
 {
 	t_file	*cur_file;
 
@@ -106,7 +106,7 @@ int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list)
 {
 	if (ft_is_here_output_redirections(redir_list) == 1)
 	{
-		if (ft_choose_output(&pipeline_fds_s->fd_out, redir_list) == -1)
+		if (choose_output(&pipeline_fds_s->fd_out, redir_list) == -1)
 			return (-1);
 	}
 	else
