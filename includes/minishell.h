@@ -17,6 +17,7 @@
 # include "constants.h"
 # include <stdio.h>
 # include <fcntl.h>
+# include <errno.h>
 # include <readline/readline.h>
 # include "readline/history.h"
 # define EXIT_COMMAND_NOT_FOUND	127
@@ -76,6 +77,8 @@ typedef struct s_param {
 
 typedef struct s_common {
 	int				err_number;
+	char			*home;
+	char			*pwd;
 	char			*history_file;
 	t_list			*history;
 	t_param			*env;
@@ -135,6 +138,7 @@ int			check_spec_sym(char c);
 int			check_content(const char *str, int flag);
 int			check_presence_param(t_param **element, char *name);
 int			check_valid_param_name(char **arg);
+int			check_common(void);
 char		check_param_name(char *str);
 
 //   --- data/param.c ---   //
@@ -146,7 +150,7 @@ char		*get_param_value(const char *name);
 
 //   --- data/common.c ---   //
 t_common	*init_common_data(const char **envp);
-void		destroy_common_date(void);
+t_common	*destroy_common_date(void);
 
 //   --- data/data.c ---   //
 t_data		*create_data(void);
@@ -174,6 +178,8 @@ void		env(void);
 void		export(char **arg);
 void		echo(char **arg);
 void		unset(char **arg);
+void		cd(char *dir);
+void		pwd(void);
 
 /* PROTOTYPE */
 

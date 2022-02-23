@@ -20,6 +20,8 @@ char	*ft_strdup(const char *s1)
 	char	*p_to_copy;
 	size_t	s1_len;
 
+	if (s1 == NULL)
+		return (NULL);
 	s1_len = ft_strlen(s1);
 	p_to_copy = (char *)malloc((s1_len + 1) * sizeof(char));
 	if (p_to_copy)

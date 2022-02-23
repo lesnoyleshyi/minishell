@@ -14,7 +14,7 @@
 # define CONSTANTS_H
 
 # define NAME "minishell"
-# define HISTORY_FILE "minisell_history_"
+# define HISTORY_FILE ".minisell_history_"
 
 # define C_ECHO "echo"
 # define C_CD "cd"
@@ -36,10 +36,13 @@
 # define ERROR_STATUS '?'
 # define BOTTOM_LINE '_'
 
+# define TILDA "~"
+# define TIRE "-"
 # define PATH "PATH"
 # define PWD "PWD"
 # define SH_LVL "SHLVL"
 # define OLD_PWD "OLDPWD"
+# define HOME "HOME"
 
 # define FALSE 0
 # define TRUE 1

@@ -12,6 +12,8 @@ void	choice_builtin(t_data *data, int flag)
 		echo(&data->command[1]);
 	else if (flag == E_UNSET)
 		unset(data->command);
-	if (data)
-		;
+	else if (flag == E_PWD)
+		pwd();
+	else if (flag == E_CD)
+		cd(data->command[1]);
 }

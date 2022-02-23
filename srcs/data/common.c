@@ -72,6 +72,7 @@ static char	*get_history_file(t_param *shlvl)
 t_common	*init_common_data(const char **envp)
 {
 	t_common	*element;
+	t_param		*param;
 
 	element = (t_common *)malloc(sizeof (t_common));
 	if (element == NULL)
@@ -80,12 +81,14 @@ t_common	*init_common_data(const char **envp)
 	element->local_param = NULL;
 	element->new_list = NULL;
 	element->history = NULL;
+	element->home = NULL;
 	element->err_number = 0;
-	if (element->env == NULL)
-	{
-		free(element);
-		return (NULL);
-	}
+	element->pwd = getcwd(NULL, 0);
+	param = element->env;
+	while (param != NULL && ft_strcmp(param->name, HOME))
+		param = param->next;
+	if (param != NULL)
+		element->home = ft_strdup(param->value);
 	element->history_file = get_history_file(update_lvl(element->env));
 	return (element);
 }
@@ -95,9 +98,24 @@ t_common	*init_common_data(const char **envp)
  * allocated for the global variable "common"
  */
 
-void	destroy_common_date(void)
+t_common	*destroy_common_date(void)
 {
-	destroy_param(&g_common->env);
-	destroy_param(&g_common->local_param);
+	if (g_common == NULL)
+		return (NULL);
+	if (g_common->env != NULL)
+		destroy_param(&(g_common->env));
+	if (g_common->local_param != NULL)
+		destroy_param(&(g_common->local_param));
+	if (g_common->new_list != NULL)
+		destroy_param(&(g_common->new_list));
+	if (g_common->history != NULL)
+		remove_all_list(&(g_common->history));
+	if (g_common->history_file != NULL)
+		free(g_common->history_file);
+	if (g_common->pwd != NULL)
+		free(g_common->pwd);
+	if (g_common->home != NULL)
+		free(g_common->home);
 	free(g_common);
+	return (NULL);
 }

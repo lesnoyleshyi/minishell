@@ -41,7 +41,7 @@ static void	export_env_param(t_param *element, t_param *param)
 	if (param->value != NULL)
 	{
 		if (element->value != NULL)
-		free(element->value);
+			free(element->value);
 		element->value = param->value;
 	}
 	param->value = NULL;

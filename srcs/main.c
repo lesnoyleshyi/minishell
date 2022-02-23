@@ -31,6 +31,7 @@
 //#include "checks/check_presence_param.c"
 //#include "builtins/unset.c"
 //#include "builtins/export.c"
+//#include "builtins/cd.c"
 //delete
 
 int main(int argc, char **argv, char **envp)
@@ -38,10 +39,14 @@ int main(int argc, char **argv, char **envp)
 	char	*input;
 	t_data	*data;
 
+	if (errno == 0)
 	signal(SIGINT, ft_clear_input);
 	if (argc || argv)
 		;
 	g_common = init_common_data((const char **)envp);
+	if (check_common() == TRUE)
+		g_common = destroy_common_date();
+
 	read_old_history();
 //	print_common_param();
 	data = NULL;
