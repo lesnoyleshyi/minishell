@@ -43,7 +43,7 @@ static void	update_all_pwd(void)
 	update_pwd(PWD, ft_strdup(g_common->pwd));
 }
 
-static int dir_tire(void)
+static void dir_tire(void)
 {
 	int		flag;
 	t_param	*param;
@@ -52,7 +52,7 @@ static int dir_tire(void)
 	if (flag == NEW_PARAM)
 	{
 		printf("%s: %s: %s not set\n", NAME, C_CD, OLD_PWD);
-		return (KO);
+		return ;
 	}
 	else if (flag == LOCAL_PARAM)
 		write(1, "\n", 1);
@@ -61,7 +61,7 @@ static int dir_tire(void)
 		if (chdir(param->value) == -1)
 		{
 			printf("%s: %s: %s: %s\n", NAME, C_CD, param->value, strerror(errno));
-			return (KO);
+			return ;
 		}
 		else
 		{
@@ -69,7 +69,6 @@ static int dir_tire(void)
 			pwd();
 		}
 	}
-	return (OK);
 }
 
 void	cd(char *dir)
