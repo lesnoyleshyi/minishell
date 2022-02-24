@@ -5,7 +5,7 @@
  * to all builtins and executes the required builtin
  */
 
-void	choice_builtin(t_data *data, int flag)
+void	execute_builtin(t_data *data, int flag)
 {
 	if (flag == E_NOT_FUNCTION)
 		return ;

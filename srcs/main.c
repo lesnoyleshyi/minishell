@@ -58,7 +58,7 @@ int main(int argc, char **argv, char **envp)
 		data = init_data(input);
 //		execute(data);
 //		if (data != NULL && data->command != NULL && data->next == NULL)
-//			choice_builtin(data, check_function(data->command[0]));
+//			execute_builtin(data, check_function(data->command[0]));
 //		printf("\nPRINT DATA\n");
 //		print_data(data);
 //		printf("END OF DATA\n");

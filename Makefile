@@ -14,7 +14,7 @@ SRCS	=	main.c	\
 			xlam/print.c \
 			$(addprefix data/, common.c	data.c list.c param.c file.c string_array.c) \
 			$(addprefix utils/, first_parser.c replace_param.c get_mod_file.c \
-						second_parser.c read_heredoc.c choice_builtin.c history.c) \
+						second_parser.c read_heredoc.c execute_builtin.c history.c) \
 			$(addprefix string/, get_substr.c insert_str.c get_unsubstr.c \
 						ft_strcmp.c remove_all_quote.c remove_string.c) \
 			$(addprefix checks/, check_function.c check_get_param.c check_determinate.c \

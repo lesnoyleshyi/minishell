@@ -117,7 +117,7 @@ void		second_parser(t_list **begin, t_data *data);
 char		*replace_all_param(char *str);
 int			get_mod_file(t_list **begin, t_list **element, int mod);
 int			read_heredoc(t_data *data);
-void		choice_builtin(t_data *data, int flag);
+void		execute_builtin(t_data *data, int flag);
 void		read_old_history(void);
 void		add_new_history(void);
 
