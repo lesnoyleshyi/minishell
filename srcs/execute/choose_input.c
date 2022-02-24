@@ -41,9 +41,9 @@ int	ft_heredoc_to_temp_file(char *string, int heredoc_len);
 //Opens input files(< or <<stop_word) in cycle if there are some.
 //Leaves only the last opened, close other ones.
 //
-int	ft_choose_inp_src(t_file *redirect_list);
+int	choose_inp_src(t_file *redirect_list);
 
-int	ft_choose_inp_src(t_file *redirect_list)
+int	choose_inp_src(t_file *redirect_list)
 {
 	t_file	*cur_file;
 	int		input_fd;
