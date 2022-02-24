@@ -57,7 +57,7 @@ void	execute_null_command(t_file *redir_list)
 			exit(EXIT_SUCCESS);
 	}
 	else
-		g_common->err_number = ft_get_child_exit_status(pid);
+		g_common->err_number = get_child_exit_status(pid);
 }
 
 void	execute_binary(t_data *cmd_data)
@@ -78,12 +78,13 @@ void	execute_binary(t_data *cmd_data)
 			exit(EXIT_FAILURE);
 		if (choose_inp_src(cmd_data->file) != 0)
 			exit(EXIT_FAILURE);
+		write(2, "wtf\n", 4);
 		new_envp = new_env(cmd_data->param_list);
 		ft_execve(cmd_data->command[0], cmd_data->command, new_envp);
 	}
 	else
 	{
 		substitute_fd(reserved_stdout, 1);
-		g_common->err_number = ft_get_child_exit_status(pid);
+		g_common->err_number = get_child_exit_status(pid);
 	}
 }

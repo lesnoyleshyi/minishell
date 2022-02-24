@@ -28,9 +28,6 @@ void	ft_initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
 //Resets stdin to 0 and stdout to 1 after execution command
 void	ft_reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
 
-char	*ft_get_abs_path_to_binary(char *pathname);
-
-
 void	ft_execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd, char *envp[]);
 
 int	execute_pipeline(t_data *command_list, char *envp[])
@@ -61,7 +58,7 @@ int	execute_pipeline(t_data *command_list, char *envp[])
 		cur_cmd = cur_cmd->next;
 	}
 	ft_reset_stdin_stdout(&fds);
-	return(ft_get_child_exit_status(pid));
+	return(get_child_exit_status(pid));
 }
 
 void	ft_execve(char *pathname, char *argv[], char *envp[])
@@ -70,31 +67,19 @@ void	ft_execve(char *pathname, char *argv[], char *envp[])
 
 	if (pathname == NULL)
 		ft_execute_null_cmd();
-	abs_path = ft_get_abs_path_to_binary(pathname);
+	abs_path = get_abs_path_to_binary(pathname);
+	if (is_directory(abs_path) == 1)
+		custom_message_exit(pathname, CMD_IS_DIR, EXIT_COMMAND_IS_DIRECTORY);
 	if (ft_strcmp("command not found", abs_path) == 0)
-		ft_exit_command_not_found(pathname);
+		custom_message_exit(pathname, CMD_NOT_FOUND, EXIT_COMMAND_NOT_FOUND);
 	execve(abs_path, argv, envp);
 	ft_perror_and_return(pathname, 1);
-	if (errno == 2)
-		exit(127);
-	exit(errno);
+	exit(translate_errno_to_exit_status(errno));
 }
 
 int	ft_execute_null_cmd()
 {
 	exit(0);
-}
-
-int	ft_get_child_exit_status(pid_t pid)
-{
-	int exit_status;
-
-	waitpid(pid, &exit_status, 0);
-	if (WEXITSTATUS(exit_status) == 0)
-		return (0);
-	else
-		return (WEXITSTATUS(exit_status));
-//		here we (theoretically) can catch different ex_st in case of signal termination
 }
 
 void	ft_initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct)

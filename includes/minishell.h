@@ -20,13 +20,14 @@
 # include <errno.h>
 # include <readline/readline.h>
 # include "readline/history.h"
-# define EXIT_COMMAND_NOT_FOUND	127
-# define ENOEXEC 				8
-# define EX_BINARY_FILE			126
-# define NO_PIPE				-1
-# define AMBIGUOUS_REDIRECT		-1
-# define HEREDOC_REDIRECT		-4		//here-doc temp file can't be created
-# define PIPE_BUF				4096
+# define EXIT_COMMAND_NOT_FOUND		127
+# define EXIT_COMMAND_IS_DIRECTORY	126
+# define ENOEXEC 					8
+# define EX_BINARY_FILE				126
+# define NO_PIPE					-1
+# define AMBIGUOUS_REDIRECT			-1
+# define HEREDOC_REDIRECT			-4		//here-doc temp file can't be created
+# define PIPE_BUF					4096
 
 enum e_function {
 	E_NOT_FUNCTION,
@@ -66,6 +67,11 @@ enum e_param_type {
 	NEW_PARAM,
 	ENV_PARAM,
 	LOCAL_PARAM
+};
+
+enum e_err_msg_code {
+	CMD_NOT_FOUND,
+	CMD_IS_DIR
 };
 
 typedef struct s_param {
@@ -185,8 +191,7 @@ void		pwd(void);
 
 /* STYCHO */
 //   --- execute/execute_funcs.c ---   //
-int	execute_pipeline(t_data *command_list, char *envp[]);
-int	ft_get_child_exit_status(pid_t pid);
+int		execute_pipeline(t_data *command_list, char *envp[]);
 void	ft_execve(char *pathname, char *argv[], char *envp[]);
 void	execute(t_data *data, char *envp[]);
 void	execute_simple(t_data *cmd_data);
@@ -213,8 +218,15 @@ size_t	char_p_arr_len(char **arr);
 void	ft_clear_input(int signal);
 
 //   --- error/error.c ---   //
+void	custom_message_exit(char *pathname, int message_code, int exit_status);
 int		ft_perror_and_return(char *message, int ret_val);
-void	ft_exit_command_not_found(char *filename);
+int		translate_errno_to_exit_status(int errno_val);
+int		get_child_exit_status(pid_t pid);
+
+//   --- execute/get_abs_path.c ---   //
+char	*get_abs_path_to_binary(char *pathname);
+int		is_directory(char *pathname);
+void	free_arr(char **paths_arr);
 /* STYCHO */
 
 void		print_param(t_param *param);

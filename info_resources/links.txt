@@ -17,11 +17,22 @@ sketchboard(visualize logic of implemented functions):
     https://sketchboard.me/nC50salhtKzB
 about waitpid() and how to get exit status of child process:
     https://pubs.opengroup.org/onlinepubs/9699919799/functions/waitpid.html
+avoid zombies:
     https://www.daniweb.com/programming/software-development/threads/364407/handling-sigchld-to-prevent-zombie-processes
     https://www.geeksforgeeks.org/zombie-processes-prevention/
 how to check opened fd-s for specific process:
     https://rtfm.co.ua/ispolzovanie-utility-lsof-v-primerax/
     https://www.thegeekstuff.com/2012/08/lsof-command-examples/
     https://linux.die.net/man/8/lsof
+about unix-domain-sockets
+    https://www.cloudsavvyit.com/1263/what-are-unix-sockets-and-how-do-they-work/
+    https://www.brainboxes.com/faq/what-is-unix-domain-socket
+bash source code:
+    http://ftp.gnu.org/gnu/bash/
+sound, color, cursor control bash:
+    https://www.opennet.ru/base/dev/console_ctl.txt.html
+bash's exit status codes:
+    https://www.thegeekdiary.com/what-are-bash-exit-codes-in-linux/
+    https://www.baeldung.com/linux/status-codes
 
 

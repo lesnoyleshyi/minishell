@@ -11,18 +11,24 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include "sys/stat.h"
 
 //Frees all members in array and array itself
-void	ft_free_arr(char **paths_arr);
+void	free_arr(char **paths_arr);
+
+//Checks whether object pointed to by pathname is directory or not.
+//Returns 1 if pathname points to directory,
+//Returns 0 if pathname points to other type (regular file, socket, pipe, etc).
+int	is_directory(char *pathname);
 
 //Searches full path to binary in $PATH
 //*
 //Returns "<path_prefix> + / + pathname" in case of success
 //Returns "command not found" in case binary not found in $PATH
 //to handle this error like bash does.
-char	*ft_get_abs_path_to_binary(char *pathname);
+char	*get_abs_path_to_binary(char *pathname);
 
-char	*ft_get_abs_path_to_binary(char *pathname)
+char	*get_abs_path_to_binary(char *pathname)
 {
 	char	**paths_arr;
 	char	*pathname_w_slash;
@@ -39,18 +45,18 @@ char	*ft_get_abs_path_to_binary(char *pathname)
 		abs_path = ft_strjoin(paths_arr[i], pathname_w_slash);
 		if (access(abs_path, X_OK) == 0)
 		{
-			ft_free_arr(paths_arr);
+			free_arr(paths_arr);
 			free(pathname_w_slash);
 			return (abs_path);
 		}
 		free(abs_path);
 	}
-	ft_free_arr(paths_arr);
+	free_arr(paths_arr);
 	free(pathname_w_slash);
 	return ("command not found");
 }
 
-void	ft_free_arr(char **paths_arr)
+void	free_arr(char **paths_arr)
 {
 	int i;
 
@@ -58,4 +64,11 @@ void	ft_free_arr(char **paths_arr)
 	while (paths_arr != NULL && paths_arr[++i] != NULL)
 		free(paths_arr[i]);
 	free(paths_arr);
+}
+
+int	is_directory(char *pathname)
+{
+	struct stat path_stat;
+	stat(pathname, &path_stat);
+	return (S_ISDIR(path_stat.st_mode));
 }
