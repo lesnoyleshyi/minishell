@@ -59,7 +59,5 @@ int	translate_errno_to_exit_status(int errno_val)
 		return (127);
 	if (errno_val == 13)
 		return (126);
-//	if (errno_val > 128)
-		// (errno_val - 128) == int_value of interrupted signal
 	return (errno_val);
 }

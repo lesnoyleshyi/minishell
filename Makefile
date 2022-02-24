@@ -19,7 +19,7 @@ SRCS	=	main.c	\
 						ft_strcmp.c remove_all_quote.c remove_string.c) \
 			$(addprefix checks/, check_function.c check_get_param.c check_determinate.c \
 						check_content.c check_param_name.c check_presence_param.c check_common.c)\
-			$(addprefix builtins/, env.c export.c echo.c unset.c pwd.c cd.c) \
+			$(addprefix builtins/, cd.c echo.c env.c exit.c export.c unset.c pwd.c) \
 			$(addprefix execute/, execute_funcs.c choose_input.c choose_output.c get_abs_path.c execute_simple.c new_env.c) \
 			$(addprefix signal/, signal_funcs.c) \
 			$(addprefix error/, error.c)

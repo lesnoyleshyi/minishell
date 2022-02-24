@@ -21,4 +21,10 @@ void	execute_builtin(t_data *data, int flag)
 		pwd();
 	else if (flag == E_CD)
 		cd(data->command[1]);
+	else if (flag == E_EXIT)
+	{
+		if (data->command == NULL || data->command[1] == NULL)
+			b_exit(g_common->err_number);
+		b_exit(ft_atoi(data->command[1]));
+	}
 }

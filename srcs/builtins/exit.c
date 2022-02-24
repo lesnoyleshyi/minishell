@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: stycho <stycho@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/23 12:47:15 by drayl             #+#    #+#             */
-/*   Updated: 2022/02/23 12:47:17 by drayl            ###   ########.fr       */
+/*   Created: 2022/02/24 21:05:24 by stycho            #+#    #+#             */
+/*   Updated: 2022/02/24 21:05:26 by stycho           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-/**
- * This function prints the current directory
- */
-
-void	pwd(void)
+void	b_exit(int exit_status)
 {
-	printf("%s\n", g_common->pwd);
-	g_common->err_number = 0;
+	write(2, "exit\n", 5);
+	if (exit_status < 0 || exit_status > 255)
+		exit(-1);
+	exit(exit_status);
 }

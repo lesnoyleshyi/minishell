@@ -78,7 +78,6 @@ void	execute_binary(t_data *cmd_data)
 			exit(EXIT_FAILURE);
 		if (choose_inp_src(cmd_data->file) != 0)
 			exit(EXIT_FAILURE);
-		write(2, "wtf\n", 4);
 		new_envp = new_env(cmd_data->param_list);
 		ft_execve(cmd_data->command[0], cmd_data->command, new_envp);
 	}

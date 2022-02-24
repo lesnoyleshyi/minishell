@@ -53,7 +53,10 @@ int main(int argc, char **argv, char **envp)
 	{
 		input = readline("minishval'$ ");
 		if (input == NULL)
-			break ;
+		{
+			add_new_history();
+			b_exit(g_common->err_number);
+		}
 //		printf("%s\n", input);
 		data = init_data(input);
 //		execute(data);

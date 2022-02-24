@@ -186,6 +186,7 @@ void		echo(char **arg);
 void		unset(char **arg);
 void		cd(char *dir);
 void		pwd(void);
+void		b_exit(int exit_status);
 
 /* PROTOTYPE */
 

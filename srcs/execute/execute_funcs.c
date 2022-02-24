@@ -42,8 +42,7 @@ int	execute_pipeline(t_data *command_list, char *envp[])
 	while (cur_cmd)
 	{
 //		ft_do_command;
-		dup2(fds.fd_in, 0);
-		close(fds.fd_in);
+		substitute_fd(fds.fd_in, 0);
 		if (!cur_cmd->next && ft_make_last_cmd_redirs(&fds, cur_cmd->file) < 0)	//if it's the last command
 			break ;
 		else if (cur_cmd->next && ft_do_piping(&fds, cur_cmd->command[0]) != 0)	//it's not the last command in pipeline
