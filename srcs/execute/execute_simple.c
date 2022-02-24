@@ -59,6 +59,9 @@ void	execute_null_command(t_file *redir_list)
 		g_common->err_number = ft_get_child_exit_status(pid);
 }
 
+
+// Посмотри нужен ли тебе ещё envp
+
 void	execute_binary(t_data *cmd_data, char *envp[])
 {
 	int	pid;
@@ -66,6 +69,8 @@ void	execute_binary(t_data *cmd_data, char *envp[])
 	int reserved_output;
 	char **new_envp;
 
+	if (envp)
+		;
 	reserved_output = dup(1);
 	out_fd = 1;
 	if (choose_output(&out_fd, cmd_data->file) != -1)
@@ -79,7 +84,7 @@ void	execute_binary(t_data *cmd_data, char *envp[])
 			exit(EXIT_FAILURE);
 		if (choose_inp_src(cmd_data->file) != 0)
 			exit(EXIT_FAILURE);
-		new_envp = new_env(envp, cmd_data->param_list);
+		new_envp = new_env(cmd_data->param_list);
 //		printf("%s\n", new_envp[0]);
 		ft_execve(cmd_data->command[0], cmd_data->command, new_envp);
 //		ft_execve(cmd_data->command[0], cmd_data->command, new_env(envp, cmd_data->param_list));

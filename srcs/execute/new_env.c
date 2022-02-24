@@ -12,99 +12,85 @@
 
 #include "../../includes/minishell.h"
 
-//Creates null-terminated array of pointers to strings,
-//where every string is in form "key=val".
-char **param_list_to_arr(t_param *param_list);
+/**
+ * This function returns the number of elements in a linked
+ * list of elements of type "t_param" starting from element "begin"
+ */
 
-//Concatenates string in form "key=val" taking values from param's fields
-char *param_to_string(t_param *param);
-
-//Returns length of linked list of t_param structs
-size_t	param_list_len(t_param *param);
-
-//Returns length of null-terminated array that consist of pointers to strings
-size_t	char_p_arr_len(char **arr);
-
-//Returns pointer to char** array of env variables.
-//Result array includes variables from env + that was passed to command in form
-//var1=val1 var2=val2 command
-char **new_env(char *envp[], t_param *param_list);
-
-char **new_env(char *envp[], t_param *param_list)
+static int	get_size(t_param *begin)
 {
-	size_t	old_arr_len;
-	size_t	param_count;
-	size_t	i;
-	char	**param_arr;
-	char	**new_env;
+	int	size;
 
-	if (param_list == NULL)
-		return (envp);
-	old_arr_len = char_p_arr_len(envp);
-	param_count = param_list_len(param_list);
-	new_env = (char **) malloc(sizeof(char *) * old_arr_len + param_count);
-	param_arr = param_list_to_arr(param_list);
-	if (new_env == NULL || param_arr == NULL)
-		return (envp);
-	i = -1;
-	while (++i < old_arr_len)
-		new_env[i] = envp[i];
-	i = -1;
-	while (++i < param_count)
-		new_env[old_arr_len + i] = param_arr[i];
-	return (new_env);
-}
-
-char **param_list_to_arr(t_param *param_list)
-{
-	char	**param_arr;
-	size_t	param_count;
-	int		i;
-
-	if (param_list == NULL)
-		return (NULL);
-	param_count = param_list_len(param_list);
-	param_arr = (char **)malloc(sizeof(char *) * param_count);
-	i = 0;
-	while (param_list + i != NULL)
+	size = 0;
+	while (begin != NULL)
 	{
-		param_arr[i] = param_to_string(param_list + i);
-		if (param_arr[i++] == NULL)
-			break ;
+		++size;
+		begin = begin->next;
 	}
-	param_arr[i] = NULL;
-	return (param_arr);
+	return (size);
 }
 
-char *param_to_string(t_param *param)
-{
-	char	*name_plus_eq;
-	char	*name_plus_eq_plus_val;
+/**
+ * This function takes 2 arguments "name", "value" and returns
+ * a concatenated string like "name=value". if the variable "value" is
+ * equal to "NULL" then the string will be just a copy of the variable "name"
+ */
 
-	name_plus_eq = ft_strjoin(param->name, "=");
-	if (name_plus_eq == NULL)
+static char	*get_concat_line(char *name, char *value)
+{
+	char	*str;
+	char	*res;
+
+	if (value == NULL)
+		return (ft_strdup(name));
+	str = ft_strjoin(name, "=");
+	res = ft_strjoin(str, value);
+	free(str);
+	return (res);
+}
+
+/**
+ * This function converts the elements of the linked list into strings
+ * using the "get_concat_line" function and writes them to the string array
+ * "envp" at position "iter". In case of failure, "-1" is returned, if everything
+ * went well, it returns the first uninitialized position in the "envp" array
+ */
+
+static int	add_param_in_array_string(t_param *param, char **envp, int iter)
+{
+	while (param != NULL)
+	{
+		envp[iter] = get_concat_line(param->name, param->value);
+		if (envp[iter] == NULL)
+			return (-1);
+		param = param->next;
+		++iter;
+	}
+	return (iter);
+}
+
+/**
+ * This function creates an array of strings similar to what
+ * the "env" function outputs from the already existing environment
+ * variables and the new variables passed to the command as parameters
+ */
+
+char	**new_env(t_param *begin)
+{
+	int		size;
+	int		iter;
+	char	**envp;
+
+	size = get_size(begin) + get_size(g_common->env) + 1;
+	envp = (char **) malloc(size * sizeof (char *));
+	if (envp == NULL)
 		return (NULL);
-	name_plus_eq_plus_val = ft_strjoin(name_plus_eq, param->value);
-	free(name_plus_eq);
-	return (name_plus_eq_plus_val);
-}
-
-size_t	param_list_len(t_param *param)
-{
-	size_t	len;
-
-	len = 0;
-	while (param + len != NULL)
-		len++;
-	return (len);
-}
-
-size_t	char_p_arr_len(char **arr)
-{
-	size_t	len;
-
-	len = 0;
-	while (arr[len] != NULL)
-		len++;
-	return (len);
+	iter = add_param_in_array_string(g_common->env, envp, 0);
+	if (iter < 0)
+		return (destroy_array(envp));
+	iter = add_param_in_array_string(begin, envp, iter);
+	if (iter < 0)
+		return (destroy_array(envp));
+	envp[iter] = NULL;
+	return (envp);
 }

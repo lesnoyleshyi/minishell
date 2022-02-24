@@ -46,7 +46,6 @@ int main(int argc, char **argv, char **envp)
 	g_common = init_common_data((const char **)envp);
 	if (check_common() == TRUE)
 		g_common = destroy_common_date();
-	printf("file - %s\n", g_common->history_file);
 	read_old_history();
 //	print_common_param();
 	data = NULL;
@@ -61,12 +60,13 @@ int main(int argc, char **argv, char **envp)
 //		if (data != NULL && data->command != NULL && data->next == NULL)
 //			choice_builtin(data, check_function(data->command[0]));
 //		printf("\nPRINT DATA\n");
-		print_data(data);
+//		print_data(data);
 //		printf("END OF DATA\n");
 //		execute_pipeline(data, envp);
 		execute(data, envp);
 		destroy_data(&data);
-		add_history(input);
+		if (*input != '\0')
+			add_history(input);
 		ft_lstadd_back(&(g_common->history), ft_lstnew(input));
 	}
 	add_new_history();

@@ -161,7 +161,7 @@ int			add_new_data(t_data **data);
 //   --- data/string_array.c ---   //
 char		**convert_list_to_array(t_list *lst);
 char		**convert_sublist_to_array(t_list *begin, t_list *stop);
-void		destroy_array(char **mas);
+char		**destroy_array(char **mas);
 
 //   --- data/file.c ---   //
 t_file		*init_new_file(char *name);
@@ -202,7 +202,7 @@ int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
 int	choose_inp_src(t_file *redirect_list);
 
 //   --- execute/new_env.c ---   //
-char **new_env(char *envp[], t_param *param_list);
+char **new_env(t_param *begin);
 char **param_list_to_arr(t_param *param_list);
 char *param_to_string(t_param *param);
 size_t	param_list_len(t_param *param);

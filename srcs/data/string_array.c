@@ -16,16 +16,17 @@
  * This function removes an array of strings
  */
 
-void	destroy_array(char **mas)
+char	**destroy_array(char **mas)
 {
 	int	i;
 
 	if (mas == NULL)
-		return ;
+		return (NULL);
 	i = -1;
 	while (mas[++i] != NULL)
 		free(mas[i]);
 	free(mas);
+	return (NULL);
 }
 
 /**
