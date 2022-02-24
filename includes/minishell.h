@@ -189,9 +189,10 @@ int	execute_pipeline(t_data *command_list, char *envp[]);
 int	ft_get_child_exit_status(pid_t pid);
 void	ft_execve(char *pathname, char *argv[], char *envp[]);
 void	execute(t_data *data, char *envp[]);
-void	execute_simple(t_data *cmd_data, char *envp[]);
+void	execute_simple(t_data *cmd_data);
 
 //   --- execute/choose_output.c ---   //
+int	substitute_fd(int old_fd, int new_fd);
 int	ft_open_file(char *filename, int mode_for_open);
 int	choose_output(int *old_output, t_file *redir_list);
 int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);

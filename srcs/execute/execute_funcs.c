@@ -75,6 +75,8 @@ void	ft_execve(char *pathname, char *argv[], char *envp[])
 		ft_exit_command_not_found(pathname);
 	execve(abs_path, argv, envp);
 	ft_perror_and_return(pathname, 1);
+	if (errno == 2)
+		exit(127);
 	exit(errno);
 }
 
@@ -121,18 +123,12 @@ void	ft_execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd, char *env
 	ft_execve(cmd->command[0], cmd->command, envp);
 }
 
-//void	ft_clear_after_child()
-//{
-//		ft_reset_env();
-//		delete_temp_file();
-//}
-
 void	execute(t_data *data, char *envp[])
 {
 	if (data == NULL)
 		return ;
 	if (data->next == NULL)
-		execute_simple(data, envp);
+		execute_simple(data);
 	else
 		execute_pipeline(data, envp);
 }

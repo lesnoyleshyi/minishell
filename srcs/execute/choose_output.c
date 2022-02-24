@@ -56,6 +56,11 @@ int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
 //
 int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 
+//Closes old_fd and makes new_fd points to the source of old_fd
+//Returns 0 on success
+//Returns -1 on failure
+int	substitute_fd(int old_fd, int new_fd);
+
 int	choose_output(int *old_output, t_file *redir_list)
 {
 	t_file	*cur_file;
@@ -121,4 +126,16 @@ int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name)
 	pipe_fds_struct->fd_in = pipe_fds_struct->pipe_fds[0];
 	pipe_fds_struct->fd_out = pipe_fds_struct->pipe_fds[1];
 	return (0);
+}
+
+int	substitute_fd(int old_fd, int new_fd)
+{
+	int ret_val;
+
+	ret_val = 0;
+	if (dup2(old_fd, new_fd) == -1)
+		ret_val = -1;
+	if (close(old_fd) == -1)
+		ret_val = -1;
+	return (ret_val);
 }
