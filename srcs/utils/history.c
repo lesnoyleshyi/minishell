@@ -1,4 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   history.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/24 05:52:17 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/24 05:52:19 by drayl            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
+
+/**
+ * This function checks if there is '\n' in
+ * the string and if it is, replaces it with '\0'
+ */
 
 static void	remove_new_line(char *str)
 {
@@ -6,6 +23,10 @@ static void	remove_new_line(char *str)
 		++str;
 	*str = '\0';
 }
+
+/**
+ * This function reads the history from the history file
+ */
 
 void	read_old_history(void)
 {
@@ -26,10 +47,13 @@ void	read_old_history(void)
 	close(fd);
 }
 
+/**
+ * This function completes the history file when the program exits.
+ */
 
 void	add_new_history(void)
 {
-	int	fd;
+	int		fd;
 	t_list	*begin;
 
 	begin = g_common->history;
@@ -45,4 +69,3 @@ void	add_new_history(void)
 	}
 	close(fd);
 }
-

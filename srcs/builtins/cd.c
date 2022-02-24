@@ -1,6 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/23 13:02:29 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/23 13:02:30 by drayl            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-static void add_pwd(char *name, char *value)
+/**
+ * This function creates a variable of type "t_param" with "name"
+ * and "value" passed in and adds it to the list of environment variables
+ */
+
+static void	add_pwd(char *name, char *value)
 {
 	t_param	*param;
 
@@ -17,9 +34,16 @@ static void add_pwd(char *name, char *value)
 	add_param(&g_common->env, param);
 }
 
+/**
+ * This function checks if there is a variable with the "name"
+ * field, if there is, then the variable's knowledge of "value"
+ * is changed, if not, a new variable is initialized
+ * and added to the list of environment variables
+ */
+
 static void	update_pwd(char *name, char *value)
 {
-	int 	flag;
+	int		flag;
 	t_param	*param;
 
 	flag = check_presence_param(&param, name);
@@ -36,6 +60,12 @@ static void	update_pwd(char *name, char *value)
 	}
 }
 
+/**
+ * This function changes the values or initializes
+ * the environment variables named "OLDPWD", "PWD" and changes
+ * the value for "pwd" stored in the global variable "g_common"
+ */
+
 static void	update_all_pwd(void)
 {
 	update_pwd(OLD_PWD, g_common->pwd);
@@ -43,7 +73,12 @@ static void	update_all_pwd(void)
 	update_pwd(PWD, ft_strdup(g_common->pwd));
 }
 
-static void dir_tire(void)
+/**
+ * This function changes the current directory
+ * to the previous one with subsequent changes
+ */
+
+static void	dir_tire(void)
 {
 	int		flag;
 	t_param	*param;
@@ -60,7 +95,8 @@ static void dir_tire(void)
 	{
 		if (chdir(param->value) == -1)
 		{
-			printf("%s: %s: %s: %s\n", NAME, C_CD, param->value, strerror(errno));
+			printf("%s: %s: %s: %s\n", NAME, C_CD,
+				param->value, strerror(errno));
 			return ;
 		}
 		else
@@ -70,6 +106,10 @@ static void dir_tire(void)
 		}
 	}
 }
+
+/**
+ * This function changes the current directory depending on the "dir" parameter
+ */
 
 void	cd(char *dir)
 {

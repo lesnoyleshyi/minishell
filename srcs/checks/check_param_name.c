@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_param_name.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/23 23:16:12 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/23 23:16:14 by drayl            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 /**
@@ -11,6 +23,11 @@ char	check_param_name(char *str)
 		str++;
 	return (*str);
 }
+
+/**
+ * This function takes a list of strings listing parameters or
+ * parameter initializations and checks all parameter names for validity
+ */
 
 int	check_valid_param_name(char **arg)
 {

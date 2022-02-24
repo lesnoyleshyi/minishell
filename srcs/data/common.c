@@ -38,7 +38,10 @@ static t_param	*init_env(const char **envp)
 	return (begin);
 }
 
-
+/**
+ * This function increments the "SHLVL"
+ * value by 1 and sets the new value
+ */
 
 static t_param	*update_lvl(t_param *begin)
 {
@@ -56,12 +59,28 @@ static t_param	*update_lvl(t_param *begin)
 	return (param);
 }
 
+/**
+ * This function returns the full name of
+ * the file in which the command history is written.
+ */
 
-static char	*get_history_file(t_param *shlvl)
+static char	*get_history_file(t_param *shlvl, char *home_path)
 {
+	char	*buff;
+	char	*name;
+
 	if (shlvl == NULL || shlvl->value == NULL)
 		return (NULL);
-	return (ft_strjoin(HISTORY_FILE, shlvl->value));
+	name = ft_strjoin(home_path, "/");
+	if (name == NULL)
+		return (NULL);
+	buff = ft_strjoin(name, HISTORY_FILE);
+	free(name);
+	if (buff == NULL)
+		return (NULL);
+	name = ft_strjoin(buff, shlvl->value);
+	free(buff);
+	return (name);
 }
 
 /**
@@ -89,7 +108,8 @@ t_common	*init_common_data(const char **envp)
 		param = param->next;
 	if (param != NULL)
 		element->home = ft_strdup(param->value);
-	element->history_file = get_history_file(update_lvl(element->env));
+	element->history_file = get_history_file(update_lvl(element->env),
+			element->home);
 	return (element);
 }
 

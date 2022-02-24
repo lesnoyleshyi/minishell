@@ -1,4 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/23 23:10:02 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/23 23:10:04 by drayl            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
+
+/**
+ * This function removes environment variables or local variables
+ * whose names are specified in the passed array of strings "arg"
+ */
 
 void	unset(char **arg)
 {

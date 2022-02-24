@@ -46,7 +46,7 @@ int main(int argc, char **argv, char **envp)
 	g_common = init_common_data((const char **)envp);
 	if (check_common() == TRUE)
 		g_common = destroy_common_date();
-
+	printf("file - %s\n", g_common->history_file);
 	read_old_history();
 //	print_common_param();
 	data = NULL;

@@ -1,4 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   choice_builtin.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: drayl <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/24 05:48:10 by drayl             #+#    #+#             */
+/*   Updated: 2022/02/24 05:48:12 by drayl            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
+
+/**
+ * This function accepts a flag variable unique
+ * to all builtins and executes the required builtin
+ */
 
 void	choice_builtin(t_data *data, int flag)
 {
