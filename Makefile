@@ -37,7 +37,7 @@ OS		=	$(shell uname)
 
 ifeq (${OS},Linux)
 
-linuxDistr	=	$(shell cat  /etc/*-release | grep "DISTRIB_ID" | cut -f2 -d="=")
+linuxDistr	=	$(shell cat  /etc/*-release | grep "DISTRIB_ID" | cut -f2 --delimiter="=")
 
 ifeq (${linuxDistr},Ubuntu)
 ${NAME}	:	${OBJS} ${LIBFT} bubunta

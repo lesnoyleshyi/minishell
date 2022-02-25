@@ -20,6 +20,7 @@
 # include <errno.h>
 # include <readline/readline.h>
 # include "readline/history.h"
+# include "signal.h"
 # define EXIT_COMMAND_NOT_FOUND		127
 # define EXIT_COMMAND_IS_DIRECTORY	126
 # define ENOEXEC 					8
@@ -113,7 +114,7 @@ typedef struct s_pipeline_fds {
 	int reserved_stdout;
 }				t_pipeline_fds;
 
-t_common	*g_common;
+extern t_common	*g_common;
 
 /* PROTOTYPE */
 

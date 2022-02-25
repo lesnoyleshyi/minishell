@@ -1,5 +1,6 @@
 
 #include "../../includes/minishell.h"
+#include "sys/wait.h"
 
 //Prints error message in format "minishval': message: <errno>"
 //and returns ret_val.

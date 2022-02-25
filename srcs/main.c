@@ -39,10 +39,11 @@ int main(int argc, char **argv, char **envp)
 	char	*input;
 	t_data	*data;
 
+	g_common = NULL;
 	if (errno == 0)
 	signal(SIGINT, ft_clear_input);
 	if (argc || argv)
-		;
+	{};
 	g_common = init_common_data((const char **)envp);
 	if (check_common() == TRUE)
 		g_common = destroy_common_date();
