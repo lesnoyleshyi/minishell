@@ -112,7 +112,10 @@ int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list)
 	if (ft_is_here_output_redirections(redir_list) == 1)
 	{
 		if (choose_output(&pipeline_fds_s->fd_out, redir_list) == -1)
+		{
+			g_common->err_number = 1;
 			return (-1);
+		}
 	}
 	else
 		pipeline_fds_s->fd_out = dup(pipeline_fds_s->reserved_stdout);
