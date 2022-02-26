@@ -18,7 +18,7 @@ sketchboard(visualize logic of implemented functions):
 about waitpid() and how to get exit status of child process:
     https://pubs.opengroup.org/onlinepubs/9699919799/functions/waitpid.html
 avoid zombies:
-    https://www.daniweb.com/programming/software-development/threads/364407/handling-sigchld-to-prevent-zombie-processes
+    https://www.daniweb.com/programming/software-development/threads/364407/handling-sigchld-to-prevent-zombie-processes - doesn't work, lol
     https://www.geeksforgeeks.org/zombie-processes-prevention/
 how to check opened fd-s for specific process:
     https://rtfm.co.ua/ispolzovanie-utility-lsof-v-primerax/

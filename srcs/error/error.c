@@ -54,6 +54,8 @@ int	get_child_exit_status(pid_t pid)
 	return (translate_errno_to_exit_status(errno_val));
 }
 
+
+//	todo-Stycho add all possible variants
 int	translate_errno_to_exit_status(int errno_val)
 {
 	if (errno_val == 2)

@@ -33,3 +33,6 @@ side_eff:
        no output
    side_eff:
        empty outfile created, $? == 0
+
+7.  ls | exit 11 | cat -e
+    should print nothing

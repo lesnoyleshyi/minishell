@@ -87,3 +87,39 @@ void	execute_binary(t_data *cmd_data)
 		g_common->err_number = get_child_exit_status(pid);
 	}
 }
+
+//void	pipeline(t_data *command_list)
+//{
+//	execute_all_except_last(command_list);
+//	execute_last(command_list);
+//}
+//
+//void	execute_all_except_last(t_data *command_list)
+//{
+//	t_pipeline_fds	fds;
+//	pid_t			pid;
+//	t_data			*cur_cmd;
+//
+//	signal(SIGCHLD, SIG_IGN);
+//	ft_initialise_stdin_stdout(&fds);
+//	cur_cmd = command_list;
+//	while (cur_cmd != NULL && cur_cmd->next != NULL)
+//	{
+//		substitute_fd(fds.fd_in, 0);
+//		if (ft_do_piping(&fds, cur_cmd->command[0]) != 0)
+//		{
+//			cur_cmd = cur_cmd->next;
+//			continue;
+//		}
+//		if (choose_output(&fds.fd_out, cur_cmd->file) != -1)
+//			dup2(fds.fd_out, 1);
+//		close(fds.fd_out);
+//		pid = fork();
+//		if (pid == 0)
+//			execute_in_child(&fds, cur_cmd);
+//		else
+//			cur_cmd = cur_cmd->next;
+//	}
+//	substitute_fd(fds.fd_in, 0);
+//}
+

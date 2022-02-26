@@ -114,7 +114,7 @@ typedef struct s_pipeline_fds {
 	int reserved_stdout;
 }				t_pipeline_fds;
 
-extern t_common	*g_common;
+t_common	*g_common;
 
 /* PROTOTYPE */
 
@@ -193,9 +193,9 @@ void		b_exit(int exit_status);
 
 /* STYCHO */
 //   --- execute/execute_funcs.c ---   //
-int		execute_pipeline(t_data *command_list, char *envp[]);
+int		execute_pipeline(t_data *command_list);
 void	ft_execve(char *pathname, char *argv[], char *envp[]);
-void	execute(t_data *data, char *envp[]);
+void	execute(t_data *data);
 void	execute_simple(t_data *cmd_data);
 
 //   --- execute/choose_output.c ---   //
@@ -218,6 +218,7 @@ size_t	char_p_arr_len(char **arr);
 
 //   --- signal/signal_funcs.c ---   //
 void	ft_clear_input(int signal);
+void 	catch_child();
 
 //   --- error/error.c ---   //
 void	custom_message_exit(char *pathname, int message_code, int exit_status);

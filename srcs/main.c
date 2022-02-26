@@ -67,7 +67,7 @@ int main(int argc, char **argv, char **envp)
 //		print_data(data);
 //		printf("END OF DATA\n");
 //		execute_pipeline(data, envp);
-		execute(data, envp);
+		execute(data);
 		destroy_data(&data);
 		if (*input != '\0')
 			add_history(input);

@@ -25,3 +25,12 @@ void	ft_clear_input(int signal)
 		rl_redisplay();
 	}
 }
+
+void catch_child()
+{
+	int		exit_status;
+
+	waitpid(-1, &exit_status, WNOHANG);
+	g_common->err_number = WEXITSTATUS(exit_status);
+	write(2, "z--\n", 4);
+}
