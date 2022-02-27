@@ -42,7 +42,7 @@ int	ft_check_read_permissions(char *filename);
 //*
 //Returns -1 if there is any error with any file from redir_list
 //Returns 0 on success
-int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
+int	do_last_cmd_redirs(t_pipeline_fds *fds_s, t_file *redir_list, pid_t *pid);
 
 //Creates pipe inside itself and make
 //fd_in points to pipe's input
@@ -54,7 +54,7 @@ int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
 //	fd_in = pipe_fds[0];
 //	fd_out = pipe_fds[1];
 //
-int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
+int do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 
 //Closes old_fd and makes new_fd points to the source of old_fd
 //Returns 0 on success
@@ -72,14 +72,14 @@ int	choose_output(int *old_output, t_file *redir_list)
 		{
 			close(*old_output);
 			*old_output = -1;
-			return (ft_perror_and_return(cur_file->name, -1));
+			return (perror_and_return(cur_file->name, -1));
 		}
 		else if (cur_file->mod == E_OUT || cur_file->mod == E_APPEND)
 		{
 			close(*old_output);
 			*old_output = ft_open_file(cur_file->name, cur_file->mod);
 			if (*old_output == -1)
-				return (ft_perror_and_return(cur_file->name, -1));
+				return (perror_and_return(cur_file->name, -1));
 		}
 		cur_file = cur_file->next;
 	}
@@ -107,25 +107,28 @@ int ft_is_here_output_redirections(t_file *list_of_all_redirections)
 	return (0);
 }
 
-int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list)
+int	do_last_cmd_redirs(t_pipeline_fds *fds_s, t_file *redir_list, pid_t *pid)
 {
 	if (ft_is_here_output_redirections(redir_list) == 1)
 	{
-		if (choose_output(&pipeline_fds_s->fd_out, redir_list) == -1)
+		if (choose_output(&fds_s->fd_out, redir_list) == -1)
 		{
-			g_common->err_number = 1;
-			return (-1);
+			*pid = fork();
+			if (*pid == 0)
+				exit(1);
+			else
+				return (-1);
 		}
 	}
 	else
-		pipeline_fds_s->fd_out = dup(pipeline_fds_s->reserved_stdout);
+		fds_s->fd_out = dup(fds_s->reserved_stdout);
 	return (0);
 }
 
-int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name)
+int do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name)
 {
 	if (pipe(pipe_fds_struct->pipe_fds) == -1)
-		return (ft_perror_and_return(cmd_name, errno));
+		return (perror_and_return(cmd_name, errno));
 	pipe_fds_struct->fd_in = pipe_fds_struct->pipe_fds[0];
 	pipe_fds_struct->fd_out = pipe_fds_struct->pipe_fds[1];
 	return (0);

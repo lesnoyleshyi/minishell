@@ -22,12 +22,15 @@ int	ft_execute_null_cmd();
 //Expand pathname and call execve() on it
 void	ft_execve(char *pathname, char *argv[], char *envp[]);
 
-//Helps reduce lines of ft_execute_pipeline
+//Helps reduce lines of execute_pipeline() function
 //*
-void	ft_initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
+void	initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
 
 //Resets stdin to 0 and stdout to 1 after execution command
-void	ft_reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
+void	reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
+
+//Executes commands connected with pipes
+void	execute_pipeline(t_data *command_list);
 
 void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd);
 
@@ -41,39 +44,34 @@ void	execute(t_data *data)
 		execute_pipeline(data);
 }
 
-int	execute_pipeline(t_data *command_list)
+void	execute_pipeline(t_data *command_list)
 {
 	t_pipeline_fds	fds;
 	pid_t			pid;
 	t_data			*cur_cmd;
 
-	ft_initialise_stdin_stdout(&fds);
+	initialise_stdin_stdout(&fds);
 	cur_cmd = command_list;
 	while (cur_cmd)
 	{
 		substitute_fd(fds.fd_in, 0);
-		if (!cur_cmd->next && ft_make_last_cmd_redirs(&fds, cur_cmd->file) < 0)	//if it's the last command
+		if (!cur_cmd->next && do_last_cmd_redirs(&fds, cur_cmd->file, &pid) < 0)
 			break ;
-		else if (cur_cmd->next && ft_do_piping(&fds, cur_cmd->command[0]) != 0)	//it's not the last command in pipeline
-		{
-			cur_cmd = cur_cmd->next;
-			continue;
-		}
+		else if (cur_cmd->next != NULL)
+			do_piping(&fds, cur_cmd->command[0]);
 		if (choose_output(&fds.fd_out, cur_cmd->file) != -1)
 			dup2(fds.fd_out, 1);
-		close(fds.fd_out);														//I'm not sure if it's safe in case fd_out == 1 - maybe should be checked
+		close(fds.fd_out);
 		pid = fork();
-		if (pid == 0)															//in child process
+		if (pid == 0)
 			execute_in_child(&fds, cur_cmd);
 		cur_cmd = cur_cmd->next;
 	}
-	printf("\n %d\n", pid);
 	ft_wait(pid);
-	ft_reset_stdin_stdout(&fds);
-	return(13);
+	reset_stdin_stdout(&fds);
 }
 
-void	ft_initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
+void	initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
 {
 	pipe_fds_struct->reserved_stdin = dup(0);
 	pipe_fds_struct->reserved_stdout = dup(1);
@@ -81,7 +79,7 @@ void	ft_initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
 	pipe_fds_struct->fd_out = 1;
 }
 
-void	ft_reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
+void	reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
 {
 	dup2(pipe_fds_struct->reserved_stdin, 0);
 	dup2(pipe_fds_struct->reserved_stdout, 1);
@@ -113,7 +111,6 @@ void	ft_execve(char *pathname, char *argv[], char *envp[])
 {
 	char	*abs_path;
 
-//	errno = 0;
 	if (pathname == NULL)
 		exit(0);
 	abs_path = get_abs_path_to_binary(pathname);
@@ -122,6 +119,6 @@ void	ft_execve(char *pathname, char *argv[], char *envp[])
 	if (ft_strcmp("command not found", abs_path) == 0)
 		custom_message_exit(pathname, CMD_NOT_FOUND, EXIT_COMMAND_NOT_FOUND);
 	execve(abs_path, argv, envp);
-	ft_perror_and_return(pathname, 1);
+	perror_and_return(pathname, 1);
 	exit(translate_errno_to_exit_status(errno));
 }

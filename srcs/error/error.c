@@ -4,7 +4,7 @@
 
 //Prints error message in format "minishval': message: <errno>"
 //and returns ret_val.
-int	ft_perror_and_return(char *message, int ret_val);
+int	perror_and_return(char *message, int ret_val);
 
 //This function's purpose is to handle "command not found" and "is a directory"
 //errors in the way bash does it.
@@ -24,7 +24,7 @@ void	custom_message_exit(char *pathname, int message_code, int exit_status);
 //corresponds to errno == 13 and exit status code == 126
 int	translate_errno_to_exit_status(int errno_val);
 
-int	ft_perror_and_return(char *message, int ret_val)
+int	perror_and_return(char *message, int ret_val)
 {
 	write(2, "minishval': ", 12);
 	perror(message);

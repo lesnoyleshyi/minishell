@@ -64,8 +64,8 @@ int	choose_inp_src(t_file *redirect_list)
 	if (input_fd == -1)
 	{
 		if (cur_file->mod == E_HEREDOC)
-			return(ft_perror_and_return("heredoc", 1));
-		return (ft_perror_and_return(cur_file->name, -1));
+			return(perror_and_return("heredoc", 1));
+		return (perror_and_return(cur_file->name, -1));
 	}
 	dup2(input_fd, 0);
 	if (input_fd != 0)

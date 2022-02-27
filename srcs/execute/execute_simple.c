@@ -101,12 +101,12 @@ void	execute_binary(t_data *cmd_data)
 //	t_data			*cur_cmd;
 //
 //	signal(SIGCHLD, SIG_IGN);
-//	ft_initialise_stdin_stdout(&fds);
+//	initialise_stdin_stdout(&fds);
 //	cur_cmd = command_list;
 //	while (cur_cmd != NULL && cur_cmd->next != NULL)
 //	{
 //		substitute_fd(fds.fd_in, 0);
-//		if (ft_do_piping(&fds, cur_cmd->command[0]) != 0)
+//		if (do_piping(&fds, cur_cmd->command[0]) != 0)
 //		{
 //			cur_cmd = cur_cmd->next;
 //			continue;

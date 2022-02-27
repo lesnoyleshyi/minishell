@@ -193,7 +193,7 @@ void		b_exit(int exit_status);
 
 /* STYCHO */
 //   --- execute/execute_funcs.c ---   //
-int		execute_pipeline(t_data *command_list);
+void	execute_pipeline(t_data *command_list);
 void	ft_execve(char *pathname, char *argv[], char *envp[]);
 void	execute(t_data *data);
 void	execute_simple(t_data *cmd_data);
@@ -202,9 +202,9 @@ void	execute_simple(t_data *cmd_data);
 int	substitute_fd(int old_fd, int new_fd);
 int	ft_open_file(char *filename, int mode_for_open);
 int	choose_output(int *old_output, t_file *redir_list);
-int ft_do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
+int do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 int ft_is_here_output_redirections(t_file *list_of_all_redirections);
-int	ft_make_last_cmd_redirs(t_pipeline_fds *pipeline_fds_s, t_file *redir_list);
+int	do_last_cmd_redirs(t_pipeline_fds *fds_s, t_file *redir_list, pid_t *pid);
 
 //   --- execute/choose_input.c ---   //
 int	choose_inp_src(t_file *redirect_list);
@@ -224,7 +224,7 @@ void	catch_child2();
 
 //   --- error/error.c ---   //
 void	custom_message_exit(char *pathname, int message_code, int exit_status);
-int		ft_perror_and_return(char *message, int ret_val);
+int		perror_and_return(char *message, int ret_val);
 int		translate_errno_to_exit_status(int errno_val);
 int		get_child_exit_status(pid_t pid);
 
