@@ -11,38 +11,32 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include "errno.h"
 #include "signal.h"
 
-int	ft_open_output_files(t_file *file_list);
-
-//Do nothing but exit(0)
-int	ft_execute_null_cmd();
-
-//Expand pathname and call execve() on it
-void	ft_execve(char *pathname, char *argv[], char *envp[]);
-
 //Helps reduce lines of execute_pipeline() function
-//*
+//We need quite a lot file descriptors for pipeline:
+//reserved_stdin - to be able to reset stdin to default
+// 		in case it's changed withing pipeline;
+//reserved_stdout - the same as reserved_stdin;
+//fd_in - temporary pointer to terminal's input, file or pipe;
+//fd_out - temporary pointer to terminal's output, file or pipe.
 void	initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
 
-//Resets stdin to 0 and stdout to 1 after execution command
+//Resets file descriptor 0 to terminal's input and
+//file descriptor 1 to terminal's output
+//after execution of all commands in pipeline.
+//It also closes unnecessary file descriptors
+//for reserved input and output.
 void	reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
 
 //Executes commands connected with pipes
 void	execute_pipeline(t_data *command_list);
 
+//Do all necessary stuff in child process:
+//closes pipe's output,
+//exits with error status 1 if redirections fails or 0 in case null command,
+//executes builtin or binary and exits with appropriate exit status.
 void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd);
-
-void	execute(t_data *data)
-{
-	if (data == NULL)
-		return ;
-	if (data->next == NULL)
-		execute_simple(data);
-	else
-		execute_pipeline(data);
-}
 
 void	execute_pipeline(t_data *command_list)
 {
@@ -71,6 +65,29 @@ void	execute_pipeline(t_data *command_list)
 	reset_stdin_stdout(&fds);
 }
 
+void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
+{
+	int		builtin_type;
+	char	**new_envp;
+
+	close(pipe_fds_struct->pipe_fds[0]);
+	if (pipe_fds_struct->fd_out == -1 || choose_inp_src(cmd->file) != 0)
+		exit(1);
+	if (cmd->command == NULL)
+		exit(0);
+	builtin_type = check_function(cmd->command[0]);
+	if (builtin_type != E_NOT_FUNCTION)
+	{
+		//при такой реализации возможен race condition: первый builtin внутри себя
+		//поменяет значение глобалки, а второй поменяет её раньше, чем первый вызовет exit();
+		//так что лучше бы builtin-ы сделать возвращающими "exit status-ы", а не меняющими значение глобалки
+		execute_builtin(cmd, builtin_type);
+		exit(g_common->err_number);
+	}
+	new_envp = new_env(cmd->param_list);
+	ft_execve(cmd->command[0], cmd->command, new_envp);
+}
+
 void	initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
 {
 	pipe_fds_struct->reserved_stdin = dup(0);
@@ -85,40 +102,4 @@ void	reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
 	dup2(pipe_fds_struct->reserved_stdout, 1);
 	close(pipe_fds_struct->reserved_stdin);
 	close(pipe_fds_struct->reserved_stdout);
-}
-
-void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
-{
-	int		builtin_type;
-	char	**new_envp;
-
-	close(pipe_fds_struct->pipe_fds[0]);
-	if (pipe_fds_struct->fd_out == -1 || choose_inp_src(cmd->file) != 0)
-		exit(1);
-	if (cmd->command == NULL)
-		exit(0);
-	builtin_type = check_function(cmd->command[0]);
-	if (builtin_type != E_NOT_FUNCTION)
-	{
-		execute_builtin(cmd, builtin_type);
-		exit(g_common->err_number);
-	}
-	new_envp = new_env(cmd->param_list);
-	ft_execve(cmd->command[0], cmd->command, new_envp);
-}
-
-void	ft_execve(char *pathname, char *argv[], char *envp[])
-{
-	char	*abs_path;
-
-	if (pathname == NULL)
-		exit(0);
-	abs_path = get_abs_path_to_binary(pathname);
-	if (is_directory(abs_path) == 1)
-		custom_message_exit(pathname, CMD_IS_DIR, EXIT_COMMAND_IS_DIRECTORY);
-	if (ft_strcmp("command not found", abs_path) == 0)
-		custom_message_exit(pathname, CMD_NOT_FOUND, EXIT_COMMAND_NOT_FOUND);
-	execve(abs_path, argv, envp);
-	perror_and_return(pathname, 1);
-	exit(translate_errno_to_exit_status(errno));
 }

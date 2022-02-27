@@ -12,6 +12,9 @@
 
 #include "../../includes/minishell.h"
 
+//Just routes execution depending on "data" content
+void	execute(t_data *data);
+
 //Executes builtin, binary or null-command
 void	execute_simple(t_data *cmd_data);
 
@@ -25,6 +28,19 @@ void	execute_null_command(t_file *redir_list);
 //Executes binary in subprocess by execve() call
 //Creates char *env[] in function new_env
 void	execute_binary(t_data *cmd_data);
+
+//Expand pathname and call execve() on it
+void	ft_execve(char *pathname, char *argv[], char *envp[]);
+
+void	execute(t_data *data)
+{
+	if (data == NULL)
+		return ;
+	if (data->next == NULL)
+		execute_simple(data);
+	else
+		execute_pipeline(data);
+}
 
 void	execute_simple(t_data *cmd_data)
 {
@@ -88,38 +104,18 @@ void	execute_binary(t_data *cmd_data)
 	}
 }
 
-//void	pipeline(t_data *command_list)
-//{
-//	execute_all_except_last(command_list);
-//	execute_last(command_list);
-//}
-//
-//void	execute_all_except_last(t_data *command_list)
-//{
-//	t_pipeline_fds	fds;
-//	pid_t			pid;
-//	t_data			*cur_cmd;
-//
-//	signal(SIGCHLD, SIG_IGN);
-//	initialise_stdin_stdout(&fds);
-//	cur_cmd = command_list;
-//	while (cur_cmd != NULL && cur_cmd->next != NULL)
-//	{
-//		substitute_fd(fds.fd_in, 0);
-//		if (do_piping(&fds, cur_cmd->command[0]) != 0)
-//		{
-//			cur_cmd = cur_cmd->next;
-//			continue;
-//		}
-//		if (choose_output(&fds.fd_out, cur_cmd->file) != -1)
-//			dup2(fds.fd_out, 1);
-//		close(fds.fd_out);
-//		pid = fork();
-//		if (pid == 0)
-//			execute_in_child(&fds, cur_cmd);
-//		else
-//			cur_cmd = cur_cmd->next;
-//	}
-//	substitute_fd(fds.fd_in, 0);
-//}
+void	ft_execve(char *pathname, char *argv[], char *envp[])
+{
+	char	*abs_path;
 
+	if (pathname == NULL)
+		exit(0);
+	abs_path = get_abs_path_to_binary(pathname);
+	if (is_directory(abs_path) == 1)
+		custom_message_exit(pathname, CMD_IS_DIR, EXIT_COMMAND_IS_DIRECTORY);
+	if (ft_strcmp("command not found", abs_path) == 0)
+		custom_message_exit(pathname, CMD_NOT_FOUND, EXIT_COMMAND_NOT_FOUND);
+	execve(abs_path, argv, envp);
+	perror_and_return(pathname, 1);
+	exit(translate_errno_to_exit_status(errno));
+}
