@@ -40,8 +40,8 @@ int main(int argc, char **argv, char **envp)
 	t_data	*data;
 
 	g_common = NULL;
-	if (errno == 0)
-	signal(SIGINT, ft_clear_input);
+	init_signal_handling();
+//	signal(SIGINT, clear_input);
 	if (argc || argv)
 	{};
 	g_common = init_common_data((const char **)envp);

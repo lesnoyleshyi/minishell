@@ -78,10 +78,10 @@ void	execute_null_command(t_file *redir_list)
 
 void	execute_binary(t_data *cmd_data)
 {
-	int	pid;
-	int out_fd;
-	int reserved_stdout;
-	char **new_envp;
+	int		pid;
+	int		out_fd;
+	int		reserved_stdout;
+	char	**new_envp;
 
 	reserved_stdout = dup(1);
 	out_fd = 1;

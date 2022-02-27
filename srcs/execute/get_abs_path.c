@@ -19,7 +19,7 @@ void	free_arr(char **paths_arr);
 //Checks whether object pointed to by pathname is directory or not.
 //Returns 1 if pathname points to directory,
 //Returns 0 if pathname points to other type (regular file, socket, pipe, etc).
-int	is_directory(char *pathname);
+int		is_directory(char *pathname);
 
 //Searches full path to binary in $PATH
 //*
@@ -58,7 +58,7 @@ char	*get_abs_path_to_binary(char *pathname)
 
 void	free_arr(char **paths_arr)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (paths_arr != NULL && paths_arr[++i] != NULL)
@@ -68,7 +68,8 @@ void	free_arr(char **paths_arr)
 
 int	is_directory(char *pathname)
 {
-	struct stat path_stat;
+	struct stat	path_stat;
+
 	stat(pathname, &path_stat);
 	return (S_ISDIR(path_stat.st_mode));
 }

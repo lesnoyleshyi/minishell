@@ -217,7 +217,8 @@ size_t	param_list_len(t_param *param);
 size_t	char_p_arr_len(char **arr);
 
 //   --- signal/signal_funcs.c ---   //
-void	ft_clear_input(int signal);
+void	init_signal_handling();
+void	clear_input();
 void	ft_wait(pid_t last_pid);
 void 	catch_child();
 void	catch_child2();

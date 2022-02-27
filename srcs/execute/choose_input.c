@@ -119,6 +119,9 @@ int	ft_heredoc_to_pipe(char *string, int heredoc_len)
 	return (pipe_fds[0]);
 }
 
+//todo этот файл нигде пока не удаляется - надо пофиксить
+//не уверен, что его не нужно явно в какую-то директорию пихать
+//в таком виде он будет создаваться в той папке, в котрой выполняется процесс
 int	ft_heredoc_to_temp_file(char *string, int heredoc_len)
 {
 	int	fd;
