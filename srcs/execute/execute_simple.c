@@ -53,7 +53,7 @@ void	execute_simple(t_data *cmd_data)
 	}
 	builtin_type = check_function(cmd_data->command[0]);
 	if (builtin_type != E_NOT_FUNCTION)
-		execute_builtin(cmd_data, builtin_type);
+		execute_builtin(cmd_data, builtin_type, 0);
 	else
 		execute_binary(cmd_data);
 }

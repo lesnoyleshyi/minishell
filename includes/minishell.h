@@ -124,7 +124,7 @@ void		second_parser(t_list **begin, t_data *data);
 char		*replace_all_param(char *str);
 int			get_mod_file(t_list **begin, t_list **element, int mod);
 int			read_heredoc(t_data *data);
-void		execute_builtin(t_data *data, int flag);
+void		execute_builtin(t_data *data, int flag, int pipe_flag);
 void		read_old_history(void);
 void		add_new_history(void);
 
@@ -187,7 +187,7 @@ void		echo(char **arg);
 void		unset(char **arg);
 void		cd(char *dir);
 void		pwd(void);
-void		b_exit(int exit_status);
+void		b_exit(int exit_status, int pipe_flag);
 
 /* PROTOTYPE */
 

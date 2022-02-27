@@ -5,7 +5,7 @@
  * to all builtins and executes the required builtin
  */
 
-void	execute_builtin(t_data *data, int flag)
+void	execute_builtin(t_data *data, int flag, int pipe_flag)
 {
 	if (flag == E_NOT_FUNCTION)
 		return ;
@@ -24,7 +24,7 @@ void	execute_builtin(t_data *data, int flag)
 	else if (flag == E_EXIT)
 	{
 		if (data->command == NULL || data->command[1] == NULL)
-			b_exit(g_common->err_number);
-		b_exit(ft_atoi(data->command[1]));
+			b_exit(g_common->err_number, pipe_flag);
+		b_exit(ft_atoi(data->command[1]), pipe_flag);
 	}
 }

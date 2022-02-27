@@ -81,7 +81,7 @@ void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
 		//при такой реализации возможен race condition: первый builtin внутри себя
 		//поменяет значение глобалки, а второй поменяет её раньше, чем первый вызовет exit();
 		//так что лучше бы builtin-ы сделать возвращающими "exit status-ы", а не меняющими значение глобалки
-		execute_builtin(cmd, builtin_type);
+		execute_builtin(cmd, builtin_type, 1);
 		exit(g_common->err_number);
 	}
 	new_envp = new_env(cmd->param_list);

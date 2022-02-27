@@ -56,17 +56,13 @@ int main(int argc, char **argv, char **envp)
 		if (input == NULL)
 		{
 			add_new_history();
-			b_exit(g_common->err_number);
+			b_exit(g_common->err_number, 0);
 		}
 //		printf("%s\n", input);
 		data = init_data(input);
-//		execute(data);
-//		if (data != NULL && data->command != NULL && data->next == NULL)
-//			execute_builtin(data, check_function(data->command[0]));
 //		printf("\nPRINT DATA\n");
 //		print_data(data);
 //		printf("END OF DATA\n");
-//		execute_pipeline(data, envp);
 		execute(data);
 		destroy_data(&data);
 		if (*input != '\0')

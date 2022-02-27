@@ -12,10 +12,9 @@
 
 #include "../../includes/minishell.h"
 
-void	b_exit(int exit_status)
+void	b_exit(int exit_status, int pipe_flag)
 {
-	write(2, "exit\n", 5);
-	if (exit_status < 0 || exit_status > 255)
-		exit(-1);
+	if (pipe_flag == 0)
+		write(2, "exit\n", 5);
 	exit(exit_status);
 }
