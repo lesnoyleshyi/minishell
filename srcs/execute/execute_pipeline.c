@@ -61,8 +61,8 @@ void	execute_pipeline(t_data *command_list)
 			execute_in_child(&fds, cur_cmd);
 		cur_cmd = cur_cmd->next;
 	}
-	ft_wait(pid);
 	reset_stdin_stdout(&fds);
+	ft_wait(pid);
 }
 
 void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
@@ -70,7 +70,6 @@ void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
 	int		builtin_type;
 	char	**new_envp;
 
-	signal(SIGPIPE, SIG_DFL);
 	close(pipe_fds_struct->pipe_fds[0]);
 	if (pipe_fds_struct->fd_out == -1 || choose_inp_src(cmd->file) != 0)
 		exit(1);
