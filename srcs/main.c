@@ -48,7 +48,6 @@ int main(int argc, char **argv, char **envp)
 		g_common = destroy_common_date();
 	read_old_history();
 //	print_common_param();
-
 	data = NULL;
 	while (TRUE)
 	{
@@ -69,5 +68,6 @@ int main(int argc, char **argv, char **envp)
 			add_history(input);
 		ft_lstadd_back(&(g_common->history), ft_lstnew(input));
 	}
+	//todo история не сохраняется, если мы выходим с помощью builtin-a "exit"
 	add_new_history();
 }

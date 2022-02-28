@@ -38,6 +38,8 @@ char	*get_abs_path_to_binary(char *pathname)
 	if (pathname == NULL || ft_strchr(pathname, '/') != NULL)
 		return (pathname);
 	i = -1;
+	//todo по чеклисту тут после unset PATH должно ломаться и выдавать
+	// no such file or directory
 	paths_arr = ft_split(getenv("PATH"), ':');
 	pathname_w_slash = ft_strjoin("/", pathname);
 	while (paths_arr != NULL && paths_arr[++i] != NULL)

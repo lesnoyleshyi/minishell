@@ -38,6 +38,11 @@ void	do_nothing()
 	rl_redisplay();
 }
 
+void	child_quit()
+{
+
+}
+
 void	init_signal_handling(void (*handler)(int))
 {
 	struct sigaction sa;
@@ -64,10 +69,4 @@ void	child_handler(int signal)
 		SIG_DFL;
 	if (signal == SIGTERM)
 		SIG_DFL;
-}
-
-void	redef_sigint_child(int signal)
-{
-	(void) signal;
-	g_common->err_number = 130;
 }

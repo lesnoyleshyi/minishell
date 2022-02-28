@@ -46,7 +46,7 @@ void	execute_simple(t_data *cmd_data)
 {
 	int	builtin_type;
 
-	if (cmd_data->command == NULL)
+	if (cmd_data->command == NULL || cmd_data->command[0][0] == '\0')
 	{
 		execute_null_command(cmd_data->file);
 		return ;
@@ -63,6 +63,7 @@ void	execute_null_command(t_file *redir_list)
 	pid_t	pid;
 	int		stdout_copy;
 
+	//todo вот тут надо запиндюрить обновление переменных
 	stdout_copy = 1;
 	pid = fork();
 	if (pid == 0)
@@ -109,11 +110,14 @@ void	ft_execve(char *pathname, char *argv[], char *envp[])
 {
 	char	*abs_path;
 
-	if (pathname == NULL)
+	if (pathname == NULL || ft_strlen(pathname) == 0)
 		exit(0);
 	abs_path = get_abs_path_to_binary(pathname);
 	if (is_directory(abs_path) == 1)
+	{
+		printf("wtf: %s\n", abs_path);
 		custom_message_exit(pathname, CMD_IS_DIR, EXIT_COMMAND_IS_DIRECTORY);
+	}
 	if (ft_strcmp("command not found", abs_path) == 0)
 		custom_message_exit(pathname, CMD_NOT_FOUND, EXIT_COMMAND_NOT_FOUND);
 	execve(abs_path, argv, envp);
