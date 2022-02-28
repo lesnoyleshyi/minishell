@@ -32,11 +32,16 @@ void	reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
 //Executes commands connected with pipes
 void	execute_pipeline(t_data *command_list);
 
-//Do all necessary stuff in child process:
+//Does all necessary stuff in child process:
 //closes pipe's output,
 //exits with error status 1 if redirections fails or 0 in case null command,
 //executes builtin or binary and exits with appropriate exit status.
 void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd);
+
+//Waits for all child processes to avoid zombie creation
+//Changes global variable "err_number" if catches SIGCHILD
+//from process denoted by last_pid.
+void	ft_wait(pid_t last_pid);
 
 void	execute_pipeline(t_data *command_list)
 {
@@ -70,6 +75,7 @@ void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
 	int		builtin_type;
 	char	**new_envp;
 
+
 	close(pipe_fds_struct->pipe_fds[0]);
 	if (pipe_fds_struct->fd_out == -1 || choose_inp_src(cmd->file) != 0)
 		exit(1);
@@ -99,4 +105,18 @@ void	reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct)
 	dup2(pipe_fds_struct->reserved_stdout, 1);
 	close(pipe_fds_struct->reserved_stdin);
 	close(pipe_fds_struct->reserved_stdout);
+}
+
+void	ft_wait(pid_t last_pid)
+{
+	pid_t	cur_pid;
+	int		exit_status;
+
+	cur_pid = waitpid(-1, &exit_status, 0);
+	while (cur_pid != -1)
+	{
+		if (cur_pid == last_pid)
+			g_common->err_number = WEXITSTATUS(exit_status);
+		cur_pid = waitpid(-1, &exit_status, 0);
+	}
 }

@@ -217,11 +217,15 @@ size_t	param_list_len(t_param *param);
 size_t	char_p_arr_len(char **arr);
 
 //   --- signal/signal_funcs.c ---   //
-void	init_signal_handling();
+void	init_signal_handling(void (*handler)(int));
+void	init_signal_handling_p();
 void	clear_input();
 void	ft_wait(pid_t last_pid);
 void 	catch_child();
 void	catch_child2();
+void	main_handler(int signal);
+void	child_handler(int signal);
+void	redef_sigint_child(int signal);
 
 //   --- error/error.c ---   //
 void	custom_message_exit(char *pathname, int message_code, int exit_status);

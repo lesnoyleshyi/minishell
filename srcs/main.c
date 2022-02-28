@@ -39,16 +39,16 @@ int main(int argc, char **argv, char **envp)
 	char	*input;
 	t_data	*data;
 
+	(void)argc;
+	(void)argv;
 	g_common = NULL;
-	init_signal_handling();
-//	signal(SIGINT, clear_input);
-	if (argc || argv)
-	{};
+	init_signal_handling(main_handler);
 	g_common = init_common_data((const char **)envp);
 	if (check_common() == TRUE)
 		g_common = destroy_common_date();
 	read_old_history();
 //	print_common_param();
+
 	data = NULL;
 	while (TRUE)
 	{

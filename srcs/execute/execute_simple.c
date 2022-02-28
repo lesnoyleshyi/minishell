@@ -90,6 +90,7 @@ void	execute_binary(t_data *cmd_data)
 	pid = fork();
 	if (pid == 0)
 	{
+		init_signal_handling(child_handler);
 		if (out_fd == -1)
 			exit(EXIT_FAILURE);
 		if (choose_inp_src(cmd_data->file) != 0)

@@ -50,6 +50,8 @@ int	get_child_exit_status(pid_t pid)
 	waitpid(pid, &exit_status, 0);
 	if (exit_status == 0)
 		return (0);
+	if (WIFSIGNALED(exit_status))
+		return (128 + exit_status);
 	errno_val = WEXITSTATUS(exit_status);
 	return (translate_errno_to_exit_status(errno_val));
 }

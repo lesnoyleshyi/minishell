@@ -13,10 +13,13 @@
 #include "../../includes/minishell.h"
 #include <signal.h>
 
-//It's here because readline's header doesn't work without it
+//It's here because readline.h doesn't contain this functions,
+//whereas they are implemented
 void	rl_replace_line (const char *text, int clear_undo);
+int		rl_clear_visible_line (void);
 
-void	signal_handler(int signal);
+//Handler for our program to mimic bash's behaviour on CTRL+\ and CTRL+C
+void	main_handler(int signal);
 
 void	clear_input()
 {
@@ -28,43 +31,43 @@ void	clear_input()
 	rl_redisplay();
 }
 
-void	ft_wait(pid_t last_pid)
+void	do_nothing()
 {
-	pid_t	cur_pid;
-	int		exit_status;
-
-	cur_pid = waitpid(-1, &exit_status, 0);
-	while (cur_pid != -1)
-	{
-		if (cur_pid == last_pid)
-			g_common->err_number = WEXITSTATUS(exit_status);
-		cur_pid = waitpid(-1, &exit_status, 0);
-	}
+	rl_clear_visible_line();
+	rl_on_new_line();
+	rl_redisplay();
 }
 
-void	init_signal_handling()
+void	init_signal_handling(void (*handler)(int))
 {
 	struct sigaction sa;
 
-	sa.sa_handler = signal_handler;
-//	sa.sa_handler = SIG_IGN;
-//	sigemptyset(&sa.sa_mask);
-//	sa.sa_flags = 0;
-
-//	sigaction(SIGINT,  &signal_handler, NULL);
-//	sigaction(SIGQUIT, &signal_handler, NULL);
-
+	sa.sa_handler = handler;
 	sigaction(SIGINT,  &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
-//	sigaction(SIGPIPE, &sa, NULL);
+//	sigaction(SIGTERM, &sa, NULL);
 }
 
-void	signal_handler(int signal)
+void	main_handler(int signal)
 {
 	if (signal == SIGINT)
 		clear_input();
 	if (signal == SIGQUIT)
-		;
-//	if (signal == SIGPIPE)
-//		exit(0);
+		do_nothing();
+}
+
+void	child_handler(int signal)
+{
+	if (signal == SIGINT)
+		SIG_DFL;
+	if (signal == SIGQUIT)
+		SIG_DFL;
+	if (signal == SIGTERM)
+		SIG_DFL;
+}
+
+void	redef_sigint_child(int signal)
+{
+	(void) signal;
+	g_common->err_number = 130;
 }
