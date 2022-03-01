@@ -120,4 +120,5 @@ void	export(char **arg)
 			export_local_param(element, param);
 		++arg;
 	}
+	g_common->err_number = 0;
 }

@@ -13,8 +13,8 @@
 #include "../../includes/minishell.h"
 
 /**
- * This function creates an element of type
- * "t_data" with null values
+ * This function creates an element
+ * of type "t_data" with null values
  */
 
 t_data	*create_data(void)

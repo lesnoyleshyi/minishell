@@ -21,7 +21,7 @@ void	echo(char **arg)
 	int	n;
 
 	n = 0;
-	if (*arg != NULL && ft_strcmp(*arg, "-n") == 0)
+	while (*arg != NULL && ft_strcmp(*arg, "-n") == 0)
 	{
 		n = 1;
 		++arg;
@@ -35,4 +35,5 @@ void	echo(char **arg)
 	}
 	if (n == 0)
 		write(1, "\n", 1);
+	g_common->err_number = 0;
 }

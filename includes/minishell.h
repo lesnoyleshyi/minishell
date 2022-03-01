@@ -144,9 +144,10 @@ int			check_get_param(const char *str);
 int			check_spec_sym(char c);
 int			check_content(const char *str, int flag);
 int			check_presence_param(t_param **element, char *name);
-int			check_valid_param_name(char **arg);
 int			check_common(void);
 char		check_param_name(char *str);
+int			check_valid_param_name(char **arg);
+int			check_param_name_for_unset(char **arg);
 
 //   --- data/param.c ---   //
 t_param		*init_param(const char *str);
@@ -156,7 +157,7 @@ void		destroy_param(t_param **begin);
 char		*get_param_value(const char *name);
 
 //   --- data/common.c ---   //
-t_common	*init_common_data(const char **envp);
+t_common	*init_common_data(char **envp);
 t_common	*destroy_common_date(void);
 
 //   --- data/data.c ---   //
@@ -188,6 +189,11 @@ void		unset(char **arg);
 void		cd(char *dir);
 void		pwd(void);
 void		b_exit(int exit_status, int pipe_flag);
+
+//   --- error/put_error.c ---   //
+void	put_error_param_name(char ch);
+void	put_error_id_for_unset(char *arg);
+void	put_error_cd(char *dir_name, char *message, int oldpwd_flag);
 
 /* PROTOTYPE */
 

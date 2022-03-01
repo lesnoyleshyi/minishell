@@ -17,7 +17,7 @@
  * "envp" to a list of elements of type "t_param"
  */
 
-static t_param	*init_env(const char **envp)
+static t_param	*init_env(char **envp)
 {
 	int		i;
 	t_param	*new;
@@ -25,8 +25,10 @@ static t_param	*init_env(const char **envp)
 
 	i = -1;
 	begin = NULL;
-	while (envp[++i])
+	while (envp[++i] != NULL)
 	{
+		if (check_param_name(envp[i]) == '\0')
+			continue ;
 		new = init_param(envp[i]);
 		if (new == NULL)
 		{
@@ -88,7 +90,7 @@ static char	*get_history_file(t_param *shlvl, char *home_path)
  * information about environment variables
  */
 
-t_common	*init_common_data(const char **envp)
+t_common	*init_common_data(char **envp)
 {
 	t_common	*element;
 	t_param		*param;

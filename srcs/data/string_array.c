@@ -68,9 +68,10 @@ char	**convert_sublist_to_array(t_list *begin, t_list *stop)
 	index = 0;
 	while (index < size - 1)
 	{
+		begin->content = replace_all_param(begin->content);
+		remove_all_quote(begin->content);
 		if (begin->content != NULL)
 			mas[index++] = begin->content;
-		remove_all_quote(begin->content);
 		begin->content = NULL;
 		begin = begin->next;
 	}

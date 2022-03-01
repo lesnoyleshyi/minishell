@@ -61,6 +61,8 @@ static void	check_is_empty_last_content(t_list *begin)
 		return ;
 	last = ft_lstlast(begin);
 	str = last->content;
+	while (*str == ' ')
+		++str;
 	if (*str == '\0')
 		remove_element(&begin, last);
 }
@@ -82,6 +84,8 @@ void	first_pars(const char *line, t_list **begin)
 	{
 		start = end;
 		skip_space(line, &start);
+		if (line[start] == '\0')
+			break ;
 		end = get_end(line, start);
 		string = get_substr(line, start, end);
 		new_element = ft_lstnew(string);

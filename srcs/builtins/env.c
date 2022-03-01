@@ -28,4 +28,5 @@ void	env(void)
 			printf("%s=%s\n", param->name, param->value);
 		param = param->next;
 	}
+	g_common->err_number = 0;
 }

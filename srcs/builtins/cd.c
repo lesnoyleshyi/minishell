@@ -86,7 +86,7 @@ static void	dir_tire(void)
 	flag = check_presence_param(&param, OLD_PWD);
 	if (flag == NEW_PARAM)
 	{
-		printf("%s: %s: %s not set\n", NAME, C_CD, OLD_PWD);
+		put_error_cd(OLD_PWD, NOT_SET, TRUE);
 		return ;
 	}
 	else if (flag == LOCAL_PARAM)
@@ -95,8 +95,7 @@ static void	dir_tire(void)
 	{
 		if (chdir(param->value) == -1)
 		{
-			printf("%s: %s: %s: %s\n", NAME, C_CD,
-				param->value, strerror(errno));
+			put_error_cd(param->value, strerror(errno), FALSE);
 			return ;
 		}
 		else
@@ -105,6 +104,7 @@ static void	dir_tire(void)
 			pwd();
 		}
 	}
+	g_common->err_number = 0;
 }
 
 /**
@@ -120,8 +120,11 @@ void	cd(char *dir)
 		if (dir == NULL || ft_strcmp(dir, TILDA) == 0)
 			dir = g_common->home;
 		if (chdir(dir) == -1)
-			printf("%s: %s: %s: %s\n", NAME, C_CD, dir, strerror(errno));
+			put_error_cd(dir, strerror(errno), FALSE);
 		else
+		{
 			update_all_pwd();
+			g_common->err_number = 0;
+		}
 	}
 }

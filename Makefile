@@ -22,7 +22,7 @@ SRCS	=	main.c	\
 			$(addprefix builtins/, cd.c echo.c env.c exit.c export.c unset.c pwd.c) \
 			$(addprefix execute/, execute_simple.c execute_pipeline.c choose_input.c choose_output.c get_abs_path.c new_env.c) \
 			$(addprefix signal/, signal_funcs.c) \
-			$(addprefix error/, error.c)
+			$(addprefix error/, error.c put_error.c)
 
 D_SRCS	=	$(addprefix ${SRC_DIR}/,${SRCS})
 

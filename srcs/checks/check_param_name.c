@@ -19,8 +19,11 @@
 
 char	check_param_name(char *str)
 {
-	while (*str != '\0' && (*str == BOTTOM_LINE || ft_isalnum(*str) == 1))
+	while (*str != '\0' && (*str == BOTTOM_LINE || ft_isalnum(*str) == TRUE))
 		str++;
+	if (*str == INIT_PARAM || *str == '\0')
+		return (*str);
+	put_error_param_name(*str);
 	return (*str);
 }
 
@@ -35,13 +38,33 @@ int	check_valid_param_name(char **arg)
 
 	flag = '\0';
 	while (*arg != NULL && (flag == '\0' || flag == INIT_PARAM))
-	{
-		flag = check_param_name(*arg);
-		if (flag != '\0' && flag != INIT_PARAM)
-			printf("%s: syntax error near unexpected token \'%c\'\n", NAME, flag);
-		++arg;
-	}
+		flag = check_param_name(*(arg++));
 	if (flag == '\0' || flag == INIT_PARAM)
 		return (OK);
+	return (KO);
+}
+
+/**
+ * This function assumes an environment
+ * specifically for the "unset" builtin
+ */
+
+int	check_param_name_for_unset(char **arg)
+{
+	char	flag;
+
+	if (*arg == NULL)
+		return (KO);
+	while (*arg != NULL)
+	{
+		flag = check_param_name(*arg);
+		if (flag != '\0')
+			break;
+		++arg;
+	}
+	if (flag == '\0')
+		return (OK);
+	if (flag == INIT_PARAM)
+		put_error_id_for_unset(*arg);
 	return (KO);
 }

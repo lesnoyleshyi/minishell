@@ -22,7 +22,7 @@ void	unset(char **arg)
 	int		flag;
 	t_param	*param;
 
-	if (check_valid_param_name(arg) != OK)
+	if (check_param_name_for_unset(arg) != OK)
 		return ;
 	param = NULL;
 	while (*arg != NULL)
@@ -34,4 +34,5 @@ void	unset(char **arg)
 			delete_param(&g_common->local_param, param);
 		++arg;
 	}
+	g_common->err_number = 0;
 }
