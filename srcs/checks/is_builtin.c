@@ -19,9 +19,7 @@
  * the function will return "NOT_FUNCTION"
  */
 
-//Предлагаю переименовать в check_builtin / is_builtin / check_for_builtin / choose_builtin
-//или что-то типа того, потому что у нас нет функций
-int	check_function(const char *function)
+int	is_builtin(const char *function)
 {
 	if (ft_strcmp(function, C_CD) == 0)
 		return (E_CD);

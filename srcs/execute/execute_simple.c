@@ -48,10 +48,12 @@ void	execute_simple(t_data *cmd_data)
 
 	if (cmd_data->command == NULL || cmd_data->command[0][0] == '\0')
 	{
+		add_param_without_export(&cmd_data->param_list);
+		cmd_data->param_list = NULL;
 		execute_null_command(cmd_data->file);
 		return ;
 	}
-	builtin_type = check_function(cmd_data->command[0]);
+	builtin_type = is_builtin(cmd_data->command[0]);
 	if (builtin_type != E_NOT_FUNCTION)
 		execute_builtin(cmd_data, builtin_type, 0);
 	else

@@ -127,6 +127,7 @@ int			read_heredoc(t_data *data);
 void		execute_builtin(t_data *data, int flag, int pipe_flag);
 void		read_old_history(void);
 void		add_new_history(void);
+void		add_param_without_export(t_param **begin);
 
 //   --- string ---   //
 int			ft_strcmp(const char *s1, const char *s2);
@@ -138,7 +139,7 @@ void		remove_all_quote(char *str);
 char		*remove_string(char *str);
 
 //   --- checks ---   //
-int			check_function(const char *function);
+int			is_builtin(const char *function);
 int			check_determinate(char c);
 int			check_get_param(const char *str);
 int			check_spec_sym(char c);

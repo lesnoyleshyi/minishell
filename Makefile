@@ -14,10 +14,10 @@ SRCS	=	main.c	\
 			xlam/print.c \
 			$(addprefix data/, common.c	data.c list.c param.c file.c string_array.c) \
 			$(addprefix utils/, first_parser.c replace_param.c get_mod_file.c \
-						second_parser.c read_heredoc.c execute_builtin.c history.c) \
+						second_parser.c read_heredoc.c execute_builtin.c history.c add_param_without_export.c) \
 			$(addprefix string/, get_substr.c insert_str.c get_unsubstr.c \
 						ft_strcmp.c remove_all_quote.c remove_string.c) \
-			$(addprefix checks/, check_function.c check_get_param.c check_determinate.c \
+			$(addprefix checks/, is_builtin.c check_get_param.c check_determinate.c \
 						check_content.c check_param_name.c check_presence_param.c check_common.c)\
 			$(addprefix builtins/, cd.c echo.c env.c exit.c export.c unset.c pwd.c) \
 			$(addprefix execute/, execute_simple.c execute_pipeline.c choose_input.c choose_output.c get_abs_path.c new_env.c) \
