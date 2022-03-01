@@ -28,6 +28,10 @@ int		is_directory(char *pathname);
 //to handle this error like bash does.
 char	*get_abs_path_to_binary(char *pathname);
 
+//Searches for variable with name == "variable_name"
+//within environmental and local(shell) variables
+char *ft_getenv(const char *variable_name);
+
 char	*get_abs_path_to_binary(char *pathname)
 {
 	char	**paths_arr;
@@ -38,9 +42,7 @@ char	*get_abs_path_to_binary(char *pathname)
 	if (pathname == NULL || ft_strchr(pathname, '/') != NULL)
 		return (pathname);
 	i = -1;
-	//todo по чеклисту тут после unset PATH должно ломаться и выдавать
-	// no such file or directory
-	paths_arr = ft_split(getenv("PATH"), ':');
+	paths_arr = ft_split(ft_getenv("PATH"), ':');
 	pathname_w_slash = ft_strjoin("/", pathname);
 	while (paths_arr != NULL && paths_arr[++i] != NULL)
 	{
@@ -74,4 +76,25 @@ int	is_directory(char *pathname)
 
 	stat(pathname, &path_stat);
 	return (S_ISDIR(path_stat.st_mode));
+}
+
+char *ft_getenv(const char *variable_name)
+{
+	t_param	*cur_param;
+
+	cur_param = g_common->env;
+	while (cur_param != NULL)
+	{
+		if (ft_strcmp(cur_param->name, variable_name) == 0)
+			return (cur_param->value);
+		cur_param = cur_param->next;
+	}
+	cur_param = g_common->local_param;
+	while (cur_param != NULL)
+	{
+		if (ft_strcmp(cur_param->name, variable_name) == 0)
+			return (cur_param->value);
+		cur_param = cur_param->next;
+	}
+	return (NULL);
 }
