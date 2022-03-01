@@ -90,10 +90,10 @@ void	execute_binary(t_data *cmd_data)
 	out_fd = 1;
 	if (choose_output(&out_fd, cmd_data->file) != -1 && out_fd != 1)
 		substitute_fd(out_fd, 1);
+	init_signal_handling(child_handler);
 	pid = fork();
 	if (pid == 0)
 	{
-		init_signal_handling(child_handler);
 		if (out_fd == -1)
 			exit(EXIT_FAILURE);
 		if (choose_inp_src(cmd_data->file) != 0)
@@ -116,10 +116,7 @@ void	ft_execve(char *pathname, char *argv[], char *envp[])
 		exit(0);
 	abs_path = get_abs_path_to_binary(pathname);
 	if (is_directory(abs_path) == 1)
-	{
-		printf("wtf: %s\n", abs_path);
 		custom_message_exit(pathname, CMD_IS_DIR, EXIT_COMMAND_IS_DIRECTORY);
-	}
 	if (ft_strcmp("command not found", abs_path) == 0)
 		custom_message_exit(pathname, CMD_NOT_FOUND, EXIT_COMMAND_NOT_FOUND);
 	execve(abs_path, argv, envp);

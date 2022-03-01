@@ -20,11 +20,11 @@ SRCS	=	main.c	\
 			$(addprefix string/, get_substr.c insert_str.c get_unsubstr.c \
 						ft_strcmp.c remove_all_quote.c remove_string.c) \
 			$(addprefix redirects/, choose_input.c choose_output.c redirect_utils.c) \
-			$(addprefix builtins/, cd.c echo.c env.c exit.c export.c unset.c pwd.c) \
-			$(addprefix execute/, execute_simple.c execute_builtin.c execute_pipeline.c) \
+			$(addprefix builtins/, cd.c echo.c env.c exit.c export.c pwd.c unset.c ) \
+			$(addprefix execute/, execute_builtin.c execute_pipeline.c execute_simple.c ) \
 			$(addprefix signal/, signal_funcs.c) \
-			$(addprefix error/, error.c put_error.c)
-			$(addprefix data/, common.c	data.c list.c param.c file.c string_array.c)
+			$(addprefix error/, error.c put_error.c) \
+			$(addprefix data/, common.c	data.c file.c list.c param.c string_array.c)
 
 D_SRCS	=	$(addprefix ${SRC_DIR}/,${SRCS})
 

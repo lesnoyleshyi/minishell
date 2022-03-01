@@ -42,7 +42,7 @@ int main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 //	g_common = NULL;
-	init_signal_handling(main_handler);
+
 	g_common = init_common_data(envp);
 	if (check_common() == TRUE)
 		g_common = destroy_common_date();
@@ -51,6 +51,7 @@ int main(int argc, char **argv, char **envp)
 	data = NULL;
 	while (TRUE)
 	{
+		init_signal_handling(main_handler);
 		input = readline("minishval'$ ");
 		if (input == NULL)
 		{

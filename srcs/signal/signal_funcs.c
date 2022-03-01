@@ -17,6 +17,7 @@
 //whereas they are implemented
 void	rl_replace_line(const char *text, int clear_undo);
 int		rl_clear_visible_line(void);
+int		rl_crlf (void);
 
 //Handler for our program to mimic bash's behaviour on CTRL+\ and CTRL+C
 void	main_handler(int signal);
@@ -31,6 +32,17 @@ void	clear_input(void)
 	rl_redisplay();
 }
 
+void	clear_child_input(void)
+{
+	int		exit_status;
+	pid_t	pid;
+
+	pid = waitpid(-1, &exit_status, 0);
+	while (pid != -1)
+		pid = waitpid(-1, &exit_status, 0);
+	rl_crlf();
+}
+
 void	do_nothing(void)
 {
 	rl_clear_visible_line();
@@ -40,7 +52,15 @@ void	do_nothing(void)
 
 void	child_quit(void)
 {
-	;
+	int		exit_status;
+	pid_t	pid;
+
+	write(2, "Quit: ", 6);
+	write(2, "3", 1);
+	write(2, "\n", 1);
+	pid = waitpid(-1, &exit_status, 0);
+	while (pid != -1)
+		pid = waitpid(-1, &exit_status, 0);
 }
 
 void	init_signal_handling(void (*handler)(int))
@@ -48,6 +68,8 @@ void	init_signal_handling(void (*handler)(int))
 	struct sigaction	sa;
 
 	sa.sa_handler = handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
 	sigaction(SIGTERM, &sa, NULL);
@@ -65,9 +87,9 @@ void	main_handler(int signal)
 void	child_handler(int signal)
 {
 	if (signal == SIGINT)
-		SIG_DFL;
+		clear_child_input();
 	if (signal == SIGQUIT)
-		SIG_DFL;
+		child_quit();
 	if (signal == SIGTERM)
 		SIG_DFL;
 }

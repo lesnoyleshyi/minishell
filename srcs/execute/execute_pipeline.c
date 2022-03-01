@@ -61,6 +61,7 @@ void	execute_pipeline(t_data *command_list)
 		if (choose_output(&fds.fd_out, cur_cmd->file) != -1)
 			dup2(fds.fd_out, 1);
 		close(fds.fd_out);
+		init_signal_handling(child_handler);
 		pid = fork();
 		if (pid == 0)
 			execute_in_child(&fds, cur_cmd);
