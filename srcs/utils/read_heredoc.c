@@ -40,18 +40,21 @@ static int	read_text(const char *stop_word, char **result)
 	char	*buff;
 
 	if (stop_word == NULL)
-		return (MEMORY_ERROR);
+		memory_error();
 	text = ft_strdup("");
 	buff = readline("> ");
 	while (buff != NULL)
 	{
 		if (ft_strcmp(buff, stop_word) == 0)
+		{
+			free(buff);
 			break ;
+		}
 		buff = up_strjoin(buff, "\n");
 		text = up_strjoin(text, buff);
 		free(buff);
 		if (text == NULL)
-			return (MEMORY_ERROR);
+			memory_error();
 		buff = readline("> ");
 	}
 	*result = text;
@@ -79,8 +82,7 @@ int	read_heredoc(t_data *data)
 			{
 				if (file->name == NULL)
 					return (SYNTAX_ERROR);
-				if (read_text(file->name, &text) != OK)
-					return (MEMORY_ERROR);
+				read_text(file->name, &text);
 				free(file->name);
 				text = replace_all_param(text);
 				file->name = text;

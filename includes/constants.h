@@ -46,9 +46,10 @@
 
 # define FALSE 0
 # define TRUE 1
+# define TOTAL_PIZDEC 1
 
 # define ERR_INIT_PARAM "syntax error near unexpected token"
 # define INVALID_ARG_FOR_UNSET "not a valid identifier"
 # define NOT_SET "not set"
-
+# define MEM_ERR "memory allocation error"
 #endif

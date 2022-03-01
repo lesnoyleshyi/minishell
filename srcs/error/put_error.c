@@ -51,3 +51,12 @@ void	put_error_cd(char *dir_name, char *message, int oldpwd_flag)
 	write(2, "\n", 1);
 	g_common->err_number = 1;
 }
+
+void	memory_error(void)
+{
+	write(2, NAME, ft_strlen(NAME));
+	write(2, ": ", 2);
+	write(2, MEM_ERR, ft_strlen(MEM_ERR));
+	write(2, "\n", 1);
+	exit(TOTAL_PIZDEC);
+}

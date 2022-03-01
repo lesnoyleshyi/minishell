@@ -192,6 +192,7 @@ void		pwd(void);
 void		b_exit(int exit_status, int pipe_flag);
 
 //   --- error/put_error.c ---   //
+void	memory_error(void);
 void	put_error_param_name(char ch);
 void	put_error_id_for_unset(char *arg);
 void	put_error_cd(char *dir_name, char *message, int oldpwd_flag);

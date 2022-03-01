@@ -52,6 +52,8 @@ void	remove_first_element(t_list **begin)
 	if (begin == NULL || *begin == NULL)
 		return ;
 	element = (*begin)->next;
+	if ((*begin)->content != NULL)
+		free((*begin)->content);
 	free(*begin);
 	*begin = element;
 }
