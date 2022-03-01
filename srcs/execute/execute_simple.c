@@ -90,7 +90,6 @@ void	execute_binary(t_data *cmd_data)
 	out_fd = 1;
 	if (choose_output(&out_fd, cmd_data->file) != -1 && out_fd != 1)
 		substitute_fd(out_fd, 1);
-	init_signal_handling(child_handler);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -104,6 +103,7 @@ void	execute_binary(t_data *cmd_data)
 	else
 	{
 		substitute_fd(reserved_stdout, 1);
+		init_signal_handling(child_handler);
 		g_common->err_number = get_child_exit_status(pid);
 	}
 }

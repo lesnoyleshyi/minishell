@@ -43,6 +43,7 @@ void	clear_child_input(void)
 	rl_crlf();
 }
 
+//todo убрать функции, которые не разрешены сабджектом
 void	do_nothing(void)
 {
 	rl_clear_visible_line();
