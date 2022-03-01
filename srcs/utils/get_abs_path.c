@@ -30,7 +30,7 @@ char	*get_abs_path_to_binary(char *pathname);
 
 //Searches for variable with name == "variable_name"
 //within environmental and local(shell) variables
-char *ft_getenv(const char *variable_name);
+char	*ft_getenv(const char *variable_name);
 
 char	*get_abs_path_to_binary(char *pathname)
 {
@@ -78,7 +78,7 @@ int	is_directory(char *pathname)
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-char *ft_getenv(const char *variable_name)
+char	*ft_getenv(const char *variable_name)
 {
 	t_param	*cur_param;
 

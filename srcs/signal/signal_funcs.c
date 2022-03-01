@@ -15,13 +15,13 @@
 
 //It's here because readline.h doesn't contain this functions,
 //whereas they are implemented
-void	rl_replace_line (const char *text, int clear_undo);
-int		rl_clear_visible_line (void);
+void	rl_replace_line(const char *text, int clear_undo);
+int		rl_clear_visible_line(void);
 
 //Handler for our program to mimic bash's behaviour on CTRL+\ and CTRL+C
 void	main_handler(int signal);
 
-void	clear_input()
+void	clear_input(void)
 {
 	rl_on_new_line();
 	rl_redisplay();
@@ -31,28 +31,29 @@ void	clear_input()
 	rl_redisplay();
 }
 
-void	do_nothing()
+void	do_nothing(void)
 {
 	rl_clear_visible_line();
 	rl_on_new_line();
 	rl_redisplay();
 }
 
-void	child_quit()
+void	child_quit(void)
 {
-
+	;
 }
 
 void	init_signal_handling(void (*handler)(int))
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	sa.sa_handler = handler;
-	sigaction(SIGINT,  &sa, NULL);
+	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
-//	sigaction(SIGTERM, &sa, NULL);
+	sigaction(SIGTERM, &sa, NULL);
 }
 
+//todo добавить хендлер для sigterm
 void	main_handler(int signal)
 {
 	if (signal == SIGINT)

@@ -59,7 +59,7 @@ int	check_param_name_for_unset(char **arg)
 	{
 		flag = check_param_name(*arg);
 		if (flag != '\0')
-			break;
+			break ;
 		++arg;
 	}
 	if (flag == '\0')

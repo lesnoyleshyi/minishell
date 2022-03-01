@@ -35,7 +35,8 @@ int	ft_heredoc_to_temp_file(char *string, int heredoc_len);
 //Changes input_source from previous (could be stdin or pipe's output) to output
 //file/heredoc if there is any in redirect_list
 //*
-//Closes previous input fd only if it finds any input redirection in redirect_list
+//Closes previous input fd only if
+// it finds any input redirection in redirect_list
 //*
 //Returns -1 in case of error
 //Opens input files(< or <<stop_word) in cycle if there are some.
@@ -57,14 +58,14 @@ int	choose_inp_src(t_file *redirect_list)
 			close(input_fd);
 			input_fd = ft_open_file(cur_file->name, cur_file->mod);
 			if (input_fd == -1)
-				break;
+				break ;
 		}
 		cur_file = cur_file->next;
 	}
 	if (input_fd == -1)
 	{
 		if (cur_file->mod == E_HEREDOC)
-			return(perror_and_return("heredoc", 1));
+			return (perror_and_return("heredoc", 1));
 		return (perror_and_return(cur_file->name, -1));
 	}
 	dup2(input_fd, 0);
@@ -90,9 +91,9 @@ int	ft_open_file(char *filename, int mode_for_open)
 	return (fd);
 }
 
-int ft_heredoc_to_fd(char *string)
+int	ft_heredoc_to_fd(char *string)
 {
-	int fd;
+	int	fd;
 	int	heredoc_len;
 
 	if (string == NULL)

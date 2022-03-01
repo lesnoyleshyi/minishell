@@ -75,7 +75,6 @@ void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
 	int		builtin_type;
 	char	**new_envp;
 
-
 	close(pipe_fds_struct->pipe_fds[0]);
 	if (pipe_fds_struct->fd_out == -1 || choose_inp_src(cmd->file) != 0)
 		exit(1);

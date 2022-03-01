@@ -210,7 +210,7 @@ int	substitute_fd(int old_fd, int new_fd);
 int	ft_open_file(char *filename, int mode_for_open);
 int	choose_output(int *old_output, t_file *redir_list);
 int do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
-int ft_is_here_output_redirections(t_file *list_of_all_redirections);
+int is_here_output_redirections(t_file *list_of_all_redirections);
 int	do_last_cmd_redirs(t_pipeline_fds *fds_s, t_file *redir_list, pid_t *pid);
 
 //   --- execute/choose_input.c ---   //
