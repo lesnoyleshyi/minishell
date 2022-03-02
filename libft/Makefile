@@ -22,8 +22,10 @@ OBJS	=	$(SRCS:.c=.o)
 
 FLAGS	:=	-Wall -Werror -Wextra
 
+CC		:=	cc
+
 %.o		:	%.c libft.h
-			gcc $(FLAGS) -c $< -o $@
+			${CC} $(FLAGS) -c $< -o $@
 
 ${NAME}	: 	$(OBJS) $(BONUSES:.c=.o) $(GNL:.c=.o)
 			ar rcs $(NAME) $?

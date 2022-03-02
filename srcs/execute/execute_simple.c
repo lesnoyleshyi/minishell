@@ -55,7 +55,7 @@ void	execute_simple(t_data *cmd_data)
 	}
 	builtin_type = is_builtin(cmd_data->command[0]);
 	if (builtin_type != E_NOT_FUNCTION)
-		execute_builtin(cmd_data, builtin_type, 0);
+		execute_builtin(cmd_data, builtin_type, NOT_IN_PIPELINE);
 	else
 		execute_binary(cmd_data);
 }
@@ -65,7 +65,6 @@ void	execute_null_command(t_file *redir_list)
 	pid_t	pid;
 	int		stdout_copy;
 
-	//todo вот тут надо запиндюрить обновление переменных
 	stdout_copy = 1;
 	pid = fork();
 	if (pid == 0)

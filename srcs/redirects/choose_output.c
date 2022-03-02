@@ -62,7 +62,7 @@ int	choose_output(int *old_output, t_file *redir_list)
 		else if (cur_file->mod == E_OUT || cur_file->mod == E_APPEND)
 		{
 			close(*old_output);
-			*old_output = ft_open_file(cur_file->name, cur_file->mod);
+			*old_output = open_file(cur_file->name, cur_file->mod);
 			if (*old_output == -1)
 				return (perror_and_return(cur_file->name, -1));
 		}

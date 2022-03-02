@@ -22,7 +22,7 @@ SRCS	=	main.c	\
 			$(addprefix redirects/, choose_input.c choose_output.c redirect_utils.c) \
 			$(addprefix builtins/, cd.c echo.c env.c exit.c export.c pwd.c unset.c ) \
 			$(addprefix execute/, execute_builtin.c execute_pipeline.c execute_simple.c ) \
-			$(addprefix signal/, signal_funcs.c) \
+			$(addprefix signal/, common_signals.c child_signals.c parent_signals.c) \
 			$(addprefix error/, error.c put_error.c) \
 			$(addprefix data/, common.c	data.c file.c list.c param.c string_array.c)
 

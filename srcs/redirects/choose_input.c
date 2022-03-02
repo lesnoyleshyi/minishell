@@ -14,23 +14,23 @@
 
 //Opens file referenced by filename, no matter where this file is located
 //and no matter what kind of file it is - regular/heredoc/for input/for output
-int	ft_open_file(char *filename, int mode_for_open);
+int	open_file(char *filename, int mode_for_open);
 
 //We'll receive full string that parser expands from heredoc, not pathname.
 //This function creates pipe or temporary file that'll contain this string.
 //Decision about storage rely on len(heredoc_string) and max size of pipe.
-int	ft_heredoc_to_fd(char *heredoc_string);
+int	heredoc_to_fd(char *heredoc_string);
 
 //Creates pipe and writes heredoc_len bytes from string to this pipe,
 //closes pipe_input at the end of writing
 //*
 //No error handling here, but it should be
-int	ft_heredoc_to_pipe(char *string, int heredoc_len);
+int	heredoc_to_pipe(char *string, int heredoc_len);
 
 //Creates temp file and writes heredoc_len bytes to it
 //*
 //IDK how to delete this file without using global variable
-int	ft_heredoc_to_temp_file(char *string, int heredoc_len);
+int	heredoc_to_temp_file(char *string, int heredoc_len);
 
 //Changes input_source from previous (could be stdin or pipe's output) to output
 //file/heredoc if there is any in redirect_list
@@ -56,7 +56,7 @@ int	choose_inp_src(t_file *redirect_list)
 		if (cur_file->mod == E_IN || cur_file->mod == E_HEREDOC)
 		{
 			close(input_fd);
-			input_fd = ft_open_file(cur_file->name, cur_file->mod);
+			input_fd = open_file(cur_file->name, cur_file->mod);
 			if (input_fd == -1)
 				break ;
 		}
@@ -66,15 +66,13 @@ int	choose_inp_src(t_file *redirect_list)
 	{
 		if (cur_file->mod == E_HEREDOC)
 			return (perror_and_return("heredoc", 1));
-		return (perror_and_return(cur_file->name, -1));
+		return (perror_and_return(cur_file->name, HEREDOC_REDIRECT));
 	}
-	dup2(input_fd, 0);
-	if (input_fd != 0)
-		close(input_fd);
+	safe_substitute_fd(input_fd, 0);
 	return (0);
 }
 
-int	ft_open_file(char *filename, int mode_for_open)
+int	open_file(char *filename, int mode_for_open)
 {
 	int		fd;
 
@@ -85,13 +83,13 @@ int	ft_open_file(char *filename, int mode_for_open)
 	else if (mode_for_open == E_IN)
 		fd = open(filename, O_RDONLY);
 	else if (mode_for_open == E_HEREDOC)
-		fd = ft_heredoc_to_fd(filename);
+		fd = heredoc_to_fd(filename);
 	else
 		return (-1);
 	return (fd);
 }
 
-int	ft_heredoc_to_fd(char *string)
+int	heredoc_to_fd(char *string)
 {
 	int	fd;
 	int	heredoc_len;
@@ -101,29 +99,25 @@ int	ft_heredoc_to_fd(char *string)
 	else
 		heredoc_len = ft_strlen(string);
 	if (heredoc_len == 0)
-		fd = ft_open_file("/dev/null", O_RDONLY);
+		fd = open_file("/dev/null", O_RDONLY);
 	else if (heredoc_len < PIPE_BUF)
-		fd = ft_heredoc_to_pipe(string, heredoc_len);
+		fd = heredoc_to_pipe(string, heredoc_len);
 	else
-		fd = ft_heredoc_to_temp_file(string, heredoc_len);
+		fd = heredoc_to_temp_file(string, heredoc_len);
 	return (fd);
 }
 
-int	ft_heredoc_to_pipe(char *string, int heredoc_len)
+int	heredoc_to_pipe(char *string, int heredoc_len)
 {
 	int		pipe_fds[2];
 
-	write(2, string, heredoc_len);
 	pipe(pipe_fds);
 	write(pipe_fds[1], string, heredoc_len);
 	close(pipe_fds[1]);
 	return (pipe_fds[0]);
 }
 
-//todo этот файл нигде пока не удаляется - надо пофиксить
-// не уверен, что его не нужно явно в какую-то директорию пихать
-// в таком виде он будет создаваться в той папке, в котрой выполняется процесс
-int	ft_heredoc_to_temp_file(char *string, int heredoc_len)
+int	heredoc_to_temp_file(char *string, int heredoc_len)
 {
 	int	fd;
 

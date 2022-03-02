@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   signal_funcs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stycho <stycho@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/24 21:05:24 by stycho            #+#    #+#             */
-/*   Updated: 2022/02/24 21:05:26 by stycho           ###   ########.fr       */
+/*   Created: 2022/02/21 13:33:13 by stycho            #+#    #+#             */
+/*   Updated: 2022/02/21 13:33:14 by stycho           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <signal.h>
 
-void	b_exit(int exit_status, int pipe_flag)
+//initialises new signal handler
+void	init_signal_handling(void (*handler)(int));
+
+void	init_signal_handling(void (*handler)(int))
 {
-	if (pipe_flag == NOT_IN_PIPELINE)
-	{
-		write(2, "exit\n", 5);
-		add_new_history();
-	}
-	exit(exit_status);
+	struct sigaction	sa;
+
+	sa.sa_handler = handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTERM, &sa, NULL);
 }

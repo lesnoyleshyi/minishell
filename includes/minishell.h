@@ -27,7 +27,7 @@
 # define EX_BINARY_FILE				126
 # define NO_PIPE					-1
 # define AMBIGUOUS_REDIRECT			-1
-# define HEREDOC_REDIRECT			-4		//here-doc temp file can't be created
+# define HEREDOC_REDIRECT			-4	//here-doc temp file can't be created
 # define PIPE_BUF					4096
 
 enum e_function {
@@ -75,6 +75,11 @@ enum e_err_msg_code {
 	CMD_IS_DIR
 };
 
+enum e_pipe_relation {
+	WITHIN_PIPELINE,
+	NOT_IN_PIPELINE
+};
+
 typedef struct s_param {
 	int				app;
 	char			*name;
@@ -108,10 +113,10 @@ typedef struct s_data {
 
 typedef struct s_pipeline_fds {
 	int	fd_in;
-	int fd_out;
-	int pipe_fds[2];
-	int reserved_stdin;
-	int reserved_stdout;
+	int	fd_out;
+	int	pipe_fds[2];
+	int	reserved_stdin;
+	int	reserved_stdout;
 }				t_pipeline_fds;
 
 t_common	*g_common;
@@ -192,59 +197,82 @@ void		pwd(void);
 void		b_exit(int exit_status, int pipe_flag);
 
 //   --- error/put_error.c ---   //
-void	memory_error(void);
-void	put_error_param_name(char ch);
-void	put_error_id_for_unset(char *arg);
-void	put_error_cd(char *dir_name, char *message, int oldpwd_flag);
+void		memory_error(void);
+void		put_error_param_name(char ch);
+void		put_error_id_for_unset(char *arg);
+void		put_error_cd(char *dir_name, char *message, int oldpwd_flag);
 
 /* PROTOTYPE */
 
 /* STYCHO */
-//   --- execute/execute_funcs.c ---   //
-void	execute_pipeline(t_data *command_list);
-void	ft_execve(char *pathname, char *argv[], char *envp[]);
-void	execute(t_data *data);
-void	execute_simple(t_data *cmd_data);
+//   			--- /srcs/execute/execute_builtin.c ---   					//
+void		execute_pipeline(t_data *command_list);
 
-//   --- execute/choose_output.c ---   //
-int	substitute_fd(int old_fd, int new_fd);
-int	ft_open_file(char *filename, int mode_for_open);
-int	choose_output(int *old_output, t_file *redir_list);
-int do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
-int is_here_output_redirections(t_file *list_of_all_redirections);
-int	do_last_cmd_redirs(t_pipeline_fds *fds_s, t_file *redir_list, pid_t *pid);
+//   			--- /srcs/execute/execute_simple.c ---   					//
+void		execute(t_data *data);
+void		execute_simple(t_data *cmd_data);
+void		execute_binary(t_data *cmd_data);
+void		execute_null_command(t_file *redir_list);
+void		ft_execve(char *pathname, char *argv[], char *envp[]);
 
-//   --- execute/choose_input.c ---   //
-int	choose_inp_src(t_file *redirect_list);
+//   			--- /srcs/execute/choose_output.c ---   					//
+void		execute_pipeline(t_data *command_list);
+void		execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd);
+void		initialise_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
+void		reset_stdin_stdout(t_pipeline_fds *pipe_fds_struct);
+void		ft_wait(pid_t last_pid);
 
-//   --- execute/new_env.c ---   //
-char **new_env(t_param *begin);
-char **param_list_to_arr(t_param *param_list);
-char *param_to_string(t_param *param);
-size_t	param_list_len(t_param *param);
-size_t	char_p_arr_len(char **arr);
+//   			--- /srcs/redirect/choose_input.c ---  						 //
+int			choose_inp_src(t_file *redirect_list);
+int			open_file(char *filename, int mode_for_open);
+int			heredoc_to_fd(char *heredoc_string);
+int			heredoc_to_pipe(char *string, int heredoc_len);
+int			heredoc_to_temp_file(char *string, int heredoc_len);
 
-//   --- signal/signal_funcs.c ---   //
-void	init_signal_handling(void (*handler)(int));
-void	init_signal_handling_p();
-void	clear_input();
-void	ft_wait(pid_t last_pid);
-void 	catch_child();
-void	catch_child2();
-void	main_handler(int signal);
-void	child_handler(int signal);
-void	redef_sigint_child(int signal);
+//   			--- /srcs/redirect/choose_output.c ---   					//
+int			choose_output(int *old_output, t_file *redir_list);
+int			is_here_output_redirections(t_file *list_of_all_redirections);
+int			check_read_perm(char *filename);
+int			do_last_cmd_redirs(t_pipeline_fds *fds_s, t_file *redir_list,
+				pid_t *pid);
+
+//   			--- /srcs/redirect/redirect_utils.c ---   					//
+int			do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
+int			safe_substitute_fd(int old_fd, int new_fd);
+int			substitute_fd(int old_fd, int new_fd);
+
+//   --- /srcs/utils/new_env.c ---   //
+char		**new_env(t_param *begin);
+char		**param_list_to_arr(t_param *param_list);
+char		*param_to_string(t_param *param);
+size_t		param_list_len(t_param *param);
+size_t		char_p_arr_len(char **arr);
+
+//   					--- signal/common_signals.c ---   					//
+void		rl_replace_line(const char *text, int clear_undo);
+void		init_signal_handling(void (*handler)(int));
+
+//   					--- signal/child_signals.c ---   					//
+void		child_handler(int signal);
+void		child_quit(void);
+void		clear_child_input(void);
+
+//   					--- signal/parent_signals.c ---   					//
+void		main_handler(int signal);
+void		do_nothing(void);
+void		clear_input(void);
 
 //   --- error/error.c ---   //
-void	custom_message_exit(char *pathname, int message_code, int exit_status);
-int		perror_and_return(char *message, int ret_val);
-int		translate_errno_to_exit_status(int errno_val);
-int		get_child_exit_status(pid_t pid);
+void		custom_message_exit(char *pathname, int message_code,
+				int exit_status);
+int			perror_and_return(char *message, int ret_val);
+int			translate_errno_to_exit_status(int errno_val);
+int			get_child_exit_status(pid_t pid);
 
 //   --- execute/get_abs_path.c ---   //
-char	*get_abs_path_to_binary(char *pathname);
-int		is_directory(char *pathname);
-void	free_arr(char **paths_arr);
+char		*get_abs_path_to_binary(char *pathname);
+int			is_directory(char *pathname);
+void		free_arr(char **paths_arr);
 /* STYCHO */
 
 void		print_param(t_param *param);
@@ -253,4 +281,3 @@ void		print_list(t_list *list);
 void		print_data(t_data *data);
 void		print_array_string(char **array);
 #endif
-

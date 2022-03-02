@@ -29,6 +29,10 @@ int	do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name);
 //Returns -1 on failure
 int	substitute_fd(int old_fd, int new_fd);
 
+//I have no time to check whether I can make changes in substitute_fd,
+//so welcome this:)
+int	safe_substitute_fd(int old_fd, int new_fd);
+
 int	do_piping(t_pipeline_fds *pipe_fds_struct, char *cmd_name)
 {
 	if (pipe(pipe_fds_struct->pipe_fds) == -1)
@@ -46,6 +50,18 @@ int	substitute_fd(int old_fd, int new_fd)
 	if (dup2(old_fd, new_fd) == -1)
 		ret_val = -1;
 	if (close(old_fd) == -1)
+		ret_val = -1;
+	return (ret_val);
+}
+
+int	safe_substitute_fd(int old_fd, int new_fd)
+{
+	int	ret_val;
+
+	ret_val = 0;
+	if (dup2(old_fd, new_fd) == -1)
+		ret_val = -1;
+	if (old_fd != 0 && close(old_fd) == -1)
 		ret_val = -1;
 	return (ret_val);
 }

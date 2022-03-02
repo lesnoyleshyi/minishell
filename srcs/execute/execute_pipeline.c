@@ -84,7 +84,7 @@ void	execute_in_child(t_pipeline_fds *pipe_fds_struct, t_data *cmd)
 	builtin_type = is_builtin(cmd->command[0]);
 	if (builtin_type != E_NOT_FUNCTION)
 	{
-		execute_builtin(cmd, builtin_type, 1);
+		execute_builtin(cmd, builtin_type, WITHIN_PIPELINE);
 		exit(g_common->err_number);
 	}
 	new_envp = new_env(cmd->param_list);
