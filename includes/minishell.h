@@ -45,7 +45,6 @@ enum e_special_symbols {
 	E_NOT_SPEC_SYM,
 	E_REDIR_IN,
 	E_REDIR_OUT,
-	E_GET_PARAM,
 	E_INIT_PARAM,
 	E_PIPE
 };
@@ -81,7 +80,6 @@ enum e_pipe_relation {
 };
 
 typedef struct s_param {
-	int				app;
 	char			*name;
 	char			*value;
 	struct s_param	*next;
@@ -125,7 +123,7 @@ t_common	*g_common;
 
 //   --- utils ---   //
 void		first_pars(const char *line, t_list **begin);
-void		second_parser(t_list **begin, t_data *data);
+int			second_parser(t_list **begin, t_data *data);
 char		*replace_all_param(char *str);
 int			get_mod_file(t_list **begin, t_list **element, int mod);
 int			read_heredoc(t_data *data);
@@ -197,6 +195,7 @@ void		pwd(void);
 void		b_exit(int exit_status, int pipe_flag);
 
 //   --- error/put_error.c ---   //
+int			syntax_error(char *substr);
 void		memory_error(void);
 void		put_error_param_name(char ch);
 void		put_error_id_for_unset(char *arg);
@@ -268,6 +267,7 @@ void		custom_message_exit(char *pathname, int message_code,
 int			perror_and_return(char *message, int ret_val);
 int			translate_errno_to_exit_status(int errno_val);
 int			get_child_exit_status(pid_t pid);
+int			cmd_not_found(char *str);
 
 //   --- execute/get_abs_path.c ---   //
 char		*get_abs_path_to_binary(char *pathname);

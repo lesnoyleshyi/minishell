@@ -45,6 +45,7 @@ void	destroy_data(t_data	**data)
 		el = (*data)->next;
 		destroy_file(&((*data)->file));
 		destroy_array((*data)->command);
+		destroy_param(&(*data)->param_list);
 		free(*data);
 		*data = el;
 	}
@@ -83,11 +84,15 @@ t_data	*init_data(const char *line)
 	begin = NULL;
 	data = create_data();
 	if (data == NULL)
-		return (NULL);
+		memory_error();
 	first_pars(line, &begin);
 	if (begin == NULL)
+		memory_error();
+	if (second_parser(&begin, data) == SYNTAX_ERROR)
+	{
+		destroy_data(&data);
 		return (NULL);
-	second_parser(&begin, data);
+	}
 	read_heredoc(data);
 	return (data);
 }

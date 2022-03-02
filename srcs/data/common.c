@@ -139,5 +139,6 @@ t_common	*destroy_common_date(void)
 	if (g_common->home != NULL)
 		free(g_common->home);
 	free(g_common);
+	memory_error();
 	return (NULL);
 }

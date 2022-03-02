@@ -60,3 +60,15 @@ void	memory_error(void)
 	write(2, "\n", 1);
 	exit(TOTAL_PIZDEC);
 }
+
+int	syntax_error(char *substr)
+{
+	write(2, NAME, ft_strlen(NAME));
+	write(2, ": ", 2);
+	write(2, SYN_ERR, ft_strlen(SYN_ERR));
+	write(2, " \'", 2);
+	write(2, substr, ft_strlen(substr));
+	write(2, "\'\n", 2);
+	g_common->err_number = 258;
+	return (SYNTAX_ERROR);
+}

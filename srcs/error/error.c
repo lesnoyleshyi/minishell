@@ -77,3 +77,18 @@ int	translate_errno_to_exit_status(int errno_val)
 		return (126);
 	return (errno_val);
 }
+
+int	cmd_not_found(char *str)
+{
+	write(2, NAME, ft_strlen(NAME));
+	write(2, ": ", 2);
+	if (str != NULL)
+		write(2, str, ft_strlen(str));
+	write(2, ": ", 2);
+	write(2, ERR_CMD_NOT_FOUND, ft_strlen(ERR_CMD_NOT_FOUND));
+	write(2, "\n", 1);
+	g_common->err_number = 127;
+	if (str != NULL)
+		free(str);
+	return (SYNTAX_ERROR);
+}

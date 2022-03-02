@@ -73,13 +73,12 @@ t_param	*init_param(const char *str)
 
 	new = (t_param *) malloc(sizeof (t_param));
 	if (new == NULL)
-		return (NULL);
+		memory_error();
 	index = 0;
 	while (str[index] != '\0' && str[index] != INIT_PARAM)
 		++index;
 	new->name = get_substr(str, 0, index);
 	new->value = get_substr_for_value(str, index + 1, ft_strlen(str));
-	new->app = FALSE;
 	new->value = replace_all_param(new->value);
 	remove_all_quote(new->value);
 	new->next = NULL;

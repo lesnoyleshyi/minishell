@@ -94,7 +94,7 @@ void	first_pars(const char *line, t_list **begin)
 			if (string != NULL)
 				free(string);
 			ft_lstclear(begin, free);
-			return ;
+			memory_error();
 		}
 		ft_lstadd_back(begin, new_element);
 	}

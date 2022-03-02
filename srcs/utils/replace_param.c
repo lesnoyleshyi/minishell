@@ -54,6 +54,8 @@ static char	*replace_name_with_value(char *str, size_t *start)
 	value = get_param_value(name);
 	if (value != NULL)
 		str = insert_srt(str, value, start);
+	if (ft_strcmp(name, "?") == 0)
+		free(value);
 	else
 		--(*start);
 	free(name);

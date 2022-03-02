@@ -26,20 +26,20 @@ static int	processing_file(t_list **begin, t_list **element,
 
 	*element = remove_element(begin, *element);
 	if (*element == NULL)
-		return (SYNTAX_ERROR);
+		return (syntax_error(NEW_LINE));
 	mod = get_mod_file(begin, element, mod);
 	if (*element == NULL)
-		return (SYNTAX_ERROR);
+		return (syntax_error(NEW_LINE));
 	if (check_content((*element)->content, FALSE) != E_NOT_SPEC_SYM)
-		return (SYNTAX_ERROR);
+		return (syntax_error((*element)->content));
 	name = ft_strdup((*element)->content);
 	if (name == NULL)
-		return (MEMORY_ERROR);
+		memory_error();
 	name = replace_all_param(name);
 	remove_all_quote(name);
 	file = init_new_file(name);
 	if (file == NULL)
-		return (MEMORY_ERROR);
+		memory_error();
 	file->mod = mod;
 	add_new_file(&(data->file), file);
 	*element = remove_element(begin, *element);
@@ -58,10 +58,16 @@ static int	add_new_param(t_list **begin, t_list **element)
 	param = init_param((*element)->content);
 	*element = remove_element(begin, *element);
 	if (param == NULL)
-		return (MEMORY_ERROR);
-	if (param->name == NULL || check_param_name(param->name) != '\0')
+		memory_error();
+	if (param->name == NULL)
 	{
+		cmd_not_found(ft_strjoin("=", param->value));
 		destroy_param(&param);
+		return (SYNTAX_ERROR);
+	}
+	if (check_param_name(param->name) != '\0')
+	{
+		g_common->err_number = 258;
 		return (SYNTAX_ERROR);
 	}
 	add_param(&g_common->new_list, param);
@@ -78,7 +84,7 @@ static int	processing_pipe(t_list **begin, t_list **element, t_data **data)
 {
 	(*data)->command = convert_sublist_to_array(*begin, *element);
 	if ((*data)->command == NULL)
-		return (MEMORY_ERROR);
+		memory_error();
 	(*data)->param_list = g_common->new_list;
 	g_common->new_list = NULL;
 	while (*begin != NULL && *begin != *element)
@@ -117,18 +123,26 @@ static int	processing_element(t_list **begin, t_list **element, t_data **data)
  * it into a linked list of type "t_data"
  */
 
-void	second_parser(t_list **begin, t_data *data)
+int	second_parser(t_list **begin, t_data *data)
 {
+	int		flag;
 	t_list	*element;
 
+	flag = OK;
 	element = *begin;
-	while (element != NULL)
-		if (processing_element(begin, &element, &data) == KO
-			&& element != NULL)
+	while (element != NULL && flag != SYNTAX_ERROR)
+	{
+		flag = processing_element(begin, &element, &data);
+		if (flag == KO && element != NULL)
 			element = element->next;
-	data->command = convert_list_to_array(*begin);
-	data->param_list = g_common->new_list;
-	g_common->new_list = NULL;
+	}
+	if (flag != SYNTAX_ERROR)
+	{
+		data->command = convert_list_to_array(*begin);
+		data->param_list = g_common->new_list;
+		g_common->new_list = NULL;
+	}
 	if (*begin != NULL)
 		remove_all_list(begin);
+	return (flag);
 }
