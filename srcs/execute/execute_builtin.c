@@ -12,12 +12,32 @@
 
 #include "../../includes/minishell.h"
 
+//I'm sorry for that
+void	choose_builtin(t_data *data, int flag, int pipe_flag);
+
 /**
  * This function accepts a flag variable unique
  * to all builtins and executes the required builtin
  */
 
 void	execute_builtin(t_data *data, int flag, int pipe_flag)
+{
+	t_pipeline_fds	yura_prosti;
+
+	initialise_stdin_stdout(&yura_prosti);
+	if (choose_output(&yura_prosti.fd_out, data->file) == -1)
+	{
+		reset_stdin_stdout(&yura_prosti);
+		close(yura_prosti.fd_in);
+		g_common->err_number = 1;
+		return ;
+	}
+	choose_builtin(data, flag, pipe_flag);
+	reset_stdin_stdout(&yura_prosti);
+	close(yura_prosti.fd_in);
+}
+
+void	choose_builtin(t_data *data, int flag, int pipe_flag)
 {
 	if (flag == E_NOT_FUNCTION)
 		return ;
